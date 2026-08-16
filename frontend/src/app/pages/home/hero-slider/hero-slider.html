@@ -1,0 +1,45 @@
+<section class="hero-slider-section" aria-label="FreshOMill Featured Highlights">
+  <div class="hero-slider" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+    <div class="hero-slider__track" [style.transform]="'translateX(-' + currentSlide() * 100 + '%)'">
+      @for (slide of slides(); track slide.img; let i = $index) {
+        <div class="hero-slider__slide">
+          @if (!failedImages().has(i)) {
+            <img
+              [src]="slide.img"
+              [alt]="slide.alt"
+              class="hero-slider__img"
+              (error)="onImageError(i)"
+            />
+          } @else {
+            <div class="hero-slider__fallback" [style.background]="slide.fallbackGradient">
+              <svg [appIcon]="slide.icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;" aria-hidden="true"></svg>
+              <h2 class="hero-slider__fallback-title">{{ slide.title }}</h2>
+              <p class="hero-slider__fallback-subtitle">{{ slide.subtitle }}</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <button type="button" class="hero-slider__arrow hero-slider__arrow--prev" aria-label="Previous slide"
+      (click)="onArrowOrDotClick(currentSlide() - 1)">
+      <svg appIcon="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;" aria-hidden="true"></svg>
+    </button>
+    <button type="button" class="hero-slider__arrow hero-slider__arrow--next" aria-label="Next slide"
+      (click)="onArrowOrDotClick(currentSlide() + 1)">
+      <svg appIcon="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;" aria-hidden="true"></svg>
+    </button>
+
+    <div class="hero-slider__dots">
+      @for (slide of slides(); track slide.img; let i = $index) {
+        <button
+          type="button"
+          class="hero-slider__dot"
+          [class.hero-slider__dot--active]="i === currentSlide()"
+          [attr.aria-label]="'Slide ' + (i + 1)"
+          (click)="onArrowOrDotClick(i)"
+        ></button>
+      }
+    </div>
+  </div>
+</section>

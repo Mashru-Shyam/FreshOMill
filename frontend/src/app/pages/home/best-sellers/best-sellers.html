@@ -1,0 +1,32 @@
+<section class="bestsellers-section" aria-label="Best Sellers">
+  <h2 class="bestsellers-section__title">Best Sellers</h2>
+
+  <div class="bestsellers-wrapper">
+    <button type="button" class="bestsellers-arrow bestsellers-arrow--prev" aria-label="Previous best seller"
+      [class.is-hidden]="isPrevHidden()" (click)="slide('prev')">
+      <svg appIcon="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;" aria-hidden="true"></svg>
+    </button>
+    <button type="button" class="bestsellers-arrow bestsellers-arrow--next" aria-label="Next best seller"
+      [class.is-hidden]="isNextHidden()" (click)="slide('next')">
+      <svg appIcon="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;" aria-hidden="true"></svg>
+    </button>
+
+    <div
+      #slider
+      class="bestsellers-slider"
+      [class.is-dragging]="isDragging()"
+      role="region"
+      aria-label="Best seller products slider"
+      (scroll)="updateArrows()"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="endDrag()"
+      (pointercancel)="endDrag()"
+      (click)="onSliderClick($event)"
+    >
+      @for (product of products(); track product.name) {
+        <app-seller-card [product]="product" />
+      }
+    </div>
+  </div>
+</section>

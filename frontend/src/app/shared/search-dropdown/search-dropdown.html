@@ -1,0 +1,35 @@
+@if (open()) {
+  <div
+    class="search-dropdown is-open"
+    [class.search-dropdown--compact]="variant() === 'compact'"
+    role="listbox"
+    aria-label="Search results"
+  >
+    @if (results().length === 0) {
+      <div class="search-dropdown__empty">
+        <svg appIcon="search-x" class="search-dropdown__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px" aria-hidden="true"></svg>
+        <span class="search-dropdown__empty-text">No products found for "{{ query().trim() }}"</span>
+      </div>
+    } @else {
+      <div class="search-dropdown__section-label">{{ resultsLabel() }}</div>
+      <div class="search-dropdown__list">
+        @for (product of results(); track product.id) {
+          <button type="button" class="search-dropdown__item" (click)="selectProduct(product.id)">
+            <span class="search-dropdown__item-image">
+              @if (product.image && !failedImages().has(product.id)) {
+                <img [src]="product.image" [alt]="product.name" class="search-dropdown__item-img" (error)="onImageError(product.id)" />
+              }
+            </span>
+            <span class="search-dropdown__item-info">
+              <span class="search-dropdown__item-name">{{ product.name }}</span>
+              <span class="search-dropdown__item-meta">
+                <span class="search-dropdown__item-price">Rs. {{ product.price.toFixed(2) }}</span>
+                <span class="search-dropdown__item-unit">/ {{ product.unit }}</span>
+              </span>
+            </span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+}

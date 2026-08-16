@@ -1,0 +1,86 @@
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .bottom-nav {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--layout-bottom-nav-height);
+    /* Clears the iOS home-indicator safe area without adding dead space on
+       devices that don't have one. */
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-hairline);
+    box-shadow: var(--elevation-modal);
+    z-index: 90;
+  }
+}
+
+.bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-body-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.bottom-nav__item:hover {
+  color: var(--color-ink);
+}
+
+.bottom-nav__item--active {
+  color: var(--color-primary);
+}
+
+.bottom-nav__icon-wrap {
+  position: relative;
+  display: flex;
+}
+
+.bottom-nav__badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: var(--rounded-full);
+  border: 2px solid var(--color-surface);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottom-nav__avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}

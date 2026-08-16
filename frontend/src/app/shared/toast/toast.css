@@ -1,0 +1,98 @@
+.pq-toast-container {
+  position: fixed;
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  pointer-events: none;
+}
+
+.pq-toast {
+  display: flex;
+  flex-direction: column;
+  width: 380px;
+  max-width: calc(100vw - 2 * var(--space-xl));
+  background: var(--color-surface, #ffffff);
+  color: var(--color-ink, #1c222a);
+  border: 1px solid var(--color-hairline, rgb(16 24 40 / 8%));
+  border-radius: var(--rounded-md);
+  box-shadow: var(--elevation-toast, 0 16px 32px rgb(16 24 40 / 18%), 0 40px 72px rgb(16 24 40 / 22%));
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--duration-normal) var(--ease-standard),
+    transform var(--duration-normal) var(--ease-standard);
+}
+
+.pq-toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pq-toast__body {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: 500;
+}
+
+.pq-toast__icon {
+  flex-shrink: 0;
+  color: var(--color-success);
+}
+
+.pq-toast__progress {
+  height: 3px;
+  width: 100%;
+  background: var(--color-success);
+  transform-origin: left;
+  animation: pq-toast-progress 2800ms linear forwards;
+}
+
+.pq-toast--error .pq-toast__icon {
+  color: var(--color-danger);
+}
+
+.pq-toast--error .pq-toast__progress {
+  background: var(--color-danger);
+}
+
+.pq-toast--info .pq-toast__icon {
+  color: var(--color-info);
+}
+
+.pq-toast--info .pq-toast__progress {
+  background: var(--color-info);
+}
+
+@keyframes pq-toast-progress {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+@media (max-width: 960px) {
+  .pq-toast-container {
+    bottom: calc(var(--layout-bottom-nav-height) + env(safe-area-inset-bottom, 0) + var(--space-md));
+  }
+}
+
+@media (max-width: 639px) {
+  .pq-toast-container {
+    left: var(--space-md);
+    right: var(--space-md);
+    transform: none;
+    align-items: stretch;
+  }
+
+  .pq-toast {
+    width: 100%;
+    max-width: none;
+  }
+}

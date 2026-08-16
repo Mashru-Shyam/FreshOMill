@@ -1,0 +1,31 @@
+<section class="about-section" aria-label="About FreshOMill">
+  <div class="about-section__header">
+    <h2 class="about-section__title">More Than a Store!</h2>
+    <p class="about-section__subtitle">FreshOMill isn't just about selling food, it's about changing the way we consume it. Every refill, every jar, every choice you make here supports a movement toward conscious consumption.</p>
+  </div>
+
+  <div class="about-features">
+    @for (feature of features; track feature.title) {
+      <div class="about-feature">
+        <div class="about-feature__icon"><svg [appIcon]="feature.icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:34px;height:34px;" aria-hidden="true"></svg></div>
+        <h3 class="about-feature__title">{{ feature.title }}</h3>
+        <p class="about-feature__text">{{ feature.text }}</p>
+      </div>
+    }
+  </div>
+
+  <div class="about-videos">
+    @for (video of videos; track video.src; let i = $index) {
+      <div class="about-video-tile" [class.about-video-tile--fallback]="failedVideos().has(i)">
+        @if (!failedVideos().has(i)) {
+          <video autoplay [muted]="true" loop playsinline [attr.aria-label]="video.label" (error)="onVideoError(i)">
+            <source [src]="video.src" type="video/mp4">
+          </video>
+        }
+        <div class="about-video-tile__fallback" aria-hidden="true">
+          <svg appIcon="film" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px;" aria-hidden="true"></svg>
+        </div>
+      </div>
+    }
+  </div>
+</section>

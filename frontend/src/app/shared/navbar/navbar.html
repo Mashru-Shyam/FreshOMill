@@ -1,0 +1,115 @@
+<header class="navbar" role="banner">
+  <div class="navbar__container">
+    <a routerLink="/" class="navbar__brand" aria-label="FreshOMill Home">
+      <div class="navbar__logo-wrapper">
+        <img
+          src="assets/logo.jpeg"
+          alt="FreshOMill Logo"
+          class="navbar__logo-img"
+        />
+        <!--/* (error)="onLogoError($event)" */-->
+        <!-- <div class="navbar__logo-fallback" [style.display]="logoFailed() ? 'flex' : 'none'" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;color:var(--color-brand-green)" aria-hidden="true">
+            <path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3" />
+            <path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4" />
+            <path d="M5 21h14" />
+          </svg>
+        </div> -->
+      </div>
+
+      <div class="navbar__brand-text">
+        <span class="navbar__brand-name">
+          <span class="navbar__brand-fresh">freshO</span><span class="navbar__brand-mill">mill</span>
+        </span>
+        <span class="navbar__brand-tagline">Buy your health</span>
+      </div>
+    </a>
+
+    <div class="navbar__right-group">
+
+      <a
+        href="https://maps.google.com/?q=FreshOMill+Store"
+        target="_blank"
+        rel="noopener"
+        class="navbar__store-link"
+      >
+        <svg appIcon="map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
+        Visit Our Store
+      </a>
+
+      <nav class="navbar__nav" aria-label="Main Navigation">
+        <a routerLink="/" routerLinkActive="navbar__nav-item--active" [routerLinkActiveOptions]="{ exact: true }" class="navbar__nav-item">
+          <svg appIcon="home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
+          Home
+        </a>
+        <a routerLink="/store" routerLinkActive="navbar__nav-item--active" class="navbar__nav-item">
+          <svg appIcon="store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
+          Store
+        </a>
+        <a routerLink="/contact" routerLinkActive="navbar__nav-item--active" class="navbar__nav-item">
+          <svg appIcon="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
+          Contact
+        </a>
+      </nav>
+
+      <div class="navbar__search" role="search" #searchWrap>
+        <div class="navbar__search-box">
+          <svg appIcon="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
+          <input
+            type="text"
+            class="navbar__search-input"
+            placeholder="Search products..."
+            aria-label="Search site products"
+            [value]="query()"
+            (focus)="onSearchFocus()"
+            (input)="onSearchInput($event)"
+          />
+          <button
+            type="button"
+            class="navbar__search-clear"
+            [class.is-visible]="query().trim().length > 0"
+            aria-label="Clear search text"
+            (click)="clearSearch()"
+          >
+            <svg appIcon="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px" aria-hidden="true"></svg>
+          </button>
+        </div>
+        <app-search-dropdown
+          [open]="overlay.desktopSearchOpen()"
+          [query]="query()"
+          variant="compact"
+          (productSelected)="clearSearch()"
+        />
+      </div>
+
+      <div class="navbar__icons">
+
+        <button
+          #profileToggleBtn
+          type="button"
+          class="btn--icon navbar__profile-btn"
+          [class.is-logged-in]="auth.isLoggedIn()"
+          aria-label="Account menu"
+          aria-haspopup="true"
+          [attr.aria-expanded]="overlay.profileOpen()"
+          (click)="onProfileToggleClick($event)"
+        >
+          <svg appIcon="user" class="navbar__profile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px" aria-hidden="true"></svg>
+          <span class="profile-avatar">{{ auth.currentUser()?.email?.charAt(0) }}</span>
+        </button>
+
+        <button
+          type="button"
+          class="btn--icon"
+          aria-label="View Cart"
+          aria-haspopup="true"
+          [attr.aria-expanded]="overlay.cartDrawerOpen()"
+          (click)="overlay.openCartDrawer()"
+        >
+          <svg appIcon="shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px" aria-hidden="true"></svg>
+          <span class="cart-badge">{{ cart.lineCount() }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

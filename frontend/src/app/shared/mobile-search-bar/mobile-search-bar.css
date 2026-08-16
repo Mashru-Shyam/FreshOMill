@@ -1,0 +1,75 @@
+/* Sticky, stacked directly under the navbar (which sticks below the
+   ticker) — top offset is the combined height of both so all three dock
+   together as one persistent header while scrolling. */
+.search-bar-row {
+  position: sticky;
+  top: calc(var(--layout-ticker-height) + var(--layout-topbar-height));
+  z-index: 15;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-hairline-strong);
+  padding: var(--space-xs) var(--space-xl);
+  box-shadow: var(--elevation-raised);
+}
+
+.search-bar-row__container {
+  position: relative;
+  max-width: var(--layout-container-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
+  padding: 6px var(--space-md);
+  transition: border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.search-bar-row__container:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-subtle);
+  background: var(--color-surface);
+}
+
+.search-bar-row__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md-size);
+  color: var(--color-ink);
+  padding: 4px 0;
+}
+
+.search-bar-row__input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.search-bar-row__clear {
+  border: none;
+  background: transparent;
+  color: var(--color-body-muted);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--rounded-xs);
+}
+
+.search-bar-row__clear.is-visible {
+  display: flex !important;
+}
+
+.search-bar-row__clear:hover {
+  color: var(--color-ink);
+  background-color: var(--color-surface-hover);
+}
+
+@media (min-width: 961px) {
+  .search-bar-row {
+    display: none;
+  }
+}

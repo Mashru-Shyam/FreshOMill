@@ -1,0 +1,79 @@
+/* Same dim+blur overlay recipe as the quick-add modal/cart drawer (each overlay owns its own
+   rather than sharing <app-backdrop> — see those components' doc comments) but a higher
+   z-index (210, above the toast queue's 200) since this can be triggered from *inside* another
+   already-open overlay (e.g. removing a line from the open cart drawer) and must sit above it. */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 210;
+  background: rgba(12, 17, 26, 0.5);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.confirm-dialog {
+  width: 100%;
+  max-width: 380px;
+  background: var(--color-surface, #ffffff);
+  color: var(--color-ink, #1c222a);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--elevation-overlay);
+  padding: var(--space-lg);
+}
+
+.confirm-dialog__message {
+  font-size: var(--text-body-md-size);
+  line-height: var(--text-body-md-lh);
+  color: var(--color-ink);
+  margin: 0 0 var(--space-lg);
+}
+
+.confirm-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}
+
+.confirm-dialog__btn {
+  height: 40px;
+  padding: 0 var(--space-lg);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-sm-size);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.confirm-dialog__btn--cancel {
+  background: var(--color-surface);
+  border-color: var(--color-hairline-strong);
+  color: var(--color-ink);
+}
+
+.confirm-dialog__btn--cancel:hover {
+  background: var(--color-surface-hover);
+}
+
+.confirm-dialog__btn--confirm {
+  background: var(--color-primary);
+  color: var(--color-on-primary, #ffffff);
+}
+
+.confirm-dialog__btn--confirm:hover {
+  background: var(--color-primary-hover);
+}
+
+.confirm-dialog__btn--danger {
+  background: var(--color-danger);
+}
+
+.confirm-dialog__btn--danger:hover {
+  background: var(--color-danger-hover, var(--color-danger));
+}

@@ -1,0 +1,127 @@
+.bestsellers-section {
+  padding: var(--space-xxl) var(--space-xl) var(--space-xl);
+  max-width: var(--layout-container-max);
+  margin: 0 auto;
+}
+
+.bestsellers-section__title {
+  font-size: var(--text-h2-size);
+  font-weight: var(--text-h2-weight);
+  color: var(--color-ink);
+  margin-bottom: var(--space-xl);
+  letter-spacing: -0.3px;
+}
+
+.bestsellers-wrapper {
+  position: relative;
+  margin-bottom: var(--space-xl);
+}
+
+/* Arrows AND touch/trackpad/mouse-drag gestures both scroll the rail;
+   snap points settle either method cleanly on a card boundary. Scrollbar
+   is hidden since the arrows + drag handle navigation. */
+.bestsellers-slider {
+  display: flex;
+  gap: var(--space-lg);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--space-xl);
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.bestsellers-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.bestsellers-slider.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
+.bestsellers-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--rounded-full);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: var(--elevation-raised);
+  transition: background-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard);
+}
+
+/* Hidden entirely when there's nothing to scroll to in that direction —
+   not rendered at all at the start/end of the rail. */
+.bestsellers-arrow.is-hidden {
+  display: none;
+}
+
+.bestsellers-arrow:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.06);
+}
+
+.bestsellers-arrow--prev {
+  left: var(--space-md);
+}
+
+.bestsellers-arrow--next {
+  right: var(--space-md);
+}
+
+@media (max-width: 960px) {
+  .bestsellers-slider {
+    gap: var(--space-md);
+  }
+
+  .bestsellers-arrow {
+    width: 40px;
+    height: 40px;
+  }
+
+  .bestsellers-arrow--prev {
+    left: var(--space-sm);
+  }
+
+  .bestsellers-arrow--next {
+    right: var(--space-sm);
+  }
+}
+
+@media (max-width: 639px) {
+  .bestsellers-section {
+    padding: var(--space-xl) var(--space-md) var(--space-md);
+  }
+
+  .bestsellers-slider {
+    gap: var(--space-sm);
+  }
+
+  .bestsellers-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .bestsellers-arrow--prev {
+    left: var(--space-xs);
+  }
+
+  .bestsellers-arrow--next {
+    right: var(--space-xs);
+  }
+}

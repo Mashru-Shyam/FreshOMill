@@ -1,0 +1,11 @@
+<div class="pq-toast-container" aria-live="polite" aria-atomic="true">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div class="pq-toast" [class]="'pq-toast--' + toast.type" [class.pq-toast--visible]="toast.visible" [attr.role]="toast.type === 'error' ? 'alert' : 'status'">
+      <div class="pq-toast__body">
+        <svg [appIcon]="iconFor(toast.type)" class="pq-toast__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" aria-hidden="true"></svg>
+        <span>{{ toast.text }}</span>
+      </div>
+      <div class="pq-toast__progress"></div>
+    </div>
+  }
+</div>
