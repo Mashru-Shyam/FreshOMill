@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, effect, signal } from '@angular/core';
 import { AddressInput, AddressService } from '../../../shared/services/address.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { validateAddressFields } from '../../../shared/util/address-validation';
@@ -33,14 +33,29 @@ export class AccountForm {
   /** Unlike the other fields (plain native inputs, read straight off the DOM via template
    *  ref on save), `<app-state-select>` isn't a native form control, so it needs an actual
    *  tracked value — seeded once from the default address, same "never overwrites after the
-   *  initial fill" rule Checkout's AddressForm documents for its own fields. */
+   *  initial fill" rule Checkout's AddressForm documents for its own fields. Filled via an
+   *  `effect()`, not a one-time constructor read: `defaultAddress()` resolves asynchronously,
+   *  so a plain read here can easily run before it does and leave the dropdown permanently
+   *  blank even once the rest of the form's fields (bound reactively via the `defaultAddress`
+   *  getter below) catch up fine. */
   protected readonly state = signal('');
+  private stateFilled = false;
 
   constructor(
     private readonly addressService: AddressService,
     private readonly toast: ToastService
   ) {
-    this.state.set(this.addressService.defaultAddress()?.state ?? '');
+    effect(() => {
+      if (this.stateFilled) {
+        return;
+      }
+      const saved = this.addressService.defaultAddress();
+      if (!saved) {
+        return;
+      }
+      this.stateFilled = true;
+      this.state.set(saved.state);
+    });
   }
 
   protected get defaultAddress() {

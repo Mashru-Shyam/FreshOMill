@@ -76,32 +76,6 @@
   display: block;
 }
 
-.state-select__search {
-  display: block;
-  width: calc(100% - 2 * var(--space-md));
-  margin: 0 var(--space-md) var(--space-xs);
-  height: 36px;
-  padding: 0 var(--space-sm);
-  border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-sm);
-  background: var(--color-surface-subtle, var(--color-surface));
-  font-family: var(--font-sans);
-  font-size: var(--text-body-sm-size);
-  color: var(--color-ink);
-}
-
-.state-select__search:focus-visible {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary-subtle);
-}
-
-.state-select__empty {
-  padding: var(--space-sm) var(--space-md);
-  font-size: var(--text-label-size);
-  color: var(--color-body-muted);
-}
-
 .state-select__option {
   display: block;
   width: 100%;
@@ -125,4 +99,10 @@
   color: var(--color-primary);
   font-weight: 600;
   background: var(--color-primary-subtle);
+}
+
+/* Keyboard type-ahead/arrow-key position — distinct from `.is-selected` (the current value)
+   since the two can point at different rows while navigating with the keyboard. */
+.state-select__option.is-highlighted {
+  background: var(--color-surface-hover);
 }

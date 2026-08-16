@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, effect, signal } from '@angular/core';
 import { AddressService, type AddressInput } from '../../../shared/services/address.service';
 import { validateAddressFields } from '../../../shared/util/address-validation';
 import { StateSelect } from '../../../shared/state-select/state-select';
@@ -12,8 +12,16 @@ import { StateSelect } from '../../../shared/state-select/state-select';
  * shopper explicitly chooses to save it, and the mockup has no "save this address" control,
  * so this port doesn't add one either). It's prefilled once from
  * `AddressService.defaultAddress()`, if one exists, mirroring the mockup's
- * `prefillShippingFromProfile()` — never overwrites a field after the initial fill. The
- * mockup never shows an address *picker* even though a saved-address book exists elsewhere
+ * `prefillShippingFromProfile()` — never overwrites a field after the initial fill.
+ *
+ * The fill runs as an `effect()`, not a one-time constructor read: `defaultAddress()` is
+ * backed by an async fetch (starts at `undefined`/empty and resolves later), and a Buy Now
+ * checkout in particular can construct this form before that fetch has finished — a plain
+ * constructor read would then permanently see nothing and leave the form blank. The `filled`
+ * guard makes the effect apply the very first non-empty result exactly once and then stop,
+ * so it still never overwrites a field the shopper has started editing.
+ *
+ * The mockup never shows an address *picker* even though a saved-address book exists elsewhere
  * (Profile.html), so this component doesn't build one either — always the same flat form.
  */
 @Component({
@@ -33,18 +41,26 @@ export class AddressForm {
 
   protected readonly fieldErrors = signal<Record<string, string>>({});
 
+  private filled = false;
+
   constructor(addresses: AddressService) {
-    const saved = addresses.defaultAddress();
-    if (!saved) {
-      return;
-    }
-    this.fullName.set(saved.fullName);
-    this.phone.set(saved.phone);
-    this.addressLine1.set(saved.addressLine1);
-    this.addressLine2.set(saved.addressLine2 ?? '');
-    this.city.set(saved.city);
-    this.state.set(saved.state);
-    this.pincode.set(saved.pincode);
+    effect(() => {
+      if (this.filled) {
+        return;
+      }
+      const saved = addresses.defaultAddress();
+      if (!saved) {
+        return;
+      }
+      this.filled = true;
+      this.fullName.set(saved.fullName);
+      this.phone.set(saved.phone);
+      this.addressLine1.set(saved.addressLine1);
+      this.addressLine2.set(saved.addressLine2 ?? '');
+      this.city.set(saved.city);
+      this.state.set(saved.state);
+      this.pincode.set(saved.pincode);
+    });
   }
 
   protected isInvalid(field: string): boolean {

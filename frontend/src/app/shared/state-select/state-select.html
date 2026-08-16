@@ -7,6 +7,7 @@
     aria-haspopup="listbox"
     [attr.aria-expanded]="menuOpen()"
     (click)="toggleMenu()"
+    (keydown)="onTriggerKeydown($event)"
   >
     <span>{{ value() || 'Select state' }}</span>
     <svg
@@ -24,28 +25,18 @@
     ></svg>
   </button>
   <div class="state-select__menu" [class.is-open]="menuOpen()" role="listbox" aria-label="Select state">
-    <input
-      #searchInput
-      type="text"
-      class="state-select__search"
-      placeholder="Search state..."
-      [value]="query()"
-      (input)="onQueryInput($event)"
-      (click)="$event.stopPropagation()"
-    />
-    @for (s of states(); track s) {
+    @for (s of states; track s; let i = $index) {
       <button
         type="button"
         class="state-select__option"
         [class.is-selected]="s === value()"
+        [class.is-highlighted]="i === highlightedIndex()"
         role="option"
         [attr.aria-selected]="s === value()"
         (click)="select(s)"
       >
         {{ s }}
       </button>
-    } @empty {
-      <p class="state-select__empty">No matching states</p>
     }
   </div>
 </div>

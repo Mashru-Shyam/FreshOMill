@@ -194,3 +194,26 @@
 .address-list__cancel-btn:hover {
   color: var(--color-ink);
 }
+
+@media (max-width: 479px) {
+  .checkout-section {
+    padding: var(--space-md);
+  }
+
+  .checkout-section__title {
+    font-size: var(--text-h5-size);
+    margin-bottom: var(--space-sm);
+  }
+
+  .checkout-form-grid {
+    gap: var(--space-sm);
+  }
+
+  .address-list__items {
+    grid-template-columns: 1fr;
+  }
+
+  .address-list__item {
+    padding: var(--space-sm);
+  }
+}
