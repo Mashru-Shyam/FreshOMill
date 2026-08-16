@@ -12,6 +12,8 @@ using FreshOMill.Api.Endpoints.Payments;
 using FreshOMill.Api.Middleware;
 using FreshOMill.Application;
 using FreshOMill.Infrastructure;
+using FreshOMill.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.RateLimiting;
 using Scalar.AspNetCore;
 using Serilog;
@@ -62,6 +64,12 @@ builder.Services.AddRateLimiter(options =>
 });
 
 var app = builder.Build();
+
+if (builder.Configuration.GetValue<bool>("RunMigrationsOnStartup"))
+{
+    using var scope = app.Services.CreateScope();
+    await scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.MigrateAsync();
+}
 
 app.UseExceptionHandler();
 app.UseSerilogRequestLogging();
