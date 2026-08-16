@@ -1,0 +1,84 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: freshomill-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-freshomill}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-freshomill_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-freshomill}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - freshomill-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-freshomill} -d ${POSTGRES_DB:-freshomill}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: src/FreshOMill.Api/Dockerfile
+      target: dev
+    container_name: freshomill-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-freshomill};Username=${POSTGRES_USER:-freshomill};Password=${POSTGRES_PASSWORD:-freshomill_dev_password}"
+      Jwt__SigningKey: ${JWT_SIGNING_KEY}
+      Email__Host: ${EMAIL_HOST:-smtp.example.com}
+      Email__Username: ${EMAIL_USERNAME:-}
+      Email__Password: ${EMAIL_PASSWORD:-}
+      Razorpay__KeySecret: ${RAZORPAY_KEY_SECRET}
+      Razorpay__WebhookSecret: ${RAZORPAY_WEBHOOK_SECRET}
+    ports:
+      - "5066:8080"
+    volumes:
+      - ./backend:/src
+      - /src/src/FreshOMill.Api/bin
+      - /src/src/FreshOMill.Api/obj
+      - /src/src/FreshOMill.Application/bin
+      - /src/src/FreshOMill.Application/obj
+      - /src/src/FreshOMill.Domain/bin
+      - /src/src/FreshOMill.Domain/obj
+      - /src/src/FreshOMill.Infrastructure/bin
+      - /src/src/FreshOMill.Infrastructure/obj
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+    container_name: freshomill-web
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: freshomill-pgadmin
+    restart: unless-stopped
+    profiles: ["tools"]
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@freshomill.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      - postgres
+
+volumes:
+  freshomill-postgres-data:
+    name: backend_freshomill-postgres-data
+    external: true

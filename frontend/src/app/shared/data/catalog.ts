@@ -1,10 +1,16 @@
+import { API_BASE_URL } from '../config/api.config';
+
 export interface StoreCategory {
   readonly slug: string;
   readonly name: string;
   readonly image: string;
 }
 
-export const ALL_CATEGORY: StoreCategory = { slug: 'all', name: 'All Products', image: 'assets/images/categories/all-products.jpg' };
+export const ALL_CATEGORY: StoreCategory = {
+  slug: 'all',
+  name: 'All Products',
+  image: `${API_BASE_URL}/images/categories/all-products.jpg`,
+};
 
 // Real categories (everything but the synthetic "All Products" pseudo-category above) come from
 // the backend now — see CategoryService. No hardcoded STORE_CATEGORIES array here anymore.
