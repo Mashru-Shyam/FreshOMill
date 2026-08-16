@@ -29,9 +29,7 @@ services:
       DOTNET_USE_POLLING_FILE_WATCHER: "true"
       ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-freshomill};Username=${POSTGRES_USER:-freshomill};Password=${POSTGRES_PASSWORD:-freshomill_dev_password}"
       Jwt__SigningKey: ${JWT_SIGNING_KEY}
-      Email__Host: ${EMAIL_HOST:-smtp.example.com}
-      Email__Username: ${EMAIL_USERNAME:-}
-      Email__Password: ${EMAIL_PASSWORD:-}
+      Resend__ApiKey: ${RESEND_API_KEY:-}
       Razorpay__KeySecret: ${RAZORPAY_KEY_SECRET}
       Razorpay__WebhookSecret: ${RAZORPAY_WEBHOOK_SECRET}
     ports:

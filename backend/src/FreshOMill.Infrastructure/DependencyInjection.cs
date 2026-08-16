@@ -31,11 +31,17 @@ public static class DependencyInjection
         services.AddSingleton<ITokenService, JwtTokenService>();
 
         services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
-        services.AddSingleton<IEmailService, SmtpEmailService>();
         _ = configuration.GetSection(EmailOptions.SectionName).Get<EmailOptions>()
             ?? throw new InvalidOperationException(
-                $"Configuration section '{EmailOptions.SectionName}' is missing (set Email:Host, Email:Username, " +
-                "Email:Password, etc. via user-secrets/env vars).");
+                $"Configuration section '{EmailOptions.SectionName}' is missing (set Email:FromAddress, " +
+                "Email:FromName in appsettings.json).");
+
+        services.Configure<ResendOptions>(configuration.GetSection(ResendOptions.SectionName));
+        services.AddHttpClient<IEmailService, ResendEmailService>(client =>
+            client.BaseAddress = new Uri("https://api.resend.com/"));
+        _ = configuration.GetSection(ResendOptions.SectionName).Get<ResendOptions>()
+            ?? throw new InvalidOperationException(
+                $"Configuration section '{ResendOptions.SectionName}' is missing (set Resend:ApiKey via user-secrets/env vars).");
 
         services.Configure<RazorpayOptions>(configuration.GetSection(RazorpayOptions.SectionName));
         services.AddHttpClient<IPaymentGatewayService, RazorpayPaymentGatewayService>(client =>
