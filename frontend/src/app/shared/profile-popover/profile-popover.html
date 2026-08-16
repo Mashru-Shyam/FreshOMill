@@ -1,0 +1,85 @@
+<div
+  class="profile-popover"
+  [class.profile-popover--open]="overlay.profileOpen()"
+  [style.top.px]="overlay.profileAnchor()?.top ?? null"
+  [style.right.px]="overlay.profileAnchor()?.right ?? null"
+  role="dialog"
+  aria-label="Account profile details"
+>
+  <div class="profile-popover__handle" aria-hidden="true"></div>
+  <div class="profile-popover__header">
+    <span class="profile-popover__title">Account</span>
+    <button type="button" class="btn--icon" style="width:28px;height:28px" aria-label="Close profile menu" (click)="close()">
+      <svg appIcon="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
+    </button>
+  </div>
+
+  <div>
+    @if (auth.isLoggedIn()) {
+      <div class="profile-popover__email">
+        <svg appIcon="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--color-secondary)" aria-hidden="true"></svg>
+        {{ auth.currentUser()?.email }}
+      </div>
+      <div class="profile-popover__actions">
+        <a routerLink="/orders" class="popover-btn" (click)="close()">
+          <svg appIcon="package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
+          Orders
+        </a>
+        <a routerLink="/profile" class="popover-btn" (click)="close()">
+          <svg appIcon="user-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
+          Profile
+        </a>
+      </div>
+      <button type="button" class="popover-btn popover-btn--logout" (click)="logout()">
+        <svg appIcon="log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
+        Log Out
+      </button>
+    } @else if (authStep() === 'email') {
+      <div class="profile-popover__auth">
+        <label class="profile-popover__auth-label" for="profileAuthInput">Email address</label>
+        <input
+          type="email"
+          id="profileAuthInput"
+          class="profile-popover__auth-input"
+          [class.profile-popover__auth-input--invalid]="authError()"
+          placeholder="you@example.com"
+          autocomplete="email"
+          [value]="emailValue()"
+          (input)="onEmailInput($event)"
+          (keydown)="onKeydown($event)"
+        />
+        @if (authError(); as error) {
+          <span class="profile-popover__auth-error">{{ error }}</span>
+        }
+        <button type="button" class="popover-btn popover-btn--primary" [disabled]="submitting()" (click)="onSubmit()">
+          {{ submitting() ? 'Sending…' : 'Sign In' }}
+        </button>
+      </div>
+    } @else {
+      <div class="profile-popover__auth">
+        <label class="profile-popover__auth-label" for="profileAuthInput">
+          Enter the 6-digit code sent to <strong>{{ pendingEmail() }}</strong>
+        </label>
+        <input
+          type="text"
+          id="profileAuthInput"
+          class="profile-popover__auth-input profile-popover__auth-input--otp"
+          [class.profile-popover__auth-input--invalid]="authError()"
+          placeholder="••••••"
+          inputmode="numeric"
+          maxlength="6"
+          autocomplete="one-time-code"
+          [value]="otpValue()"
+          (input)="onOtpInput($event)"
+          (keydown)="onKeydown($event)"
+        />
+        @if (authError(); as error) {
+          <span class="profile-popover__auth-error">{{ error }}</span>
+        }
+        <button type="button" class="popover-btn popover-btn--primary" [disabled]="submitting()" (click)="onSubmit()">
+          {{ submitting() ? 'Verifying…' : 'Verify' }}
+        </button>
+      </div>
+    }
+  </div>
+</div>
