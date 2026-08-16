@@ -175,6 +175,11 @@
 }
 
 @media (max-width: 479px) {
+  .order-card {
+    padding: var(--space-sm);
+    padding-left: calc(var(--space-sm) + 4px);
+  }
+
   /* Too narrow for four inline columns without squeezing the name down to
      a sliver — qty/price drop to their own row under the name instead. */
   .order-card__item {
@@ -185,6 +190,11 @@
   .order-card__item-price {
     grid-column: 2;
     text-align: left;
+  }
+
+  .order-card__footer {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
   }
 }
 

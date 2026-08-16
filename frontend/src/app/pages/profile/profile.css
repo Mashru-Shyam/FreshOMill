@@ -2,12 +2,14 @@
    globally-shared classes, so it's redefined here; `.checkout-page__header
    --tight` and `.account-gate` are global (src/styles.css).
 
-   Full `--layout-container-max`, same as Checkout — the header and the
-   content grid below both fill it edge to edge (neither has its own
-   narrower max-width), so they always share the same left edge and the
-   wide viewport is actually used by content instead of just padding. */
+   A dedicated, narrower max-width — not `--layout-container-max` (1600px, sized for Store's
+   product grid/Checkout's two-rail layout). Profile is a single stack of forms/cards with no
+   grid-heavy content to fill that width, so reusing it just stretched short form rows and
+   card grids edge-to-edge across a huge desktop viewport, reading as an oversized page. 840px
+   comfortably fits Basic Information's two-field rows and 2-3 address cards per row without
+   ever feeling like it's straining for width to fill. */
 .checkout-page {
-  max-width: var(--layout-container-max);
+  max-width: 840px;
   margin: 0 auto;
   padding: var(--space-xl);
 }
@@ -15,7 +17,7 @@
 .account-page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-md);
 }
 
 /* Basic Information, then Saved Addresses below it — both full width. A side-by-side rail
@@ -26,11 +28,16 @@
 .account-page__grid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-md);
 }
 
 @media (max-width: 639px) {
   .checkout-page {
     padding: var(--space-md);
+  }
+
+  .account-page,
+  .account-page__grid {
+    gap: var(--space-sm);
   }
 }

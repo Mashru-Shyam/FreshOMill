@@ -3,8 +3,12 @@
    (src/styles.css); order-card's own look lives in
    ./order-card/order-card.css.
 
-   Full `--layout-container-max`, same as Checkout — the header and the
-   list below both fill it edge to edge.
+   A dedicated, narrower max-width — not `--layout-container-max` (1600px, sized for Store's
+   product grid). Every order card is single-column full width already (see the note below),
+   so at 1600px each one would stretch its item rows across nearly the full desktop viewport —
+   reads as an oversized receipt rather than a normal order-history list. 760px keeps each
+   card at a comfortable, readable width, closer to how order-history pages are laid out
+   elsewhere.
 
    Single column, not a 2-up grid — orders vary a lot in item count/height,
    and CSS grid rows size to their tallest cell, so a short order next to a
@@ -14,7 +18,7 @@
    so that width goes toward a well-structured row, not a stretched-thin
    one. */
 .checkout-page {
-  max-width: var(--layout-container-max);
+  max-width: 760px;
   margin: 0 auto;
   padding: var(--space-xl);
 }
@@ -28,5 +32,9 @@
 @media (max-width: 639px) {
   .checkout-page {
     padding: var(--space-md);
+  }
+
+  .orders-list {
+    gap: var(--space-sm);
   }
 }
