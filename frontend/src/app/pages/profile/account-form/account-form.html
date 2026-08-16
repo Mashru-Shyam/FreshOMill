@@ -1,0 +1,115 @@
+<section class="checkout-section">
+  <h2 class="checkout-section__title">Basic Information</h2>
+  <p class="account-page__section-hint">
+    This is used to prefill your shipping details at checkout — not your account credentials.
+  </p>
+  <div class="checkout-form-grid">
+    <div class="form-field">
+      <label class="form-field__label" for="pfName">Full name</label>
+      <input
+        type="text"
+        id="pfName"
+        class="form-field__input"
+        [class.form-field__input--invalid]="isInvalid('fullName')"
+        placeholder="Your full name"
+        [value]="defaultAddress?.fullName ?? ''"
+        #fullName
+      />
+      @if (errorFor('fullName'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+    <div class="form-field">
+      <label class="form-field__label" for="pfPhone">Phone number</label>
+      <input
+        type="tel"
+        id="pfPhone"
+        class="form-field__input"
+        [class.form-field__input--invalid]="isInvalid('phone')"
+        placeholder="10-digit mobile number"
+        inputmode="numeric"
+        maxlength="10"
+        [value]="defaultAddress?.phone ?? ''"
+        #phone
+      />
+      @if (errorFor('phone'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+    <div class="form-field form-field--wide">
+      <label class="form-field__label" for="pfAddress">Delivery address</label>
+      <input
+        type="text"
+        id="pfAddress"
+        class="form-field__input"
+        [class.form-field__input--invalid]="isInvalid('addressLine1')"
+        placeholder="House no., street, area"
+        [value]="defaultAddress?.addressLine1 ?? ''"
+        #addressLine1
+      />
+      @if (errorFor('addressLine1'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+    <div class="form-field form-field--wide">
+      <label class="form-field__label" for="pfApartment">
+        Apartment / suite <span style="font-weight:400;color:var(--color-body-muted)">(optional)</span>
+      </label>
+      <input
+        type="text"
+        id="pfApartment"
+        class="form-field__input"
+        placeholder="Apartment, suite, floor, etc."
+        [value]="defaultAddress?.addressLine2 ?? ''"
+        #addressLine2
+      />
+    </div>
+    <div class="form-field">
+      <label class="form-field__label" for="pfCity">City</label>
+      <input
+        type="text"
+        id="pfCity"
+        class="form-field__input"
+        [class.form-field__input--invalid]="isInvalid('city')"
+        placeholder="City"
+        [value]="defaultAddress?.city ?? ''"
+        #city
+      />
+      @if (errorFor('city'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+    <div class="form-field">
+      <label class="form-field__label">State</label>
+      <app-state-select [value]="state()" (valueChange)="state.set($event)" [invalid]="isInvalid('state')" />
+      @if (errorFor('state'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+    <div class="form-field">
+      <label class="form-field__label" for="pfPincode">Pincode</label>
+      <input
+        type="text"
+        id="pfPincode"
+        class="form-field__input"
+        [class.form-field__input--invalid]="isInvalid('pincode')"
+        placeholder="6-digit pincode"
+        inputmode="numeric"
+        maxlength="6"
+        [value]="defaultAddress?.pincode ?? ''"
+        #pincode
+      />
+      @if (errorFor('pincode'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+  </div>
+  <button
+    type="button"
+    class="checkout-summary__place-btn account-page__save-btn"
+    (click)="save(fullName, phone, addressLine1, addressLine2, city, pincode)"
+  >
+    <svg appIcon="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
+    Save Changes
+  </button>
+</section>

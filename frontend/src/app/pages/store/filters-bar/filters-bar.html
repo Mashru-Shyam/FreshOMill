@@ -1,0 +1,40 @@
+<section class="store-filters" aria-label="Filter and sort products">
+  <div class="store-filters__bar">
+    <div class="store-filters__group">
+      <span class="store-filters__label">Availability</span>
+      <label class="store-filters__checkbox">
+        <input type="checkbox" [checked]="inStock()" (change)="inStock.set(!inStock())" />
+        In Stock
+      </label>
+      <label class="store-filters__checkbox">
+        <input type="checkbox" [checked]="outOfStock()" (change)="outOfStock.set(!outOfStock())" />
+        Out of Stock
+      </label>
+
+      <span class="store-filters__label">Price</span>
+      <span class="store-filters__price">
+        <input type="number" class="store-filters__price-input" placeholder="Min" min="0"
+          [value]="priceMin() ?? ''" (input)="onPriceMinInput($event)" aria-label="Minimum price" />
+        <span class="store-filters__price-sep">–</span>
+        <input type="number" class="store-filters__price-input" placeholder="Max" min="0"
+          [value]="priceMax() ?? ''" (input)="onPriceMaxInput($event)" aria-label="Maximum price" />
+      </span>
+    </div>
+
+    <button type="button" class="store-filters__mobile-trigger" aria-haspopup="true"
+      [attr.aria-expanded]="sheetOpen()" (click)="sheetOpen.set(true)">
+      <svg appIcon="sliders-horizontal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+      Filters
+      @if (appliedChips().length) {
+        <span class="store-filters__mobile-trigger-count">{{ appliedChips().length }}</span>
+      }
+    </button>
+
+    <div class="store-filters__right">
+      <span class="store-filters__count">Showing {{ resultCount() }} product{{ resultCount() === 1 ? '' : 's' }}</span>
+      <app-sort-dropdown [(value)]="sort" />
+    </div>
+  </div>
+
+  <app-filter-chips [chips]="appliedChips()" (remove)="removeFilter($event)" (clearAll)="clearAllFilters()" />
+</section>

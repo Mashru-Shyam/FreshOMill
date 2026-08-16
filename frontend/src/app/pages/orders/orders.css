@@ -1,0 +1,32 @@
+/* Container/list layout only — .checkout-page__header/__back/__title,
+   .checkout-empty(+children) and .account-gate are all global
+   (src/styles.css); order-card's own look lives in
+   ./order-card/order-card.css.
+
+   Full `--layout-container-max`, same as Checkout — the header and the
+   list below both fill it edge to edge.
+
+   Single column, not a 2-up grid — orders vary a lot in item count/height,
+   and CSS grid rows size to their tallest cell, so a short order next to a
+   tall one left uneven gaps underneath the short card instead of the next
+   row starting right below it. Each order-card fills the full width
+   instead; its item rows use a proper column layout (see order-card.css)
+   so that width goes toward a well-structured row, not a stretched-thin
+   one. */
+.checkout-page {
+  max-width: var(--layout-container-max);
+  margin: 0 auto;
+  padding: var(--space-xl);
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (max-width: 639px) {
+  .checkout-page {
+    padding: var(--space-md);
+  }
+}

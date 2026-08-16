@@ -1,0 +1,31 @@
+<div class="checkout-page">
+  <div class="checkout-page__header">
+    <a routerLink="/store" class="checkout-page__back">
+      <svg appIcon="arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+      Continue Shopping
+    </a>
+    <h1 class="checkout-page__title">My Orders</h1>
+  </div>
+
+  @if (!auth.isLoggedIn()) {
+    <div class="checkout-empty account-gate">
+      <svg appIcon="package" class="checkout-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;" aria-hidden="true"></svg>
+      <h2 class="checkout-empty__title">Sign in to view your orders</h2>
+      <p class="checkout-empty__text">Track order status and delivery updates here.</p>
+      <button type="button" class="checkout-empty__cta" (click)="openSignIn($event)">Sign In</button>
+    </div>
+  } @else if (orders.orders().length === 0) {
+    <div class="checkout-empty account-gate">
+      <svg appIcon="package" class="checkout-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;" aria-hidden="true"></svg>
+      <h2 class="checkout-empty__title">No orders yet</h2>
+      <p class="checkout-empty__text">Orders you place will show up here with their status.</p>
+      <a routerLink="/store" class="checkout-empty__cta">Browse Products</a>
+    </div>
+  } @else {
+    <div class="orders-list">
+      @for (order of orders.orders(); track order.id) {
+        <app-order-card [order]="order" />
+      }
+    </div>
+  }
+</div>

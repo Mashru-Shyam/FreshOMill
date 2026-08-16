@@ -1,0 +1,17 @@
+<section class="product-grid-section" aria-label="Products">
+  <div class="product-grid" role="region" aria-label="Product listing">
+    @if (products().length) {
+      @for (product of products(); track product.id) {
+        <app-seller-card [product]="toSellerProduct(product)" [showStockBadge]="true" />
+      }
+    } @else {
+      <div class="product-grid__empty">
+        <svg appIcon="search-x" class="product-grid__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px;" aria-hidden="true"></svg>
+        <div>
+          <div class="product-grid__empty-text">No products match these filters.</div>
+          <button type="button" class="product-grid__empty-clear" (click)="clearFilters.emit()">Clear filters</button>
+        </div>
+      </div>
+    }
+  </div>
+</section>

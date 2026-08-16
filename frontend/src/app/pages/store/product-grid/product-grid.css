@@ -1,0 +1,68 @@
+/* Ported from Sample/Store.html's "PRODUCT GRID" section — `.seller-card` itself lives in
+   shared/seller-card (reused as-is), this only lays out the grid + empty state around it. */
+.product-grid-section {
+  max-width: var(--layout-container-max);
+  margin: 0 auto;
+  padding: var(--space-xl);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-lg);
+}
+
+.product-grid__empty {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-xxl) 0;
+  color: var(--color-body-muted);
+}
+
+.product-grid__empty-icon {
+  color: var(--color-placeholder);
+  flex-shrink: 0;
+}
+
+.product-grid__empty-text {
+  font-size: var(--text-body-sm-size);
+  color: var(--color-body-muted);
+}
+
+.product-grid__empty-clear {
+  display: block;
+  margin-top: var(--space-xxs);
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--text-label-sm-size);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.product-grid__empty-clear:hover {
+  color: var(--color-primary-hover);
+}
+
+@media (max-width: 960px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+  }
+}
+
+@media (max-width: 639px) {
+  .product-grid-section {
+    padding: var(--space-md);
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+}

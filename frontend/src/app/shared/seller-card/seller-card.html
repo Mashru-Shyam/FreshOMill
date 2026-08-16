@@ -1,0 +1,40 @@
+<div class="seller-card" [class.seller-card--out-of-stock]="!inStock()" [attr.data-product]="product().name">
+  <div class="seller-card__image">
+    @if (showStockBadge() && !inStock()) {
+      <span class="seller-card__stock-badge">Out of Stock</span>
+    }
+    @if (product().image && !imageFailed()) {
+      <img [src]="product().image" [alt]="product().name" class="seller-card__product-img" (error)="onImageError()" />
+    }
+
+    @if (!inStock()) {
+      <button type="button" class="seller-card__cart-btn" [attr.aria-label]="'Add ' + product().name + ' to cart'"
+        disabled aria-disabled="true">
+        <svg appIcon="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" aria-hidden="true"></svg>
+      </button>
+    } @else if (qty() > 0) {
+      <div class="seller-card__cart-stepper">
+        <button type="button" class="seller-card__cart-stepper-icon" aria-label="Open cart" (click)="openCart()">
+          <svg appIcon="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;" aria-hidden="true"></svg>
+        </button>
+        <button type="button" class="seller-card__cart-stepper-btn" [attr.aria-label]="'Decrease ' + product().name + ' quantity'"
+          (click)="decrement()">&minus;</button>
+        <span class="seller-card__cart-stepper-value">{{ qty() }}</span>
+        <button type="button" class="seller-card__cart-stepper-btn" [attr.aria-label]="'Increase ' + product().name + ' quantity'"
+          (click)="increment()">+</button>
+      </div>
+    } @else {
+      <button type="button" class="seller-card__cart-btn" [attr.aria-label]="'Add ' + product().name + ' to cart'"
+        (click)="openQuickAdd()">
+        <svg appIcon="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" aria-hidden="true"></svg>
+      </button>
+    }
+  </div>
+  <div class="seller-card__body">
+    <div class="seller-card__name">{{ product().name }}</div>
+    <div class="seller-card__meta">
+      <span class="seller-card__price">Rs. {{ product().price.toFixed(2) }}</span>
+      <span class="seller-card__unit">/ {{ product().unit }}</span>
+    </div>
+  </div>
+</div>

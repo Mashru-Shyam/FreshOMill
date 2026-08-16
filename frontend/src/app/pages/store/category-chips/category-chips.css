@@ -1,0 +1,146 @@
+/* Ported from Sample/Store.html's "CATEGORY SELECTOR — HORIZONTAL CHIP SLIDER" section. */
+.category-selector-section {
+  padding: var(--space-xl) var(--space-xl) var(--space-xxl);
+  max-width: var(--layout-container-max);
+  margin: 0 auto;
+}
+
+.category-selector-wrapper {
+  position: relative;
+}
+
+.category-selector-slider {
+  display: flex;
+  gap: var(--space-lg);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--space-xl);
+  scrollbar-width: none;
+  cursor: grab;
+  padding: var(--space-xs) 2px;
+}
+
+.category-selector-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.category-selector-slider.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
+.category-selector-arrow {
+  position: absolute;
+  top: 40px;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline-strong);
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: var(--elevation-raised);
+  transition: background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.category-selector-arrow:hover {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-hairline);
+}
+
+.category-selector-arrow.is-hidden {
+  display: none;
+}
+
+.category-selector-arrow--prev {
+  left: -10px;
+}
+
+.category-selector-arrow--next {
+  right: -10px;
+}
+
+.category-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  border: none;
+  background: none;
+  padding: 0;
+  flex-shrink: 0;
+  width: 84px;
+  scroll-snap-align: start;
+  cursor: pointer;
+}
+
+.category-chip__image {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-sunken);
+  border: 3px solid transparent;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-body-muted);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.category-chip__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.category-chip__name {
+  font-size: var(--text-label-sm-size);
+  font-weight: 600;
+  color: var(--color-body);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.category-chip--active .category-chip__image {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.category-chip--active .category-chip__name {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+@media (max-width: 639px) {
+  .category-selector-section {
+    padding: var(--space-lg) var(--space-md) var(--space-xl);
+  }
+
+  .category-chip {
+    width: 72px;
+  }
+
+  .category-chip__image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .category-selector-arrow {
+    top: 34px;
+    width: 32px;
+    height: 32px;
+  }
+}

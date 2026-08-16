@@ -1,0 +1,147 @@
+/* Ported from Sample/Store.html's "STORE FILTER + SORT BAR" section (sort-dropdown/
+   filter-chip styles live in their own components — see sort-dropdown.css/filter-chips.css). */
+.store-filters {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-hairline);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.store-filters__bar {
+  max-width: var(--layout-container-max);
+  margin: 0 auto;
+  min-height: 56px;
+  padding: var(--space-sm) var(--space-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.store-filters__group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+}
+
+.store-filters__label {
+  font-size: var(--text-label-sm-size);
+  font-weight: 600;
+  color: var(--color-body-muted);
+}
+
+.store-filters__checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--text-label-size);
+  color: var(--color-body);
+  cursor: pointer;
+  user-select: none;
+}
+
+.store-filters__checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.store-filters__price {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.store-filters__price-input {
+  width: 76px;
+  height: 36px;
+  padding: 0 var(--space-sm);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-label-size);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.store-filters__price-input:hover {
+  border-color: var(--color-hairline);
+}
+
+.store-filters__price-input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.store-filters__price-sep {
+  color: var(--color-body-muted);
+  font-size: var(--text-label-sm-size);
+}
+
+.store-filters__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.store-filters__count {
+  font-size: var(--text-label-sm-size);
+  color: var(--color-body-muted);
+  white-space: nowrap;
+}
+
+/* Mobile filters trigger — hidden >=960px, replaces the inline Availability/Price controls
+   with a button that opens the filters bottom sheet. */
+.store-filters__mobile-trigger {
+  display: none;
+  align-items: center;
+  gap: var(--space-xs);
+  height: 36px;
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  font-family: var(--font-sans);
+  font-size: var(--text-label-size);
+  font-weight: 500;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.store-filters__mobile-trigger-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@media (max-width: 960px) {
+  .store-filters__group {
+    display: none;
+  }
+
+  .store-filters__mobile-trigger {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 639px) {
+  .store-filters__bar {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .store-filters__right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

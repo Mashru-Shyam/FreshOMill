@@ -1,0 +1,297 @@
+/* See order-summary.ts's class doc for why this is `contents` rather than a normal block:
+   keeps the aside a direct grid child of the parent's `.checkout-grid`, and the mobile bar a
+   direct child of `.checkout-page`, matching the mockup's flat (non-nested) DOM. */
+:host {
+  display: contents;
+}
+
+/* Capped to the viewport (minus the sticky offset) and clipped, rather than
+   left to grow with cart size — a sticky element taller than the viewport
+   can push its own bottom (Pay Now) permanently off-screen since sticky
+   positioning doesn't reflow to fit. Only `.checkout-summary__items` (the
+   line-item list) scrolls internally via `flex: 1 1 auto` below; the title,
+   totals and Pay Now button all have `flex-shrink: 0` so they're always
+   fully visible regardless of cart size or viewport height. */
+.checkout-summary {
+  position: sticky;
+  top: calc(var(--layout-ticker-height) + var(--layout-topbar-height) + var(--space-lg));
+  max-height: calc(100vh - var(--layout-ticker-height) - var(--layout-topbar-height) - (var(--space-lg) * 2));
+  background: var(--color-surface);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--elevation-raised);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  overflow: hidden;
+}
+
+.checkout-summary__title {
+  flex-shrink: 0;
+  font-size: var(--text-h4-size);
+  font-weight: var(--text-h4-weight);
+  color: var(--color-ink);
+  margin-bottom: var(--space-xs);
+}
+
+.checkout-summary__items {
+  flex: 1 1 auto;
+  min-height: 88px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.cart-item {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.cart-item__image {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-sunken);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  overflow: hidden;
+}
+
+.cart-item__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cart-item__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cart-item__name {
+  font-size: var(--text-body-sm-size);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.cart-item__variant {
+  font-size: var(--text-label-sm-size);
+  color: var(--color-body-muted);
+}
+
+.cart-item__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.cart-item__stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.cart-item__stepper-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-size: 0.9rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.cart-item__stepper-btn:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.cart-item__stepper-value {
+  min-width: 22px;
+  text-align: center;
+  font-size: var(--text-label-sm-size);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.cart-item__price {
+  flex: 1;
+  text-align: right;
+  font-size: var(--text-body-sm-size);
+  font-weight: 700;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+.cart-item__remove {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-body-muted);
+  border-radius: var(--rounded-sm);
+  cursor: pointer;
+}
+
+.cart-item__remove:hover {
+  background-color: var(--color-danger-subtle);
+  color: var(--color-danger);
+}
+
+.checkout-summary__row {
+  flex-shrink: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: var(--text-body-sm-size);
+  color: var(--color-body);
+}
+
+.checkout-summary__row--total {
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--color-hairline);
+  font-size: var(--text-h4-size);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.checkout-summary__tax-note {
+  flex-shrink: 0;
+  font-size: var(--text-label-sm-size);
+  color: var(--color-body-muted);
+  margin-top: -4px;
+  margin-bottom: var(--space-xs);
+}
+
+.checkout-summary__auth-notice {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xxs);
+  font-size: var(--text-label-sm-size);
+  color: var(--color-danger);
+  text-align: center;
+}
+
+.checkout-summary__auth-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--color-danger);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.checkout-summary__place-btn {
+  flex-shrink: 0;
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: var(--rounded-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-label-size);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.checkout-summary__place-btn:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.checkout-summary__place-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 639px) {
+  .checkout-summary {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .checkout-summary__items {
+    flex: none;
+    max-height: 45vh;
+  }
+}
+
+/* Sticky bottom Total + Pay Now bar. Only for 640-899px: below 900px
+   `.checkout-grid` has stacked to one column, so without this the summary
+   (and its Pay Now button) could be scrolled well out of view while
+   filling in the form above. ≤639px `.checkout-summary` is no longer a
+   sticky rail at all (see its own `position: static` rule below) — Total
+   and Pay Now already sit inline at the end of the page, so this bar would
+   just be a redundant duplicate there and stays hidden. */
+.checkout-mobile-actionbar {
+  display: none;
+}
+
+@media (min-width: 640px) and (max-width: 899px) {
+  .checkout-mobile-actionbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    position: fixed;
+    left: 0;
+    right: 0;
+    /* Stacks above the bottom nav (shared/bottom-nav, shown at this width
+       too) rather than sitting underneath it. */
+    bottom: var(--layout-bottom-nav-height);
+    z-index: 90;
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-hairline);
+    box-shadow: var(--elevation-modal);
+  }
+
+  .checkout-mobile-actionbar .checkout-summary__place-btn {
+    width: auto;
+    padding: 0 var(--space-xl);
+    flex-shrink: 0;
+  }
+}
+
+.checkout-mobile-actionbar__label {
+  font-size: var(--text-label-sm-size);
+  color: var(--color-body-muted);
+}
+
+.checkout-mobile-actionbar__value {
+  font-size: var(--text-h4-size);
+  font-weight: 700;
+  color: var(--color-ink);
+}

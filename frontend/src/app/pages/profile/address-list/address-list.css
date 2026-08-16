@@ -1,0 +1,196 @@
+/* `.checkout-section`/`.checkout-section__title`/`.checkout-form-grid`/
+   `.checkout-summary__place-btn` are ported verbatim from Sample/Profile.html
+   (not among the globally-shared classes); everything under `.address-list__*`
+   is new — the mockup has no saved-address list UI (see address-list.ts). */
+.checkout-section {
+  background: var(--color-surface);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--elevation-raised);
+  padding: var(--space-lg);
+  /* This section lives in Profile's narrow right-hand rail (.account-page__grid's
+     minmax(340px, 420px) track) — .checkout-form-grid below needs to react to that
+     *actual* available width, not the viewport's, or a wide-enough viewport flips it to two
+     columns while it's still squeezed into ~340-420px, overflowing into a horizontal scroll. */
+  container-type: inline-size;
+}
+
+.checkout-section__title {
+  font-size: var(--text-h4-size);
+  font-weight: var(--text-h4-weight);
+  color: var(--color-ink);
+  margin-bottom: var(--space-md);
+}
+
+.account-page__saved-note {
+  font-size: var(--text-label-sm-size);
+  color: var(--color-success);
+  margin-top: var(--space-sm);
+}
+
+.account-page__saved-note--muted {
+  color: var(--color-body-muted);
+  margin-top: 0;
+  margin-bottom: var(--space-sm);
+}
+
+/* Now that this section spans the full page width below Basic Information (see profile.css),
+   a plain vertical stack left each card oddly wide — a responsive grid keeps them sized like
+   actual cards instead. */
+.address-list__items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.address-list__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
+}
+
+.address-list__name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.address-list__name {
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.address-list__badge {
+  font-size: var(--text-label-sm-size);
+  font-weight: 600;
+  color: var(--color-success);
+  background: var(--color-success-subtle);
+  border-radius: var(--rounded-sm);
+  padding: 2px var(--space-xs);
+}
+
+.address-list__lines,
+.address-list__phone {
+  font-size: var(--text-body-sm-size);
+  color: var(--color-body-muted);
+  margin-top: 2px;
+}
+
+.address-list__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.address-list__action-btn {
+  height: 32px;
+  padding: 0 var(--space-sm);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface);
+  color: var(--color-body);
+  font-family: var(--font-sans);
+  font-size: var(--text-label-sm-size);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.address-list__action-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.address-list__action-btn--danger:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.address-list__add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  height: 40px;
+  padding: 0 var(--space-md);
+  border: 1px dashed var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-label-size);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.address-list__add-btn:hover {
+  background-color: var(--color-primary-subtle);
+}
+
+.checkout-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+@container (min-width: 480px) {
+  .checkout-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.address-list__form {
+  margin-top: var(--space-sm);
+}
+
+.address-list__form-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.checkout-summary__place-btn {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: var(--rounded-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-label-size);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.checkout-summary__place-btn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.address-list__save-btn {
+  max-width: 220px;
+}
+
+.address-list__cancel-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: var(--text-label-sm-size);
+  font-weight: 600;
+  color: var(--color-body-muted);
+  cursor: pointer;
+}
+
+.address-list__cancel-btn:hover {
+  color: var(--color-ink);
+}

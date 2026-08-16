@@ -1,0 +1,51 @@
+<div class="state-select">
+  <button
+    type="button"
+    class="state-select__trigger"
+    [class.state-select__trigger--invalid]="invalid()"
+    [class.state-select__trigger--placeholder]="!value()"
+    aria-haspopup="listbox"
+    [attr.aria-expanded]="menuOpen()"
+    (click)="toggleMenu()"
+  >
+    <span>{{ value() || 'Select state' }}</span>
+    <svg
+      appIcon="chevron-down"
+      class="state-select__trigger-icon"
+      [class.state-select__trigger-icon--open]="menuOpen()"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      style="width:14px;height:14px;"
+      aria-hidden="true"
+    ></svg>
+  </button>
+  <div class="state-select__menu" [class.is-open]="menuOpen()" role="listbox" aria-label="Select state">
+    <input
+      #searchInput
+      type="text"
+      class="state-select__search"
+      placeholder="Search state..."
+      [value]="query()"
+      (input)="onQueryInput($event)"
+      (click)="$event.stopPropagation()"
+    />
+    @for (s of states(); track s) {
+      <button
+        type="button"
+        class="state-select__option"
+        [class.is-selected]="s === value()"
+        role="option"
+        [attr.aria-selected]="s === value()"
+        (click)="select(s)"
+      >
+        {{ s }}
+      </button>
+    } @empty {
+      <p class="state-select__empty">No matching states</p>
+    }
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<div class="filters-sheet-overlay" [class.filters-sheet-overlay--open]="open()" [attr.aria-hidden]="!open()"
+  (click)="onOverlayClick($event)">
+  <div class="filters-sheet" role="dialog" aria-label="Filter products">
+    <div class="filters-sheet__handle" aria-hidden="true"></div>
+    <div class="filters-sheet__header">
+      <span class="filters-sheet__title">Filters</span>
+      <button type="button" class="btn--icon" aria-label="Close filters" (click)="close()">
+        <svg appIcon="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;" aria-hidden="true"></svg>
+      </button>
+    </div>
+
+    <div class="filters-sheet__section">
+      <span class="store-filters__label">Availability</span>
+      <label class="store-filters__checkbox">
+        <input type="checkbox" [checked]="inStock()" (change)="inStock.set(!inStock())" />
+        In Stock
+      </label>
+      <label class="store-filters__checkbox">
+        <input type="checkbox" [checked]="outOfStock()" (change)="outOfStock.set(!outOfStock())" />
+        Out of Stock
+      </label>
+    </div>
+
+    <div class="filters-sheet__section">
+      <span class="store-filters__label">Price</span>
+      <span class="store-filters__price">
+        <input type="number" class="store-filters__price-input" placeholder="Min" min="0"
+          [value]="priceMin() ?? ''" (input)="onPriceMinInput($event)" aria-label="Minimum price" />
+        <span class="store-filters__price-sep">–</span>
+        <input type="number" class="store-filters__price-input" placeholder="Max" min="0"
+          [value]="priceMax() ?? ''" (input)="onPriceMaxInput($event)" aria-label="Maximum price" />
+      </span>
+    </div>
+
+    <button type="button" class="filters-sheet__done" (click)="close()">Show results</button>
+  </div>
+</div>

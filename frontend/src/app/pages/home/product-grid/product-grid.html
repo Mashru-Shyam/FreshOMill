@@ -1,0 +1,53 @@
+<section class="products-section" aria-label="Our Products">
+  <h2 class="products-section__title">Our Products</h2>
+
+  <div class="products-grid">
+    @for (category of visibleCategories(); track category.slug) {
+      <a [routerLink]="['/store']" [queryParams]="{ category: category.slug }" class="product-card">
+        <div class="product-card__image-box">
+          @if (category.image && !failedImages().has(category.slug)) {
+            <img [src]="category.image" [alt]="category.name" class="product-card__img" (error)="onImageError(category.slug)" />
+          }
+        </div>
+        <div class="product-card__body">
+          <span class="product-card__name">{{ category.name }}</span>
+        </div>
+      </a>
+    }
+
+    @if (expanded()) {
+      <div class="products-grid__hidden">
+        @for (category of hiddenCategories(); track category.slug) {
+          <a [routerLink]="['/store']" [queryParams]="{ category: category.slug }" class="product-card">
+            <div class="product-card__image-box">
+              @if (category.image && !failedImages().has(category.slug)) {
+                <img [src]="category.image" [alt]="category.name" class="product-card__img" (error)="onImageError(category.slug)" />
+              }
+            </div>
+            <div class="product-card__body">
+              <span class="product-card__name">{{ category.name }}</span>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="products-view-all">
+    <button
+      type="button"
+      class="btn--view-all"
+      aria-label="Show all product categories"
+      [attr.aria-expanded]="expanded()"
+      (click)="toggleExpanded()"
+    >
+      @if (expanded()) {
+        <svg appIcon="chevron-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+        Show Less
+      } @else {
+        <svg appIcon="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+        View All Products
+      }
+    </button>
+  </div>
+</section>

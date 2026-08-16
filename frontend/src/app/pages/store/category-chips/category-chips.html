@@ -1,0 +1,43 @@
+<section class="category-selector-section" aria-label="Browse by category">
+  <div class="category-selector-wrapper">
+    <button type="button" class="category-selector-arrow category-selector-arrow--prev"
+      aria-label="Previous categories" [class.is-hidden]="isPrevHidden()" (click)="slide('prev')">
+      <svg appIcon="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" aria-hidden="true"></svg>
+    </button>
+    <button type="button" class="category-selector-arrow category-selector-arrow--next"
+      aria-label="Next categories" [class.is-hidden]="isNextHidden()" (click)="slide('next')">
+      <svg appIcon="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" aria-hidden="true"></svg>
+    </button>
+
+    <div
+      #slider
+      class="category-selector-slider"
+      [class.is-dragging]="isDragging()"
+      role="region"
+      aria-label="Category selector"
+      (scroll)="updateArrows()"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="endDrag()"
+      (pointercancel)="endDrag()"
+      (click)="onSliderClick($event)"
+    >
+      @for (chip of chips(); track chip.slug) {
+        <button
+          type="button"
+          class="category-chip"
+          [class.category-chip--active]="chip.slug === activeSlug()"
+          [attr.aria-current]="chip.slug === activeSlug() ? 'true' : null"
+          (click)="selectCategory(chip.slug)"
+        >
+          <span class="category-chip__image">
+            @if (chip.image && !failedImages().has(chip.slug)) {
+              <img [src]="chip.image" [alt]="chip.name" class="category-chip__img" (error)="onImageError(chip.slug)" />
+            }
+          </span>
+          <span class="category-chip__name">{{ chip.name }}</span>
+        </button>
+      }
+    </div>
+  </div>
+</section>

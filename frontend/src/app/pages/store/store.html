@@ -1,0 +1,23 @@
+<app-category-hero [category]="activeCategory()" />
+
+<app-category-chips [activeSlug]="activeCategory().slug" (categorySelected)="selectCategory($event)" />
+
+<app-filters-bar
+  [(inStock)]="inStock"
+  [(outOfStock)]="outOfStock"
+  [(priceMin)]="priceMin"
+  [(priceMax)]="priceMax"
+  [(sort)]="sort"
+  [(sheetOpen)]="filtersSheetOpen"
+  [resultCount]="filteredProducts().length"
+/>
+
+<app-store-product-grid [products]="filteredProducts()" (clearFilters)="clearAllFilters()" />
+
+<app-filters-sheet
+  [(open)]="filtersSheetOpen"
+  [(inStock)]="inStock"
+  [(outOfStock)]="outOfStock"
+  [(priceMin)]="priceMin"
+  [(priceMax)]="priceMax"
+/>

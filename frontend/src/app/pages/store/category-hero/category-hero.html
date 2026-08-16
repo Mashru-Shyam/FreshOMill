@@ -1,0 +1,9 @@
+<section class="category-hero" aria-label="Selected category">
+  @if (category().image && !imageFailed()) {
+    <img [src]="category().image" [alt]="category().name" class="category-hero__bg-img" (error)="onImageError()" />
+    <div class="category-hero__overlay" aria-hidden="true"></div>
+  }
+  <div class="category-hero__inner">
+    <h1 class="category-hero__name">{{ category().name }}</h1>
+  </div>
+</section>

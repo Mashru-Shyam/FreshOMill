@@ -1,0 +1,127 @@
+<div class="contact-page">
+  <div class="contact-hero">
+    <h1 class="contact-hero__title">Connect with Us</h1>
+    <p class="contact-hero__subtitle">
+      Have a question about our products, your order, or healthy living? We'd love to hear from you and will respond as soon as possible.
+    </p>
+  </div>
+
+  <div class="contact-grid">
+    <section class="contact-card">
+      <div class="contact-info__row">
+        <div class="contact-info__icon"><svg appIcon="map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;" aria-hidden="true"></svg></div>
+        <div>
+          <div class="contact-info__label">Address</div>
+          <div class="contact-info__value">
+            Freshomill
+            GF - 3/4, Nexus Complex, Near Spring Retreat 4,
+            White House Lane, Bhayli TP 1,
+            Vasna Bhayli Road, Vadodara
+          </div>
+          <a href="https://maps.google.com/?q=FreshOMill+Store" target="_blank" rel="noopener" class="contact-info__cta">
+            <svg appIcon="navigation" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;" aria-hidden="true"></svg>
+            View Store Location
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-info__row">
+        <div class="contact-info__icon"><svg appIcon="clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;" aria-hidden="true"></svg></div>
+        <div>
+          <div class="contact-info__label">Opening Hours</div>
+          <div class="contact-info__value">Everyday<br />9:30 AM - 10:00 PM</div>
+        </div>
+      </div>
+
+      <div class="contact-info__row">
+        <div class="contact-info__icon"><svg appIcon="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;" aria-hidden="true"></svg></div>
+        <div>
+          <div class="contact-info__label">Email</div>
+          <div class="contact-info__value"><a href="mailto:mashrushyam37@gmail.com">mashrushyam37@gmail.com</a></div>
+        </div>
+      </div>
+
+      <div class="contact-info__row">
+        <div class="contact-info__icon"><svg appIcon="phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;" aria-hidden="true"></svg></div>
+        <div>
+          <div class="contact-info__label">WhatsApp / Call</div>
+          <div class="contact-info__value">
+            <a href="https://wa.me/9176000626637" target="_blank" rel="noopener">+91 76000 62637</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-card">
+      @if (!submitted()) {
+        <div class="contact-form-grid">
+          <div class="form-field">
+            <label class="form-field__label" for="cfName">Name <span class="contact-form__required">*</span></label>
+            <input
+              #nameInput
+              type="text"
+              id="cfName"
+              class="form-field__input"
+              [class.form-field__input--invalid]="nameInvalid()"
+              placeholder="Your name"
+              [value]="name()"
+              (input)="onNameInput($event)"
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label" for="cfEmail">Email <span class="contact-form__required">*</span></label>
+            <input
+              #emailInput
+              type="email"
+              id="cfEmail"
+              class="form-field__input"
+              [class.form-field__input--invalid]="emailInvalid()"
+              placeholder="you@example.com"
+              [value]="email()"
+              (input)="onEmailInput($event)"
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label" for="cfPhone">Phone</label>
+            <input
+              type="tel"
+              id="cfPhone"
+              class="form-field__input"
+              placeholder="10-digit mobile number"
+              [value]="phone()"
+              (input)="onPhoneInput($event)"
+            />
+          </div>
+
+          <div class="form-field form-field--wide">
+            <label class="form-field__label" for="cfMessage">Message <span class="contact-form__required">*</span></label>
+            <textarea
+              #messageInput
+              id="cfMessage"
+              class="form-field__input"
+              [class.form-field__input--invalid]="messageInvalid()"
+              placeholder="How can we help?"
+              [value]="message()"
+              (input)="onMessageInput($event)"
+            ></textarea>
+          </div>
+        </div>
+
+        @if (submitError(); as error) {
+          <p class="contact-form__error">{{ error }}</p>
+        }
+        <button type="button" class="contact-form__submit" [disabled]="submitting()" (click)="onSubmit()">
+          {{ submitting() ? 'Sending…' : 'Send Message' }}
+        </button>
+      } @else {
+        <div class="checkout-success">
+          <svg appIcon="check-circle" class="checkout-success__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;" aria-hidden="true"></svg>
+          <h2 class="checkout-success__title">Message sent!</h2>
+          <p class="checkout-success__text">Thanks for reaching out — we'll get back to you shortly.</p>
+        </div>
+      }
+    </section>
+  </div>
+</div>

@@ -1,0 +1,91 @@
+@let product = overlay.quickAddProduct();
+
+<div
+  class="pq-overlay"
+  [class.pq-overlay--open]="product !== null"
+  [attr.aria-hidden]="product === null"
+  (click)="onOverlayClick($event)"
+>
+  @if (product) {
+    <div class="pq-modal" role="dialog" aria-modal="true" aria-labelledby="pqModalTitle">
+      <div class="pq-modal__handle" aria-hidden="true"></div>
+      <div class="pq-modal__header">
+        <button type="button" class="btn--icon" aria-label="Close" (click)="close()">
+          <svg appIcon="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" aria-hidden="true"></svg>
+        </button>
+      </div>
+      <div class="pq-modal__media">
+        <div class="pq-modal__image">
+          @if (product.image && !imageFailed()) {
+            <img [src]="product.image" [alt]="product.name" class="pq-modal__product-img" (error)="onImageError()" />
+          }
+        </div>
+        <div class="pq-modal__description">
+          <span class="pq-modal__description-label">About this product</span>
+          <p class="pq-modal__description-text">{{ description() }}</p>
+        </div>
+      </div>
+      <div class="pq-modal__content">
+        <h3 class="pq-modal__name" id="pqModalTitle">{{ product.name }}</h3>
+        <div>
+          <div class="pq-modal__price-row">
+            @if (selectedVariant(); as variant) {
+              <span class="pq-modal__price">Rs. {{ variant.price.toFixed(2) }}</span>
+              <span class="pq-modal__price-unit">/ {{ variant.label }}</span>
+            }
+          </div>
+          <div class="pq-modal__tax-note">Taxes included.</div>
+        </div>
+        @if (product.inStock) {
+          <div class="pq-modal__stock pq-modal__stock--in">
+            <span class="pq-modal__stock-dot"></span>
+            <span>{{ stockCount() }} left</span>
+          </div>
+        } @else {
+          <div class="pq-modal__stock pq-modal__stock--out">
+            <span class="pq-modal__stock-dot"></span>
+            <span>Out of stock</span>
+          </div>
+        }
+        <div>
+          <div class="pq-modal__section-label">Weight</div>
+          <div class="pq-modal__weight-options">
+            @for (variant of variants(); track variant.label; let i = $index) {
+              <button
+                type="button"
+                class="pq-modal__weight-btn"
+                [class.pq-modal__weight-btn--active]="i === selectedVariantIndex()"
+                (click)="selectVariant(i)"
+              >{{ variant.label }}</button>
+            }
+          </div>
+        </div>
+        <div class="pq-modal__actions-row">
+          <div class="pq-modal__stepper">
+            <button type="button" class="pq-modal__stepper-btn" aria-label="Decrease quantity"
+              [disabled]="qty() <= 1" (click)="decrementQty()">&minus;</button>
+            <span class="pq-modal__stepper-value">{{ qty() }}</span>
+            <button type="button" class="pq-modal__stepper-btn" aria-label="Increase quantity"
+              [disabled]="!product.inStock || qty() >= stockCount()" (click)="incrementQty()">+</button>
+          </div>
+          <button
+            type="button"
+            class="pq-modal__add-btn"
+            [class.pq-modal__add-btn--added]="inCart()"
+            [disabled]="!product.inStock"
+            (click)="onAddToCart()"
+          >
+            @if (inCart()) {
+              <svg appIcon="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+              Added to Cart
+            } @else {
+              <svg appIcon="shopping-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+              Add to cart
+            }
+          </button>
+        </div>
+        <button type="button" class="pq-modal__buy-btn" [disabled]="!product.inStock" (click)="onBuyNow()">Buy it now</button>
+      </div>
+    </div>
+  }
+</div>

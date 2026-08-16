@@ -1,0 +1,114 @@
+<section class="checkout-section">
+  <h2 class="checkout-section__title">Shipping details</h2>
+  <div class="checkout-form-grid">
+    <div class="form-field">
+      <label class="form-field__label" for="ckName">Full name</label>
+      <input
+        type="text"
+        id="ckName"
+        class="form-field__input"
+        [class.form-field__input--invalid]="isInvalid('fullName')"
+        placeholder="Your full name"
+        [value]="fullName()"
+        (input)="fullName.set($any($event.target).value)"
+        [attr.aria-invalid]="isInvalid('fullName')"
+        required
+      />
+      @if (errorFor('fullName'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+    <div class="form-field">
+      <label class="form-field__label" for="ckPhone">Phone number</label>
+      <input
+        type="tel"
+        id="ckPhone"
+        class="form-field__input"
+        [class.form-field__input--invalid]="isInvalid('phone')"
+        placeholder="10-digit mobile number"
+        inputmode="numeric"
+        maxlength="10"
+        [value]="phone()"
+        (input)="phone.set($any($event.target).value)"
+        [attr.aria-invalid]="isInvalid('phone')"
+        required
+      />
+      @if (errorFor('phone'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+    <div class="form-field form-field--wide">
+      <label class="form-field__label" for="ckAddress">Delivery address</label>
+      <input
+        type="text"
+        id="ckAddress"
+        class="form-field__input"
+        [class.form-field__input--invalid]="isInvalid('addressLine1')"
+        placeholder="House no., street, area"
+        [value]="addressLine1()"
+        (input)="addressLine1.set($any($event.target).value)"
+        [attr.aria-invalid]="isInvalid('addressLine1')"
+        required
+      />
+      @if (errorFor('addressLine1'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+    <div class="form-field form-field--wide">
+      <label class="form-field__label" for="ckApartment">
+        Apartment / suite <span style="font-weight:400;color:var(--color-body-muted);">(optional)</span>
+      </label>
+      <input
+        type="text"
+        id="ckApartment"
+        class="form-field__input"
+        placeholder="Apartment, suite, floor, etc."
+        [value]="addressLine2()"
+        (input)="addressLine2.set($any($event.target).value)"
+      />
+    </div>
+    <div class="form-field">
+      <label class="form-field__label" for="ckCity">City</label>
+      <input
+        type="text"
+        id="ckCity"
+        class="form-field__input"
+        [class.form-field__input--invalid]="isInvalid('city')"
+        placeholder="City"
+        [value]="city()"
+        (input)="city.set($any($event.target).value)"
+        [attr.aria-invalid]="isInvalid('city')"
+        required
+      />
+      @if (errorFor('city'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+    <div class="form-field">
+      <label class="form-field__label">State</label>
+      <app-state-select [value]="state()" (valueChange)="state.set($event)" [invalid]="isInvalid('state')" />
+      @if (errorFor('state'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+    <div class="form-field">
+      <label class="form-field__label" for="ckPincode">Pincode</label>
+      <input
+        type="text"
+        id="ckPincode"
+        class="form-field__input"
+        [class.form-field__input--invalid]="isInvalid('pincode')"
+        placeholder="6-digit pincode"
+        inputmode="numeric"
+        maxlength="6"
+        [value]="pincode()"
+        (input)="pincode.set($any($event.target).value)"
+        [attr.aria-invalid]="isInvalid('pincode')"
+        required
+      />
+      @if (errorFor('pincode'); as err) {
+        <span class="form-field__error">{{ err }}</span>
+      }
+    </div>
+  </div>
+</section>

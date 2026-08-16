@@ -1,0 +1,166 @@
+<section class="checkout-section">
+  <h2 class="checkout-section__title">Saved Addresses</h2>
+
+  @if (addresses().length === 0 && formMode() === null) {
+    <p class="account-page__saved-note account-page__saved-note--muted">
+      You haven't saved any addresses yet.
+    </p>
+  }
+
+  @if (addresses().length > 0) {
+    <div class="address-list__items">
+      @for (address of addresses(); track address.id) {
+        <div class="address-list__item">
+          <div class="address-list__details">
+            <div class="address-list__name-row">
+              <span class="address-list__name">{{ address.fullName }}</span>
+              @if (address.isDefault) {
+                <span class="address-list__badge">Default</span>
+              }
+            </div>
+            <div class="address-list__lines">
+              {{ address.addressLine1 }}@if (address.addressLine2) {, {{ address.addressLine2 }}}, {{ address.city }},
+              {{ address.state }} {{ address.pincode }}
+            </div>
+            <div class="address-list__phone">{{ address.phone }}</div>
+          </div>
+          <div class="address-list__actions">
+            @if (!address.isDefault) {
+              <button type="button" class="address-list__action-btn" (click)="setDefault(address.id)">
+                Set as default
+              </button>
+            }
+            <button type="button" class="address-list__action-btn" (click)="startEdit(address)">Edit</button>
+            <button
+              type="button"
+              class="address-list__action-btn address-list__action-btn--danger"
+              (click)="remove(address.id, address.fullName)"
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (formMode() === null) {
+    <button type="button" class="address-list__add-btn" (click)="startAdd()">
+      <svg appIcon="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
+      Add new address
+    </button>
+  } @else {
+    <div class="checkout-form-grid address-list__form" (input)="markDirty()">
+      <div class="form-field">
+        <label class="form-field__label" for="alFullName">Full name</label>
+        <input
+          type="text"
+          id="alFullName"
+          class="form-field__input"
+          [class.form-field__input--invalid]="isInvalid('fullName')"
+          placeholder="Full name"
+          [value]="editingAddress()?.fullName ?? ''"
+          #fullName
+        />
+        @if (errorFor('fullName'); as err) {
+          <span class="form-field__error">{{ err }}</span>
+        }
+      </div>
+      <div class="form-field">
+        <label class="form-field__label" for="alPhone">Phone number</label>
+        <input
+          type="tel"
+          id="alPhone"
+          class="form-field__input"
+          [class.form-field__input--invalid]="isInvalid('phone')"
+          placeholder="10-digit mobile number"
+          inputmode="numeric"
+          maxlength="10"
+          [value]="editingAddress()?.phone ?? ''"
+          #phone
+        />
+        @if (errorFor('phone'); as err) {
+          <span class="form-field__error">{{ err }}</span>
+        }
+      </div>
+      <div class="form-field form-field--wide">
+        <label class="form-field__label" for="alAddress">Delivery address</label>
+        <input
+          type="text"
+          id="alAddress"
+          class="form-field__input"
+          [class.form-field__input--invalid]="isInvalid('addressLine1')"
+          placeholder="House no., street, area"
+          [value]="editingAddress()?.addressLine1 ?? ''"
+          #addressLine1
+        />
+        @if (errorFor('addressLine1'); as err) {
+          <span class="form-field__error">{{ err }}</span>
+        }
+      </div>
+      <div class="form-field form-field--wide">
+        <label class="form-field__label" for="alApartment">
+          Apartment / suite <span style="font-weight:400;color:var(--color-body-muted)">(optional)</span>
+        </label>
+        <input
+          type="text"
+          id="alApartment"
+          class="form-field__input"
+          placeholder="Apartment, suite, floor, etc."
+          [value]="editingAddress()?.addressLine2 ?? ''"
+          #addressLine2
+        />
+      </div>
+      <div class="form-field">
+        <label class="form-field__label" for="alCity">City</label>
+        <input
+          type="text"
+          id="alCity"
+          class="form-field__input"
+          [class.form-field__input--invalid]="isInvalid('city')"
+          placeholder="City"
+          [value]="editingAddress()?.city ?? ''"
+          #city
+        />
+        @if (errorFor('city'); as err) {
+          <span class="form-field__error">{{ err }}</span>
+        }
+      </div>
+      <div class="form-field">
+        <label class="form-field__label">State</label>
+        <app-state-select [value]="state()" (valueChange)="state.set($event); markDirty()" [invalid]="isInvalid('state')" />
+        @if (errorFor('state'); as err) {
+          <span class="form-field__error">{{ err }}</span>
+        }
+      </div>
+      <div class="form-field">
+        <label class="form-field__label" for="alPincode">Pincode</label>
+        <input
+          type="text"
+          id="alPincode"
+          class="form-field__input"
+          [class.form-field__input--invalid]="isInvalid('pincode')"
+          placeholder="6-digit pincode"
+          inputmode="numeric"
+          maxlength="6"
+          [value]="editingAddress()?.pincode ?? ''"
+          #pincode
+        />
+        @if (errorFor('pincode'); as err) {
+          <span class="form-field__error">{{ err }}</span>
+        }
+      </div>
+    </div>
+    <div class="address-list__form-actions">
+      <button
+        type="button"
+        class="checkout-summary__place-btn address-list__save-btn"
+        (click)="submitForm(fullName, phone, addressLine1, addressLine2, city, pincode)"
+      >
+        <svg appIcon="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
+        {{ formMode() === 'add' ? 'Add address' : 'Save changes' }}
+      </button>
+      <button type="button" class="address-list__cancel-btn" (click)="cancelForm()">Cancel</button>
+    </div>
+  }
+</section>

@@ -1,0 +1,45 @@
+<section class="order-card" [attr.data-status]="order().status">
+  <div class="order-card__header">
+    <div>
+      <div class="order-card__id">Order #{{ order().id }}</div>
+      <div class="order-card__date">Placed {{ formattedDate() }}</div>
+    </div>
+    <span class="order-badge" [class]="statusMeta().badgeClass">
+      <svg [appIcon]="statusMeta().icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;" aria-hidden="true"></svg>
+      {{ statusMeta().label }}
+    </span>
+  </div>
+
+  <div class="order-card__items">
+    @for (item of order().items; track item.name + item.variant) {
+      <div class="order-card__item">
+        <div class="order-card__item-image">
+          @if (item.image && !failedImages().has(item.name + item.variant)) {
+            <img [src]="item.image" [alt]="item.name" class="order-card__item-img" (error)="onImageError(item.name + item.variant)" />
+          }
+        </div>
+        <div class="order-card__item-info">
+          <span class="order-card__item-name">{{ item.name }}</span>
+          <span class="order-card__item-variant">{{ item.variant }}</span>
+        </div>
+        <span class="order-card__item-qty">Qty {{ item.qty }}</span>
+        <span class="order-card__item-price">Rs. {{ (item.unitPrice * item.qty).toFixed(2) }}</span>
+      </div>
+    }
+  </div>
+
+  @if (order().status === 'delivered') {
+    <p class="order-card__delivered-note">
+      <svg appIcon="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;" aria-hidden="true"></svg>
+      Delivered
+    </p>
+  }
+
+  <div class="order-card__footer">
+    <span class="order-card__footer-count">{{ itemCount() }} item(s)</span>
+    <span class="order-card__total">
+      <span class="order-card__total-label">Total</span>
+      Rs. {{ order().total.toFixed(2) }}
+    </span>
+  </div>
+</section>

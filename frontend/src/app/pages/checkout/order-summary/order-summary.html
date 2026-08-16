@@ -1,0 +1,78 @@
+<aside class="checkout-summary">
+  <h2 class="checkout-summary__title">Order summary</h2>
+  <div class="checkout-summary__items">
+    @for (line of lines(); track line.id) {
+      <div class="cart-item">
+        <div class="cart-item__image">
+          @if (line.image && !failedImages().has(line.id)) {
+            <img [src]="line.image" [alt]="line.name" class="cart-item__img" (error)="onImageError(line.id)" />
+          }
+        </div>
+        <div class="cart-item__info">
+          <span class="cart-item__name">{{ line.name }}</span>
+          <span class="cart-item__variant">{{ line.variant }}</span>
+          <div class="cart-item__row">
+            <div class="cart-item__stepper">
+              <button
+                type="button"
+                class="cart-item__stepper-btn"
+                aria-label="Decrease quantity"
+                (click)="decrement(line.id, line.qty)"
+              >&minus;</button>
+              <span class="cart-item__stepper-value">{{ line.qty }}</span>
+              <button
+                type="button"
+                class="cart-item__stepper-btn"
+                aria-label="Increase quantity"
+                (click)="increment(line.id, line.qty)"
+              >+</button>
+            </div>
+            <span class="cart-item__price">Rs. {{ (line.unitPrice * line.qty).toFixed(2) }}</span>
+            <button
+              type="button"
+              class="cart-item__remove"
+              [attr.aria-label]="'Remove ' + line.name + ' from cart'"
+              (click)="remove(line.id)"
+            >
+              <svg appIcon="trash-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="checkout-summary__row">
+    <span>Subtotal</span>
+    <span>Rs. {{ subtotal().toFixed(2) }}</span>
+  </div>
+  <div class="checkout-summary__row">
+    <span>Delivery</span>
+    <span>{{ delivery() === 0 ? 'Free' : 'Rs. ' + delivery().toFixed(2) }}</span>
+  </div>
+  <div class="checkout-summary__row checkout-summary__row--total">
+    <span>Total</span>
+    <span>Rs. {{ total().toFixed(2) }}</span>
+  </div>
+  <div class="checkout-summary__tax-note">Taxes included.</div>
+  @if (!auth.isLoggedIn()) {
+    <p class="checkout-summary__auth-notice">
+      <svg appIcon="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;" aria-hidden="true"></svg>
+      Please <button type="button" class="checkout-summary__auth-link" (click)="openSignIn($event)">sign in</button> to place your order.
+    </p>
+  }
+  <button type="button" class="checkout-summary__place-btn" [disabled]="!auth.isLoggedIn()" (click)="onPlaceOrderClick()">
+    Pay Now
+    <svg appIcon="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+  </button>
+</aside>
+
+<div class="checkout-mobile-actionbar">
+  <div>
+    <div class="checkout-mobile-actionbar__label">Total</div>
+    <div class="checkout-mobile-actionbar__value">Rs. {{ total().toFixed(2) }}</div>
+  </div>
+  <button type="button" class="checkout-summary__place-btn" [disabled]="!auth.isLoggedIn()" (click)="onPlaceOrderClick()">
+    Pay Now
+    <svg appIcon="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+  </button>
+</div>
