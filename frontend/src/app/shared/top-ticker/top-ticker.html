@@ -1,0 +1,17 @@
+<div class="top-ticker" aria-label="Freshness commitments announcement bar">
+  <div class="top-ticker__track">
+    @for (group of tickerGroups; track group) {
+      <div class="top-ticker__group" [attr.aria-hidden]="group === 0 ? null : true">
+        @for (item of items; track item.icon) {
+          <span class="top-ticker__item">
+            <svg [appIcon]="item.icon" class="top-ticker__icon"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
+            </svg>
+            {{ item.label }}
+          </span>
+          <span class="top-ticker__dot" aria-hidden="true"></span>
+        }
+      </div>
+    }
+  </div>
+</div>
