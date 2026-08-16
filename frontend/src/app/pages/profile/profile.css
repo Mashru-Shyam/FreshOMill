@@ -1,0 +1,36 @@
+/* `.checkout-page` itself (the outer container) isn't among the
+   globally-shared classes, so it's redefined here; `.checkout-page__header
+   --tight` and `.account-gate` are global (src/styles.css).
+
+   Full `--layout-container-max`, same as Checkout — the header and the
+   content grid below both fill it edge to edge (neither has its own
+   narrower max-width), so they always share the same left edge and the
+   wide viewport is actually used by content instead of just padding. */
+.checkout-page {
+  max-width: var(--layout-container-max);
+  margin: 0 auto;
+  padding: var(--space-xl);
+}
+
+.account-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Basic Information, then Saved Addresses below it — both full width. A side-by-side rail
+   used to hold Saved Addresses in a narrow column, but its add/edit form (the same
+   two-field-per-row layout Basic Information uses) never had room there and forced a tall,
+   scrolling single column; stacking both sections full-width instead gives Saved Addresses'
+   card grid and its edit form the same width Basic Information already gets. */
+.account-page__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+@media (max-width: 639px) {
+  .checkout-page {
+    padding: var(--space-md);
+  }
+}

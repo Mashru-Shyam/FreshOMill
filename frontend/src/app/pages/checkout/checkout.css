@@ -1,0 +1,62 @@
+.checkout-page {
+  max-width: var(--layout-container-max);
+  margin: 0 auto;
+  padding: var(--space-xl);
+}
+
+/* RF-01 pair: content + sticky rail on wide viewports, stacked otherwise. */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .checkout-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  }
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* Large devices: Shipping details + Payment method side by side instead of
+   stacked. Stacked, their combined height (~520px + ~290px) plus the order
+   summary rail next to them is routinely taller than the viewport, forcing
+   an outer page scroll even though there's plenty of spare width doing
+   nothing. Side by side, the row's height is whichever of the two is
+   taller (~520px) — same content, roughly half the vertical footprint —
+   which is what actually keeps the whole checkout on one screen. Gated to
+   a wider breakpoint than `.checkout-grid`'s own 900px: below ~1100px
+   there isn't enough spare width left over from the order-summary rail to
+   split the form again without squeezing its fields. */
+@media (min-width: 1100px) {
+  .checkout-form {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+}
+
+@media (max-width: 639px) {
+  .checkout-page {
+    padding: var(--space-md);
+  }
+}
+
+/* Room at the bottom of the page so OrderSummary's sticky `.checkout-mobile-actionbar`
+   never covers content. Hidden entirely ≤639px (order-summary.css) — the summary card is
+   inline/static there already, so there's nothing left to reserve space for beyond the
+   global bottom-nav clearance every page gets (shell.css). It survives 640-899px, stacked
+   above the bottom nav rather than sitting under it, so this reserves room for both bars
+   together. */
+@media (min-width: 640px) and (max-width: 899px) {
+  .checkout-page {
+    padding-bottom: calc(var(--space-xl) + 68px + var(--layout-bottom-nav-height));
+  }
+}

@@ -1,0 +1,33 @@
+<div class="checkout-page">
+  <div class="checkout-page__header">
+    <a routerLink="/store" class="checkout-page__back">
+      <svg appIcon="arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
+      Continue Shopping
+    </a>
+    <h1 class="checkout-page__title">My Profile</h1>
+  </div>
+
+  @if (!auth.isLoggedIn()) {
+    <div class="checkout-empty account-gate">
+      <svg appIcon="user-cog" class="checkout-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px" aria-hidden="true"></svg>
+      <h2 class="checkout-empty__title">Sign in to view your profile</h2>
+      <p class="checkout-empty__text">Save your basic information once and reuse it at checkout.</p>
+      <button
+        type="button"
+        class="checkout-empty__cta"
+        style="border:none;cursor:pointer;font-family:inherit"
+        (click)="openSignIn()"
+      >
+        Sign In
+      </button>
+    </div>
+  } @else {
+    <div class="account-page">
+      <app-account-summary />
+      <div class="account-page__grid">
+        <app-account-form />
+        <app-address-list />
+      </div>
+    </div>
+  }
+</div>

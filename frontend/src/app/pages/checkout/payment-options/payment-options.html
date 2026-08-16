@@ -1,0 +1,25 @@
+<section class="checkout-section">
+  <h2 class="checkout-section__title">Payment method</h2>
+  <div class="payment-options">
+    <label class="payment-option">
+      <input type="radio" name="paymentMethod" value="cod" [checked]="method() === 'cod'" (change)="select('cod')" />
+      <span class="payment-option__body">
+        <svg appIcon="banknote" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" aria-hidden="true"></svg>
+        <span class="payment-option__text">
+          <span class="payment-option__label">Cash on Delivery</span>
+          <span class="payment-option__hint">Pay when your order arrives</span>
+        </span>
+      </span>
+    </label>
+    <label class="payment-option">
+      <input type="radio" name="paymentMethod" value="online" [checked]="method() === 'online'" (change)="select('online')" />
+      <span class="payment-option__body">
+        <svg appIcon="credit-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" aria-hidden="true"></svg>
+        <span class="payment-option__text">
+          <span class="payment-option__label">Pay Online (Razorpay)</span>
+          <span class="payment-option__hint">UPI, Cards, Netbanking & more</span>
+        </span>
+      </span>
+    </label>
+  </div>
+</section>
