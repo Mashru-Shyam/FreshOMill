@@ -15,7 +15,7 @@
       <div class="order-card__item">
         <div class="order-card__item-image">
           @if (item.image && !failedImages().has(item.name + item.variant)) {
-            <img [src]="item.image" [alt]="item.name" class="order-card__item-img" (error)="onImageError(item.name + item.variant)" />
+            <img [src]="item.image" [alt]="item.name" class="order-card__item-img" loading="lazy" (error)="onImageError(item.name + item.variant)" />
           }
         </div>
         <div class="order-card__item-info">

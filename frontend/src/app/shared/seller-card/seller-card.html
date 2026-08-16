@@ -4,7 +4,7 @@
       <span class="seller-card__stock-badge">Out of Stock</span>
     }
     @if (product().image && !imageFailed()) {
-      <img [src]="product().image" [alt]="product().name" class="seller-card__product-img" (error)="onImageError()" />
+      <img [src]="product().image" [alt]="product().name" class="seller-card__product-img" loading="lazy" (error)="onImageError()" />
     }
 
     @if (!inStock()) {

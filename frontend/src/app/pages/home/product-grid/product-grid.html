@@ -21,7 +21,7 @@
           <a [routerLink]="['/store']" [queryParams]="{ category: category.slug }" class="product-card">
             <div class="product-card__image-box">
               @if (category.image && !failedImages().has(category.slug)) {
-                <img [src]="category.image" [alt]="category.name" class="product-card__img" (error)="onImageError(category.slug)" />
+                <img [src]="category.image" [alt]="category.name" class="product-card__img" loading="lazy" (error)="onImageError(category.slug)" />
               }
             </div>
             <div class="product-card__body">

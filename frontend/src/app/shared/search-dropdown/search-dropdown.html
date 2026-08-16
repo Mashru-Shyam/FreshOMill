@@ -17,7 +17,7 @@
           <button type="button" class="search-dropdown__item" (click)="selectProduct(product.id)">
             <span class="search-dropdown__item-image">
               @if (product.image && !failedImages().has(product.id)) {
-                <img [src]="product.image" [alt]="product.name" class="search-dropdown__item-img" (error)="onImageError(product.id)" />
+                <img [src]="product.image" [alt]="product.name" class="search-dropdown__item-img" loading="lazy" (error)="onImageError(product.id)" />
               }
             </span>
             <span class="search-dropdown__item-info">

@@ -32,7 +32,7 @@
         >
           <span class="category-chip__image">
             @if (chip.image && !failedImages().has(chip.slug)) {
-              <img [src]="chip.image" [alt]="chip.name" class="category-chip__img" (error)="onImageError(chip.slug)" />
+              <img [src]="chip.image" [alt]="chip.name" class="category-chip__img" loading="lazy" (error)="onImageError(chip.slug)" />
             }
           </span>
           <span class="category-chip__name">{{ chip.name }}</span>

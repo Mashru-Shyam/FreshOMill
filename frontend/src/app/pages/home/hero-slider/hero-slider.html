@@ -8,6 +8,8 @@
               [src]="slide.img"
               [alt]="slide.alt"
               class="hero-slider__img"
+              [attr.loading]="i === 0 ? null : 'lazy'"
+              [attr.fetchpriority]="i === 0 ? 'high' : null"
               (error)="onImageError(i)"
             />
           } @else {
