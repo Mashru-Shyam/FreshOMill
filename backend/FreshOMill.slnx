@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FreshOMill.Api/FreshOMill.Api.csproj" />
+    <Project Path="src/FreshOMill.Application/FreshOMill.Application.csproj" />
+    <Project Path="src/FreshOMill.Domain/FreshOMill.Domain.csproj" />
+    <Project Path="src/FreshOMill.Infrastructure/FreshOMill.Infrastructure.csproj" />
+  </Folder>
+</Solution>

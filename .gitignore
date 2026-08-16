@@ -1,13 +1,13 @@
-# ── Reference material — not part of the shipped app ─────────────
+# ── Reference material — not part of the shipped app
 /Sample/
 
-# ── Dependencies (Node — frontend, and any Node backend) ──────────
+# ── Dependencies (Node — frontend, and any Node backend)
 **/node_modules/
 **/.pnp/
 **/.pnp.js
 **/.yarn/cache/
 
-# ── Build output (Angular/Node frontend) ──────────────────────────
+# ── Build output (Angular/Node frontend)
 **/dist/
 **/build/
 **/out/
@@ -16,22 +16,7 @@
 **/tmp/
 **/*.tsbuildinfo
 
-# ── Build output (common backend stacks) ───────────────────────────
-# Python
-**/__pycache__/
-**/*.py[cod]
-**/.venv/
-**/venv/
-**/env/
-**/.pytest_cache/
-**/*.egg-info/
-# Java / Kotlin
-**/target/
-**/*.class
-# Go
-**/vendor/
-
-# ── .NET / ASP.NET Core (backend) ───────────────────────────────────
+# ── .NET / ASP.NET Core (backend)
 **/bin/
 **/obj/
 **/.vs/
@@ -45,19 +30,19 @@
 **/*.pfx
 docker-compose.override.yml
 
-# ── Environment / secrets ──────────────────────────────────────────
+# ── Environment / secrets
 .env
 .env.*
 !.env.example
 
-# ── Logs ────────────────────────────────────────────────────────────
+# ── Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 *.log
 
-# ── Editors / IDE ───────────────────────────────────────────────────
+# ── Editors / IDE
 .idea/
 *.sublime-workspace
 *.suo
@@ -65,19 +50,19 @@ pnpm-debug.log*
 
 .vscode/
 
-# ── Claude Code ──────────────────────────────────────────────────────
+# ── Claude Code 
 .claude/
 
-# ── OS cruft ─────────────────────────────────────────────────────────
+# ── OS cruft 
 .DS_Store
 Thumbs.db
 Desktop.ini
 
-# ── Testing / coverage ───────────────────────────────────────────────
+# ── Testing / coverage 
 **/coverage/
 **/.nyc_output/
 
-# ── Databases (if a backend uses a local/embedded one) ───────────────
+# ── Databases (if a backend uses a local/embedded one)
 *.sqlite
 *.sqlite3
 *.db
