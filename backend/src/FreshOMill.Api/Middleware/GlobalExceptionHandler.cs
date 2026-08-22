@@ -73,6 +73,11 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
                 "Insufficient stock",
                 insufficientStockException.Message,
                 new Dictionary<string, object?>()),
+            EmailDeliveryException emailDeliveryException => (
+                StatusCodes.Status502BadGateway,
+                "Email delivery failed",
+                emailDeliveryException.Message,
+                new Dictionary<string, object?>()),
             PaymentVerificationException paymentVerificationException => (
                 StatusCodes.Status400BadRequest,
                 "Payment verification failed",
