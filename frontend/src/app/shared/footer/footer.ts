@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { StoreSettingsService } from '../services/store-settings.service';
 
 /**
  * Site footer (Sample/FreshOMill.html's `.site-footer`, `#site-footer`
@@ -17,5 +18,6 @@ import { RouterLink } from '@angular/router';
   styleUrl: './footer.css',
 })
 export class Footer {
+  protected readonly storeSettings = inject(StoreSettingsService);
   protected readonly year = new Date().getFullYear();
 }

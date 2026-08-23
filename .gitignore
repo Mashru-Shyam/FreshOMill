@@ -1,6 +1,3 @@
-# ── Reference material — not part of the shipped app
-/Sample/
-
 # ── Dependencies (Node — frontend, and any Node backend)
 **/node_modules/
 **/.pnp/

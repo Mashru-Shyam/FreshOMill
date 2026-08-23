@@ -28,6 +28,7 @@ export class StoreProductGrid {
       price: product.price,
       unit: product.unit,
       image: product.image,
+      images: product.images,
       inStock: product.inStock,
       description: product.description,
       variants: product.variants,

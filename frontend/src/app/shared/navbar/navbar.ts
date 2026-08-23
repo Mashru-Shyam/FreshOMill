@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { OverlayService } from '../services/overlay.service';
 import { AuthService } from '../services/auth.service';
 import { CartService } from '../services/cart.service';
+import { StoreSettingsService } from '../services/store-settings.service';
 import { SearchDropdown } from '../search-dropdown/search-dropdown';
 import { Icon } from '../icon/icon';
 
@@ -22,7 +23,8 @@ export class Navbar {
   constructor(
     protected readonly overlay: OverlayService,
     protected readonly auth: AuthService,
-    protected readonly cart: CartService
+    protected readonly cart: CartService,
+    protected readonly storeSettings: StoreSettingsService
   ) {}
 
   // protected onLogoError(event: Event): void {

@@ -3,24 +3,6 @@ import { SellerCard, SellerProduct } from '../../../shared/seller-card/seller-ca
 import { Icon } from '../../../shared/icon/icon';
 import { ProductService } from '../../../shared/services/product.service';
 
-/** Curated names, in display order — matched against `ProductService`'s backend-fetched
- *  catalog (the single source of truth for product name/price/unit/image) rather than
- *  duplicated here, so Best Sellers can never drift out of sync with Store's own catalog data. */
-const BEST_SELLER_NAMES = [
-  'Chakki Fresh Atta',
-  'Organic Bajra',
-  'Pure Honey',
-  'Coconut Oil',
-  'Organic Turmeric',
-  'Almonds Premium',
-  'Mustard Oil',
-  'Chana Dal',
-  'Sesame Seeds',
-  'Cumin Seeds',
-  'Cashew Nuts',
-  'Coriander Powder',
-];
-
 /**
  * Best Sellers — horizontal, manually-draggable slider (Sample/FreshOMill.html
  * CSS "6. BEST SELLERS SECTION", HTML "6. BEST SELLERS — HORIZONTAL SLIDER
@@ -56,23 +38,24 @@ export class BestSellers {
 
   private readonly productService = inject(ProductService);
 
-  /** Products start empty until ProductService's fetch resolves — `.find()` misses are
-   *  filtered out (not asserted non-null) so this stays a no-op until then, rather than
-   *  throwing on the first render. */
-  protected readonly products = computed<SellerProduct[]>(() => {
-    const catalog = this.productService.products();
-    return BEST_SELLER_NAMES.map((name) => catalog.find((p) => p.name === name))
-      .filter((product) => product !== undefined)
+  /** Admin-controlled `isFeatured` flag on each product (see the Admin Panel's Products screen)
+   *  drives this rail now — replaces the old hardcoded BEST_SELLER_NAMES list, which meant
+   *  changing what counted as a "best seller" required a frontend code change and redeploy. */
+  protected readonly products = computed<SellerProduct[]>(() =>
+    this.productService
+      .products()
+      .filter((product) => product.isFeatured)
       .map((product) => ({
         id: product.id,
         name: product.name,
         price: product.price,
         unit: product.unit,
         image: product.image,
+        images: product.images,
         description: product.description,
         variants: product.variants,
-      }));
-  });
+      }))
+  );
 
   protected readonly isDragging = signal(false);
   protected readonly isPrevHidden = signal(true);

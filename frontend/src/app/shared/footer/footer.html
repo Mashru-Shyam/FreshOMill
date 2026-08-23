@@ -1,6 +1,6 @@
 <footer class="site-footer" aria-label="Site footer">
   <div class="site-footer__socials">
-    <a href="https://instagram.com/freshomill" target="_blank" rel="noopener" class="site-footer__social-link"
+    <a [href]="storeSettings.settings().instagramUrl" target="_blank" rel="noopener" class="site-footer__social-link"
       aria-label="FreshOMill on Instagram">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -9,7 +9,7 @@
         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
       </svg>
     </a>
-    <a href="https://youtube.com/@freshomill" target="_blank" rel="noopener" class="site-footer__social-link"
+    <a [href]="storeSettings.settings().youtubeUrl" target="_blank" rel="noopener" class="site-footer__social-link"
       aria-label="FreshOMill on YouTube">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -19,7 +19,7 @@
         <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor" stroke="none"></polygon>
       </svg>
     </a>
-    <a href="https://linkedin.com/company/freshomill" target="_blank" rel="noopener"
+    <a [href]="storeSettings.settings().linkedInUrl" target="_blank" rel="noopener"
       class="site-footer__social-link" aria-label="FreshOMill on LinkedIn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

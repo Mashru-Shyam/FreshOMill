@@ -63,6 +63,22 @@ services:
     depends_on:
       - api
 
+  admin:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+    container_name: freshomill-admin
+    restart: unless-stopped
+    command: npx ng serve admin --host 0.0.0.0 --port 4300
+    ports:
+      - "4300:4300"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: freshomill-pgadmin

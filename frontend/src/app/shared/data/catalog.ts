@@ -31,10 +31,17 @@ export interface StoreProduct {
   readonly inStock: boolean;
   readonly description: string;
   readonly popularity: number;
+  /** Admin-controlled flag driving the Home page's Best Sellers rail — see BestSellers, which
+   *  filters on this instead of a hardcoded product-name list. */
+  readonly isFeatured: boolean;
   /** Real pack-size/price/stock rows from the backend's ProductVariant table — replaces the old
    *  client-side fabrication in shared/util/product-variants.ts (deriveWeightVariants()/
    *  stockCountFor(), which invented a second pack size and a fake stock count from a name hash). */
   readonly variants: readonly ProductVariant[];
+  /** Full ordered image gallery from the admin panel's Products screen — `image` above is
+   *  always the same photo as `images[0]`, kept separately since every card/grid/search view
+   *  only ever needs the one primary photo. The quick-add modal is what shows the rest. */
+  readonly images: readonly string[];
 }
 
 // Real products come from the backend now — see ProductService. No hardcoded STORE_PRODUCTS
