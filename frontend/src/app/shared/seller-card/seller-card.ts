@@ -10,6 +10,7 @@ export interface SellerProduct {
   price: number;
   unit: string;
   image?: string;
+  images?: readonly string[];
   inStock?: boolean;
   description?: string;
   variants?: readonly ProductVariant[];
@@ -54,6 +55,7 @@ export class SellerCard {
       id: this.productId(),
       name: p.name,
       image: p.image,
+      images: p.images,
       price: p.price,
       unit: p.unit,
       inStock: this.inStock(),

@@ -17,8 +17,22 @@ const GENERIC_DESCRIPTION = 'Sourced and prepared with care for everyday freshne
 })
 export class QuickAddModal {
   protected readonly selectedVariantIndex = signal(0);
+  protected readonly selectedImageIndex = signal(0);
   protected readonly qty = signal(1);
   protected readonly imageFailed = signal(false);
+
+  protected readonly images = computed<string[]>(() => {
+    const product = this.overlay.quickAddProduct();
+    if (!product) {
+      return [];
+    }
+    if (product.images?.length) {
+      return [...product.images];
+    }
+    return product.image ? [product.image] : [];
+  });
+
+  protected readonly activeImage = computed(() => this.images()[this.selectedImageIndex()] ?? null);
 
   protected readonly variants = computed<ProductVariant[]>(() => {
     const product = this.overlay.quickAddProduct();
@@ -62,6 +76,7 @@ export class QuickAddModal {
         return;
       }
       this.imageFailed.set(false);
+      this.selectedImageIndex.set(0);
       const variants = product.variants;
       const existingLine = untracked(() => this.cart.lines().find((line) => line.productId === product.id));
       if (existingLine) {
@@ -77,6 +92,11 @@ export class QuickAddModal {
 
   protected onImageError(): void {
     this.imageFailed.set(true);
+  }
+
+  protected selectImage(index: number): void {
+    this.selectedImageIndex.set(index);
+    this.imageFailed.set(false);
   }
 
   protected selectVariant(index: number): void {

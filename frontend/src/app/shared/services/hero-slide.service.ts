@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of, shareReplay } from 'rxjs';
+import { catchError, map, of, shareReplay, switchMap, timer } from 'rxjs';
 import { API_BASE_URL } from '../config/api.config';
+
+const REFRESH_INTERVAL_MS = 15_000;
 
 export interface HeroSlide {
   readonly img: string;
@@ -27,7 +29,8 @@ interface HeroSlideDto {
 export class HeroSlideService {
   private readonly http = inject(HttpClient);
 
-  private readonly slides$ = this.http.get<HeroSlideDto[]>(`${API_BASE_URL}/api/v1/hero-slides`).pipe(
+  private readonly slides$ = timer(0, REFRESH_INTERVAL_MS).pipe(
+    switchMap(() => this.http.get<HeroSlideDto[]>(`${API_BASE_URL}/api/v1/hero-slides`)),
     map((dtos) =>
       dtos
         .slice()

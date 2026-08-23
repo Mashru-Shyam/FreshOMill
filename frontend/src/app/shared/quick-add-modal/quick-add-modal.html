@@ -16,10 +16,27 @@
       </div>
       <div class="pq-modal__media">
         <div class="pq-modal__image">
-          @if (product.image && !imageFailed()) {
-            <img [src]="product.image" [alt]="product.name" class="pq-modal__product-img" (error)="onImageError()" />
+          @if (activeImage(); as src; ) {
+            @if (!imageFailed()) {
+              <img [src]="src" [alt]="product.name" class="pq-modal__product-img" (error)="onImageError()" />
+            }
           }
         </div>
+        @if (images().length > 1) {
+          <div class="pq-modal__thumbs">
+            @for (thumb of images(); track thumb; let i = $index) {
+              <button
+                type="button"
+                class="pq-modal__thumb"
+                [class.pq-modal__thumb--active]="i === selectedImageIndex()"
+                [attr.aria-label]="'Show photo ' + (i + 1)"
+                (click)="selectImage(i)"
+              >
+                <img [src]="thumb" alt="" />
+              </button>
+            }
+          </div>
+        }
         <div class="pq-modal__description">
           <span class="pq-modal__description-label">About this product</span>
           <p class="pq-modal__description-text">{{ description() }}</p>

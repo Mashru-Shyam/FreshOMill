@@ -1,6 +1,7 @@
-import { Component, ElementRef, ViewChild, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
 import { isValidEmail } from '../../shared/services/auth.service';
 import { ContactService } from '../../shared/services/contact.service';
+import { StoreSettingsService } from '../../shared/services/store-settings.service';
 import { extractErrorMessage } from '../../shared/util/http-error';
 import { Icon } from '../../shared/icon/icon';
 
@@ -23,6 +24,13 @@ import { Icon } from '../../shared/icon/icon';
   styleUrl: './contact.css',
 })
 export class Contact {
+  protected readonly storeSettings = inject(StoreSettingsService);
+
+  // wa.me wants digits only, no leading "+" — same as WhatsappButton.
+  protected readonly waLink = computed(
+    () => `https://wa.me/${this.storeSettings.settings().whatsAppNumber.replace(/\D/g, '')}`
+  );
+
   protected readonly name = signal('');
   protected readonly email = signal('');
   protected readonly phone = signal('');

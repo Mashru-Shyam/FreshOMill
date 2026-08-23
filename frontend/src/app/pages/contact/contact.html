@@ -12,13 +12,8 @@
         <div class="contact-info__icon"><svg appIcon="map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;" aria-hidden="true"></svg></div>
         <div>
           <div class="contact-info__label">Address</div>
-          <div class="contact-info__value">
-            Freshomill
-            GF - 3/4, Nexus Complex, Near Spring Retreat 4,
-            White House Lane, Bhayli TP 1,
-            Vasna Bhayli Road, Vadodara
-          </div>
-          <a href="https://maps.app.goo.gl/b6igQ81rRruLUmxC6" target="_blank" rel="noopener" class="contact-info__cta">
+          <div class="contact-info__value">{{ storeSettings.settings().address }}</div>
+          <a [href]="storeSettings.settings().googleMapsUrl" target="_blank" rel="noopener" class="contact-info__cta">
             <svg appIcon="navigation" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;" aria-hidden="true"></svg>
             View Store Location
           </a>
@@ -29,7 +24,7 @@
         <div class="contact-info__icon"><svg appIcon="clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;" aria-hidden="true"></svg></div>
         <div>
           <div class="contact-info__label">Opening Hours</div>
-          <div class="contact-info__value">Everyday<br />9:30 AM - 10:00 PM</div>
+          <div class="contact-info__value">{{ storeSettings.settings().openingHours }}</div>
         </div>
       </div>
 
@@ -37,7 +32,7 @@
         <div class="contact-info__icon"><svg appIcon="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;" aria-hidden="true"></svg></div>
         <div>
           <div class="contact-info__label">Email</div>
-          <div class="contact-info__value"><a href="mailto:mashrushyam37@gmail.com">mashrushyam37@gmail.com</a></div>
+          <div class="contact-info__value"><a [href]="'mailto:' + storeSettings.settings().email">{{ storeSettings.settings().email }}</a></div>
         </div>
       </div>
 
@@ -46,7 +41,7 @@
         <div>
           <div class="contact-info__label">WhatsApp / Call</div>
           <div class="contact-info__value">
-            <a href="https://wa.me/917600062637" target="_blank" rel="noopener">+91 76000 62637</a>
+            <a [href]="waLink()" target="_blank" rel="noopener">{{ storeSettings.settings().phone }}</a>
           </div>
         </div>
       </div>

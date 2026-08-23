@@ -9,6 +9,7 @@ export interface QuickAddProduct {
   readonly id: string;
   readonly name: string;
   readonly image?: string;
+  readonly images?: readonly string[];
   readonly price: number;
   readonly unit: string;
   readonly inStock: boolean;
