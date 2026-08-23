@@ -1,0 +1,45 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-brand">freshOmill <span>Admin</span></div>
+
+    @if (step() === 'email') {
+      <p class="login-lede">Sign in with your admin email to continue.</p>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          [value]="email()"
+          (input)="onEmailInput($event)"
+          (keydown.enter)="onSubmit()"
+        />
+      </div>
+    } @else {
+      <p class="login-lede">Enter the 6-digit code sent to <strong>{{ pendingEmail() }}</strong></p>
+      <div class="field">
+        <label for="otp">Verification code</label>
+        <input
+          id="otp"
+          type="text"
+          inputmode="numeric"
+          maxlength="6"
+          placeholder="••••••"
+          autocomplete="one-time-code"
+          [value]="otp()"
+          (input)="onOtpInput($event)"
+          (keydown.enter)="onSubmit()"
+        />
+      </div>
+    }
+
+    @if (error(); as err) {
+      <p class="login-error">{{ err }}</p>
+    }
+
+    <button type="button" class="btn btn--primary login-submit" [disabled]="submitting()" (click)="onSubmit()">
+      {{ submitting() ? 'Please wait…' : (step() === 'email' ? 'Send code' : 'Verify & sign in') }}
+    </button>
+  </div>
+</div>

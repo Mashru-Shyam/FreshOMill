@@ -1,0 +1,19 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand">freshOmill <span>Admin</span></div>
+    <nav class="sidebar__nav">
+      <a routerLink="/products" routerLinkActive="is-active">Products</a>
+      <a routerLink="/categories" routerLinkActive="is-active">Categories</a>
+      <a routerLink="/orders" routerLinkActive="is-active">Orders</a>
+      <a routerLink="/hero-slides" routerLinkActive="is-active">Hero Slider</a>
+      <a routerLink="/settings" routerLinkActive="is-active">Settings</a>
+    </nav>
+    <div class="sidebar__footer">
+      <div class="sidebar__email">{{ auth.currentUser()?.email }}</div>
+      <button type="button" class="btn btn--secondary btn--sm" (click)="logout()">Log out</button>
+    </div>
+  </aside>
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

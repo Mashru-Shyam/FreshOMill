@@ -1,0 +1,94 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Categories</h1>
+    <button type="button" class="btn btn--primary" (click)="openCreate()">Add category</button>
+  </div>
+
+  @if (error(); as err) {
+    <p class="banner banner--error">{{ err }}</p>
+  }
+
+  <div class="card">
+    @if (loading()) {
+      <p class="empty-state">Loading…</p>
+    } @else if (categories().length === 0) {
+      <p class="empty-state">No categories yet — add your first one.</p>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Slug</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (category of categories(); track category.id) {
+              <tr>
+                <td>{{ category.displayOrder }}</td>
+                <td>
+                  @if (category.imageUrl) {
+                    <img [src]="category.imageUrl" [alt]="category.name" class="thumb" />
+                  } @else {
+                    <div class="thumb thumb--empty"></div>
+                  }
+                </td>
+                <td>{{ category.name }}</td>
+                <td><code>{{ category.slug }}</code></td>
+                <td class="actions">
+                  <button type="button" class="btn btn--secondary btn--sm" (click)="openEdit(category)">Edit</button>
+                  <button type="button" class="btn btn--danger btn--sm" (click)="remove(category)">Delete</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+
+@if (formOpen()) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>{{ editingId() ? 'Edit category' : 'Add category' }}</h2>
+
+      @if (formError(); as err) {
+        <p class="banner banner--error">{{ err }}</p>
+      }
+
+      <div class="form-grid">
+        <div class="field form-grid--wide">
+          <label for="catName">Name</label>
+          <input id="catName" type="text" [value]="formName()" (input)="formName.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="catOrder">Display order</label>
+          <input id="catOrder" type="number" [value]="formDisplayOrder()" (input)="formDisplayOrder.set($any($event.target).valueAsNumber || 0)" />
+        </div>
+
+        <div class="field">
+          <label>Image</label>
+          <input #fileInput type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event)" />
+          @if (uploading()) {
+            <span class="hint">Uploading…</span>
+          }
+          @if (formImageUrl(); as url) {
+            <img [src]="url" alt="Preview" class="thumb thumb--preview" />
+          }
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn--secondary" (click)="closeForm()">Cancel</button>
+        <button type="button" class="btn btn--primary" [disabled]="saving()" (click)="save()">
+          {{ saving() ? 'Saving…' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

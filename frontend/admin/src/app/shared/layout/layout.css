@@ -1,0 +1,76 @@
+.shell {
+  display: flex;
+  min-height: 100dvh;
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-hairline);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-lg) var(--space-md);
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+}
+
+.sidebar__brand {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-ink);
+  margin-bottom: var(--space-lg);
+}
+
+.sidebar__brand span {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.sidebar__nav a {
+  display: block;
+  padding: var(--space-sm) var(--space-sm);
+  border-radius: var(--rounded-md);
+  color: var(--color-body);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.sidebar__nav a:hover {
+  background: var(--color-surface-hover);
+}
+
+.sidebar__nav a.is-active {
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+}
+
+.sidebar__footer {
+  border-top: 1px solid var(--color-hairline);
+  padding-top: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sidebar__email {
+  font-size: 0.8125rem;
+  color: var(--color-body-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}

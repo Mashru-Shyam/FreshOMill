@@ -1,0 +1,186 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Products</h1>
+    <button type="button" class="btn btn--primary" (click)="openCreate()">Add product</button>
+  </div>
+
+  @if (error(); as err) {
+    <p class="banner banner--error">{{ err }}</p>
+  }
+
+  <div class="card">
+    @if (loading()) {
+      <p class="empty-state">Loading…</p>
+    } @else if (products().length === 0) {
+      <p class="empty-state">No products yet — add your first one.</p>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Featured</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of products(); track product.id) {
+              <tr>
+                <td>
+                  @if (product.imageUrl) {
+                    <img [src]="product.imageUrl" [alt]="product.name" class="thumb" />
+                  } @else {
+                    <div class="thumb thumb--empty"></div>
+                  }
+                </td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.categoryName }}</td>
+                <td>Rs. {{ product.price.toFixed(2) }} / {{ product.unit }}</td>
+                <td>
+                  @if (product.inStock) {
+                    <span class="badge badge--success">In stock</span>
+                  } @else {
+                    <span class="badge badge--danger">Out of stock</span>
+                  }
+                </td>
+                <td>
+                  @if (product.isFeatured) {
+                    <span class="badge badge--neutral">Best seller</span>
+                  }
+                </td>
+                <td class="actions">
+                  <button type="button" class="btn btn--secondary btn--sm" (click)="openEdit(product)">Edit</button>
+                  <button type="button" class="btn btn--danger btn--sm" (click)="remove(product)">Delete</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+
+@if (formOpen()) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>{{ editingId() ? 'Edit product' : 'Add product' }}</h2>
+
+      @if (formError(); as err) {
+        <p class="banner banner--error">{{ err }}</p>
+      }
+
+      <div class="form-grid">
+        <div class="field form-grid--wide">
+          <label for="prodName">Name</label>
+          <input id="prodName" type="text" [value]="formName()" (input)="formName.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="prodCategory">Category</label>
+          <select id="prodCategory" [value]="formCategoryId()" (change)="formCategoryId.set($any($event.target).value)">
+            @for (category of categories(); track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="prodPopularity">Popularity (lower = shown first)</label>
+          <input id="prodPopularity" type="number" [value]="formPopularity()" (input)="formPopularity.set($any($event.target).valueAsNumber || 0)" />
+        </div>
+
+        <div class="field">
+          <label for="prodPrice">Card price (Rs.)</label>
+          <input id="prodPrice" type="number" step="0.01" [value]="formPrice()" (input)="formPrice.set($any($event.target).valueAsNumber || 0)" />
+        </div>
+
+        <div class="field">
+          <label for="prodUnit">Card unit (e.g. "1kg")</label>
+          <input id="prodUnit" type="text" [value]="formUnit()" (input)="formUnit.set($any($event.target).value)" />
+        </div>
+
+        <div class="field form-grid--wide">
+          <label for="prodDescription">Description</label>
+          <textarea id="prodDescription" [value]="formDescription()" (input)="formDescription.set($any($event.target).value)"></textarea>
+        </div>
+
+        <div class="field form-grid--wide">
+          <label>Images</label>
+          <input #fileInput type="file" multiple accept="image/jpeg,image/png,image/webp" (change)="onFilesSelected($event)" />
+          <span class="hint">First image is the primary one shown on cards and search results. The rest appear in the storefront's gallery.</span>
+          @if (uploading()) {
+            <span class="hint">Uploading…</span>
+          }
+          @if (formImages().length) {
+            <div class="gallery">
+              @for (url of formImages(); track url; let i = $index) {
+                <div class="gallery-item" [class.gallery-item--primary]="i === 0">
+                  <img [src]="url" alt="Preview" class="thumb thumb--preview" />
+                  @if (i === 0) {
+                    <span class="badge badge--neutral gallery-item__badge">Primary</span>
+                  }
+                  <div class="gallery-item__actions">
+                    <button type="button" class="btn btn--secondary btn--sm" [disabled]="i === 0" (click)="moveImage(i, -1)">&larr;</button>
+                    <button type="button" class="btn btn--secondary btn--sm" [disabled]="i === formImages().length - 1" (click)="moveImage(i, 1)">&rarr;</button>
+                    <button type="button" class="btn btn--danger btn--sm" (click)="removeImage(i)">Remove</button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="field">
+          <label>&nbsp;</label>
+          <div class="checkbox-row">
+            <input id="prodFeatured" type="checkbox" [checked]="formIsFeatured()" (change)="formIsFeatured.set($any($event.target).checked)" />
+            <label for="prodFeatured">Show in Best Sellers on the homepage</label>
+          </div>
+        </div>
+
+        <div class="field form-grid--wide">
+          <label>Pack sizes</label>
+          <div class="variants">
+            @for (variant of formVariants(); track variant.tempId) {
+              <div class="variant-row">
+                <input
+                  type="text"
+                  placeholder="Label, e.g. 500g"
+                  [value]="variant.label"
+                  (input)="updateVariantField(variant.tempId, 'label', $any($event.target).value)"
+                />
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="Price"
+                  [value]="variant.price"
+                  (input)="updateVariantField(variant.tempId, 'price', $any($event.target).valueAsNumber || 0)"
+                />
+                <span class="stock-adjust">
+                  <span class="stock-value">{{ variant.stockQuantity }}</span>
+                  @if (variant.id) {
+                    <button type="button" class="btn btn--secondary btn--sm" (click)="quickAdjustStock(variant)">Adjust</button>
+                  }
+                </span>
+                <button type="button" class="variant-remove" aria-label="Remove pack size" (click)="removeVariantRow(variant.tempId)">&times;</button>
+              </div>
+            }
+          </div>
+          <button type="button" class="btn btn--secondary btn--sm variant-add" (click)="addVariantRow()">+ Add pack size</button>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn--secondary" (click)="closeForm()">Cancel</button>
+        <button type="button" class="btn btn--primary" [disabled]="saving()" (click)="save()">
+          {{ saving() ? 'Saving…' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

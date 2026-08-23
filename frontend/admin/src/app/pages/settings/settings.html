@@ -1,0 +1,76 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Store settings</h1>
+  </div>
+
+  <p class="hint">
+    Single source of truth for contact info shown across the storefront's navbar, footer, Contact page, and
+    WhatsApp button.
+  </p>
+
+  @if (error(); as err) {
+    <p class="banner banner--error">{{ err }}</p>
+  }
+  @if (saved()) {
+    <p class="banner banner--success">Settings saved.</p>
+  }
+
+  <div class="card">
+    @if (loading()) {
+      <p class="empty-state">Loading…</p>
+    } @else {
+      <div class="form-grid">
+        <div class="field form-grid--wide">
+          <label for="stAddress">Store address</label>
+          <textarea id="stAddress" [value]="address()" (input)="address.set($any($event.target).value)"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="stPhone">Phone (displayed)</label>
+          <input id="stPhone" type="text" [value]="phone()" (input)="phone.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="stWhatsApp">WhatsApp number (with country code, no spaces)</label>
+          <input id="stWhatsApp" type="text" [value]="whatsAppNumber()" (input)="whatsAppNumber.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="stEmail">Contact email</label>
+          <input id="stEmail" type="email" [value]="email()" (input)="email.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="stHours">Opening hours</label>
+          <input id="stHours" type="text" [value]="openingHours()" (input)="openingHours.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="stMaps">Google Maps link</label>
+          <input id="stMaps" type="url" [value]="googleMapsUrl()" (input)="googleMapsUrl.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="stInsta">Instagram URL</label>
+          <input id="stInsta" type="url" [value]="instagramUrl()" (input)="instagramUrl.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="stYoutube">YouTube URL</label>
+          <input id="stYoutube" type="url" [value]="youtubeUrl()" (input)="youtubeUrl.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="stLinkedIn">LinkedIn URL</label>
+          <input id="stLinkedIn" type="url" [value]="linkedInUrl()" (input)="linkedInUrl.set($any($event.target).value)" />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn--primary" [disabled]="saving()" (click)="save()">
+          {{ saving() ? 'Saving…' : 'Save changes' }}
+        </button>
+      </div>
+    }
+  </div>
+</div>

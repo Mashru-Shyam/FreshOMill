@@ -1,0 +1,109 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Orders</h1>
+  </div>
+
+  @if (error(); as err) {
+    <p class="banner banner--error">{{ err }}</p>
+  }
+
+  <div class="card">
+    @if (loading()) {
+      <p class="empty-state">Loading…</p>
+    } @else if (orders().length === 0) {
+      <p class="empty-state">No orders yet.</p>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Placed</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Payment</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of orders(); track order.id) {
+              <tr>
+                <td>{{ order.placedAt | date: 'MMM d, y, h:mm a' }}</td>
+                <td>{{ order.customerEmail }}</td>
+                <td>{{ order.items.length }}</td>
+                <td>Rs. {{ order.total.toFixed(2) }}</td>
+                <td>{{ order.paymentMethod }}</td>
+                <td><span class="badge" [class]="badgeClass(order.status)">{{ order.status }}</span></td>
+                <td class="actions">
+                  <button type="button" class="btn btn--secondary btn--sm" (click)="open(order)">View</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+
+@if (selected(); as order) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>Order {{ order.id.slice(0, 8) }}</h2>
+      <p class="hint">Placed {{ order.placedAt | date: 'MMM d, y, h:mm a' }} by {{ order.customerEmail }}</p>
+
+      @if (statusError(); as err) {
+        <p class="banner banner--error">{{ err }}</p>
+      }
+
+      <div class="field">
+        <label>Status</label>
+        <select [value]="order.status" [disabled]="updatingStatus()" (change)="updateStatus(order, $any($event.target).value)">
+          @if (order.status === 'PendingPayment' || order.status === 'PaymentFailed') {
+            <option [value]="order.status" selected>{{ order.status }}</option>
+          }
+          @for (target of allowedTargets; track target) {
+            <option [value]="target">{{ target }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="order-detail-grid">
+        <section>
+          <h3>Shipping address</h3>
+          <p>{{ order.shippingAddress.fullName }}<br />
+          {{ order.shippingAddress.phone }}<br />
+          {{ order.shippingAddress.addressLine1 }}
+          @if (order.shippingAddress.addressLine2) {, {{ order.shippingAddress.addressLine2 }}}<br />
+          {{ order.shippingAddress.city }}, {{ order.shippingAddress.state }} {{ order.shippingAddress.pincode }}</p>
+        </section>
+
+        <section>
+          <h3>Items</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Product</th><th>Variant</th><th>Qty</th><th>Price</th></tr>
+              </thead>
+              <tbody>
+                @for (item of order.items; track item.name + item.variant) {
+                  <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.variant }}</td>
+                    <td>{{ item.qty }}</td>
+                    <td>Rs. {{ (item.unitPrice * item.qty).toFixed(2) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn--secondary" (click)="close()">Close</button>
+      </div>
+    </div>
+  </div>
+}

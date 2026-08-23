@@ -1,0 +1,129 @@
+.thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--rounded-md);
+  object-fit: cover;
+  display: block;
+  background: var(--color-canvas);
+}
+
+.thumb--empty {
+  border: 1px dashed var(--color-hairline-strong);
+}
+
+.thumb--preview {
+  width: 80px;
+  height: 80px;
+  margin-top: 0;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.gallery-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xxs);
+  padding: var(--space-xs);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.gallery-item--primary {
+  border-color: var(--color-primary);
+}
+
+.gallery-item__badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.gallery-item__actions {
+  display: flex;
+  gap: 4px;
+}
+
+.gallery-item__actions .btn--sm {
+  padding: 0 6px;
+  height: 26px;
+  font-size: 0.7rem;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-xs);
+  justify-content: flex-end;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-hairline);
+}
+
+/* ---------- variants sub-form ---------- */
+.variants {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.variant-row {
+  display: grid;
+  grid-template-columns: 1fr 110px 100px 40px;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
+.variant-row input {
+  height: 34px;
+}
+
+.variant-remove {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--color-hairline-strong);
+  background: var(--color-surface);
+  color: var(--color-danger);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.variant-remove:hover {
+  background: var(--color-danger-subtle);
+}
+
+.variant-add {
+  align-self: flex-start;
+}
+
+/* ---------- stock adjust inline form ---------- */
+.stock-adjust {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.stock-adjust input {
+  width: 70px;
+  height: 32px;
+}
+
+.stock-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,118 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Hero slider</h1>
+    <button type="button" class="btn btn--primary" (click)="openCreate()">Add slide</button>
+  </div>
+
+  <p class="hint">Slides shown on the homepage banner, in order.</p>
+
+  @if (error(); as err) {
+    <p class="banner banner--error">{{ err }}</p>
+  }
+
+  <div class="card">
+    @if (loading()) {
+      <p class="empty-state">Loading…</p>
+    } @else if (slides().length === 0) {
+      <p class="empty-state">No slides yet — add your first one.</p>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Subtitle</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (slide of slides(); track slide.id) {
+              <tr>
+                <td>{{ slide.displayOrder }}</td>
+                <td>
+                  @if (slide.imageUrl) {
+                    <img [src]="slide.imageUrl" [alt]="slide.alt" class="thumb" />
+                  } @else {
+                    <div class="thumb thumb--empty"></div>
+                  }
+                </td>
+                <td>{{ slide.title }}</td>
+                <td>{{ slide.subtitle }}</td>
+                <td class="actions">
+                  <button type="button" class="btn btn--secondary btn--sm" (click)="openEdit(slide)">Edit</button>
+                  <button type="button" class="btn btn--danger btn--sm" (click)="remove(slide)">Delete</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+
+@if (formOpen()) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>{{ editingId() ? 'Edit slide' : 'Add slide' }}</h2>
+
+      @if (formError(); as err) {
+        <p class="banner banner--error">{{ err }}</p>
+      }
+
+      <div class="form-grid">
+        <div class="field form-grid--wide">
+          <label for="hsTitle">Title</label>
+          <input id="hsTitle" type="text" [value]="formTitle()" (input)="formTitle.set($any($event.target).value)" />
+        </div>
+
+        <div class="field form-grid--wide">
+          <label for="hsSubtitle">Subtitle</label>
+          <input id="hsSubtitle" type="text" [value]="formSubtitle()" (input)="formSubtitle.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="hsOrder">Display order</label>
+          <input id="hsOrder" type="number" [value]="formDisplayOrder()" (input)="formDisplayOrder.set($any($event.target).valueAsNumber || 0)" />
+        </div>
+
+        <div class="field">
+          <label for="hsIcon">Icon name</label>
+          <input id="hsIcon" type="text" [value]="formIcon()" (input)="formIcon.set($any($event.target).value)" />
+          <span class="hint">Lucide icon name shown if the image fails to load (e.g. "wheat", "sprout").</span>
+        </div>
+
+        <div class="field form-grid--wide">
+          <label for="hsAlt">Image alt text</label>
+          <input id="hsAlt" type="text" [value]="formAlt()" (input)="formAlt.set($any($event.target).value)" />
+        </div>
+
+        <div class="field form-grid--wide">
+          <label for="hsGradient">Fallback gradient (CSS)</label>
+          <input id="hsGradient" type="text" [value]="formFallbackGradient()" (input)="formFallbackGradient.set($any($event.target).value)" />
+          <span class="hint">Shown behind the icon if the image is missing — e.g. "linear-gradient(135deg, #1f736f 0%, #4553c4 100%)".</span>
+        </div>
+
+        <div class="field">
+          <label>Image</label>
+          <input #fileInput type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event)" />
+          @if (uploading()) {
+            <span class="hint">Uploading…</span>
+          }
+          @if (formImageUrl(); as url) {
+            <img [src]="url" alt="Preview" class="thumb thumb--preview" />
+          }
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn--secondary" (click)="closeForm()">Cancel</button>
+        <button type="button" class="btn btn--primary" [disabled]="saving()" (click)="save()">
+          {{ saving() ? 'Saving…' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
