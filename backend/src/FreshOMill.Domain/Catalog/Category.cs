@@ -4,6 +4,11 @@ namespace FreshOMill.Domain.Catalog;
 
 public sealed class Category : BaseAuditableEntity<Guid>
 {
+    // See Identity/User.cs for why this self-assigns Id. Previously unnecessary — every Category
+    // row came from CategoryConfiguration's HasData seed until admin CRUD started creating rows
+    // at runtime.
+    public Category() => Id = Guid.NewGuid();
+
     public required string Slug { get; set; }
 
     public required string Name { get; set; }

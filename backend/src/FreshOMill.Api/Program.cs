@@ -26,7 +26,7 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .Enrich.FromLogContext());
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -103,5 +103,11 @@ app.MapCartEndpoints();
 app.MapOrderEndpoints();
 app.MapPaymentWebhookEndpoints();
 app.MapContactEndpoints();
+app.MapStoreSettingsEndpoints();
+app.MapAdminCategoryEndpoints();
+app.MapAdminProductEndpoints();
+app.MapAdminOrderEndpoints();
+app.MapAdminImageEndpoints();
+app.MapAdminHeroSlideEndpoints();
 
 app.Run();

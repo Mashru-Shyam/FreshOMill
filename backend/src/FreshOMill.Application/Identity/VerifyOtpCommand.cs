@@ -4,12 +4,17 @@ using FreshOMill.Application.Common.Security;
 using FreshOMill.Domain.Identity;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace FreshOMill.Application.Identity;
 
 public sealed record VerifyOtpCommand(Guid ChallengeId, string Code) : IRequest<AuthResponseDto>;
 
-public sealed class VerifyOtpCommandHandler(IApplicationDbContext context, ITokenService tokenService, IDateTimeProvider dateTimeProvider)
+public sealed class VerifyOtpCommandHandler(
+    IApplicationDbContext context,
+    ITokenService tokenService,
+    IDateTimeProvider dateTimeProvider,
+    IOptions<AdminOptions> adminOptions)
     : IRequestHandler<VerifyOtpCommand, AuthResponseDto>
 {
     private const int MaxAttempts = 5;
@@ -55,7 +60,12 @@ public sealed class VerifyOtpCommandHandler(IApplicationDbContext context, IToke
             context.Users.Add(user);
         }
 
-        var accessToken = tokenService.CreateAccessToken(new AuthenticatedUser(user.Id, user.Email));
+        // Re-checked on every login (not just creation) so adding an email to the allow-list
+        // later grants Admin retroactively without needing a separate promote/DB edit step.
+        var shouldBeAdmin = adminOptions.Value.Emails.Contains(user.Email, StringComparer.OrdinalIgnoreCase);
+        user.Role = shouldBeAdmin ? "Admin" : "Customer";
+
+        var accessToken = tokenService.CreateAccessToken(new AuthenticatedUser(user.Id, user.Email, user.Role));
         var refreshToken = tokenService.CreateRefreshToken();
 
         context.RefreshTokens.Add(new RefreshToken
@@ -72,6 +82,7 @@ public sealed class VerifyOtpCommandHandler(IApplicationDbContext context, IToke
             accessToken.ExpiresAtUtc,
             refreshToken.Token,
             refreshToken.ExpiresAtUtc,
-            user.Email);
+            user.Email,
+            user.Role);
     }
 }

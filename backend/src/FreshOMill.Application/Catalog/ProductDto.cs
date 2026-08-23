@@ -12,4 +12,6 @@ public sealed record ProductDto(
     bool InStock,
     string Description,
     int Popularity,
-    IReadOnlyList<ProductVariantDto> Variants);
+    bool IsFeatured,
+    IReadOnlyList<ProductVariantDto> Variants,
+    IReadOnlyList<string> Images);

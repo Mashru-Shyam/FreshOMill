@@ -1,5 +1,6 @@
 using FreshOMill.Application.Common.Interfaces;
 using FreshOMill.Application.Contact;
+using FreshOMill.Application.Identity;
 using FreshOMill.Infrastructure.Email;
 using FreshOMill.Infrastructure.Identity;
 using FreshOMill.Infrastructure.Payments;
@@ -9,13 +10,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FreshOMill.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
         var connectionString = configuration.GetConnectionString("Postgres")
             ?? throw new InvalidOperationException("Connection string 'Postgres' was not found.");
@@ -36,12 +39,24 @@ public static class DependencyInjection
                 $"Configuration section '{EmailOptions.SectionName}' is missing (set Email:FromAddress, " +
                 "Email:FromName in appsettings.json).");
 
-        services.Configure<ResendOptions>(configuration.GetSection(ResendOptions.SectionName));
-        services.AddHttpClient<IEmailService, ResendEmailService>(client =>
-            client.BaseAddress = new Uri("https://api.resend.com/"));
-        _ = configuration.GetSection(ResendOptions.SectionName).Get<ResendOptions>()
-            ?? throw new InvalidOperationException(
-                $"Configuration section '{ResendOptions.SectionName}' is missing (set Resend:ApiKey via user-secrets/env vars).");
+        // Development uses LoggingEmailService instead of hitting Resend — there's no real inbox
+        // to check locally, and Resend's sandbox restriction (undeliverable to anyone but the
+        // account's own address, or rejected outright without a configured key) made every local
+        // OTP request fail with a 502 before this split existed. See LoggingEmailService's own
+        // doc comment for how to find the code it logs.
+        if (environment.IsDevelopment())
+        {
+            services.AddSingleton<IEmailService, LoggingEmailService>();
+        }
+        else
+        {
+            services.Configure<ResendOptions>(configuration.GetSection(ResendOptions.SectionName));
+            services.AddHttpClient<IEmailService, ResendEmailService>(client =>
+                client.BaseAddress = new Uri("https://api.resend.com/"));
+            _ = configuration.GetSection(ResendOptions.SectionName).Get<ResendOptions>()
+                ?? throw new InvalidOperationException(
+                    $"Configuration section '{ResendOptions.SectionName}' is missing (set Resend:ApiKey via user-secrets/env vars).");
+        }
 
         services.Configure<RazorpayOptions>(configuration.GetSection(RazorpayOptions.SectionName));
         services.AddHttpClient<IPaymentGatewayService, RazorpayPaymentGatewayService>(client =>
@@ -52,6 +67,7 @@ public static class DependencyInjection
                 "Razorpay:WebhookSecret via user-secrets/env vars — Razorpay:KeyId lives in appsettings.json).");
 
         services.Configure<ContactOptions>(configuration.GetSection(ContactOptions.SectionName));
+        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.SectionName));
 
         var jwtOptions = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>()
             ?? throw new InvalidOperationException(
@@ -74,7 +90,8 @@ public static class DependencyInjection
                 };
             });
 
-        services.AddAuthorization();
+        services.AddAuthorizationBuilder()
+            .AddPolicy("Admin", policy => policy.RequireRole("Admin"));
 
         services
             .AddHealthChecks()

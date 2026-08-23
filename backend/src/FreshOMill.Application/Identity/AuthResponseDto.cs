@@ -5,4 +5,5 @@ public sealed record AuthResponseDto(
     DateTimeOffset AccessTokenExpiresAt,
     string RefreshToken,
     DateTimeOffset RefreshTokenExpiresAt,
-    string Email);
+    string Email,
+    string Role);

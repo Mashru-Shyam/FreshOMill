@@ -3,7 +3,7 @@ namespace FreshOMill.Application.Common.Interfaces;
 /// <summary>
 /// Minimal claims needed to mint tokens. Populated from the Identity module's User entity once it exists.
 /// </summary>
-public sealed record AuthenticatedUser(Guid UserId, string Email);
+public sealed record AuthenticatedUser(Guid UserId, string Email, string Role);
 
 public sealed record AccessTokenResult(string AccessToken, DateTimeOffset ExpiresAtUtc);
 

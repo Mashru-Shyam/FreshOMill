@@ -40,7 +40,7 @@ public sealed class RefreshTokenCommandHandler(IApplicationDbContext context, IT
 
         existing.RevokedAt = dateTimeProvider.UtcNow;
 
-        var accessToken = tokenService.CreateAccessToken(new AuthenticatedUser(user.Id, user.Email));
+        var accessToken = tokenService.CreateAccessToken(new AuthenticatedUser(user.Id, user.Email, user.Role));
         var refreshToken = tokenService.CreateRefreshToken();
 
         context.RefreshTokens.Add(new RefreshToken
@@ -57,6 +57,7 @@ public sealed class RefreshTokenCommandHandler(IApplicationDbContext context, IT
             accessToken.ExpiresAtUtc,
             refreshToken.Token,
             refreshToken.ExpiresAtUtc,
-            user.Email);
+            user.Email,
+            user.Role);
     }
 }

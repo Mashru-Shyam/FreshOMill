@@ -21,9 +21,13 @@ public interface IApplicationDbContext
 
     DbSet<ProductVariant> ProductVariants { get; }
 
+    DbSet<ProductImage> ProductImages { get; }
+
     DbSet<HeroSlide> HeroSlides { get; }
 
     DbSet<Testimonial> Testimonials { get; }
+
+    DbSet<StoreSettings> StoreSettings { get; }
 
     DbSet<User> Users { get; }
 

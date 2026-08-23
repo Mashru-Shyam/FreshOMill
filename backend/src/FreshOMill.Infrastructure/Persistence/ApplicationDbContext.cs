@@ -18,8 +18,10 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
+    public DbSet<ProductImage> ProductImages => Set<ProductImage>();
     public DbSet<HeroSlide> HeroSlides => Set<HeroSlide>();
     public DbSet<Testimonial> Testimonials => Set<Testimonial>();
+    public DbSet<StoreSettings> StoreSettings => Set<StoreSettings>();
     public DbSet<User> Users => Set<User>();
     public DbSet<OtpChallenge> OtpChallenges => Set<OtpChallenge>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();

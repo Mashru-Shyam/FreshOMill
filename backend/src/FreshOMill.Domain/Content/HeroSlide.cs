@@ -4,6 +4,11 @@ namespace FreshOMill.Domain.Content;
 
 public sealed class HeroSlide : BaseAuditableEntity<Guid>
 {
+    // See Identity/User.cs for why this self-assigns Id — was unnecessary while every HeroSlide
+    // row came from a migration seed, until the admin Hero Slides screen started creating rows
+    // at runtime.
+    public HeroSlide() => Id = Guid.NewGuid();
+
     public string? ImageUrl { get; set; }
 
     public required string Alt { get; set; }

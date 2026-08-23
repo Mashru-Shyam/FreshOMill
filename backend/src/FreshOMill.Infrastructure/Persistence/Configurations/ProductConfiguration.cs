@@ -6,6 +6,17 @@ namespace FreshOMill.Infrastructure.Persistence.Configurations;
 
 public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
+    // Mirrors the exact set that used to be hardcoded in the frontend's best-sellers.ts
+    // (BEST_SELLER_NAMES) — seeding IsFeatured from this list keeps the Home page's Best
+    // Sellers rail showing the same products the moment it switches over to reading this flag
+    // instead of that hardcoded array, rather than the rail silently going empty.
+    private static readonly HashSet<string> InitiallyFeaturedNames = new(StringComparer.Ordinal)
+    {
+        "Chakki Fresh Atta", "Organic Bajra", "Pure Honey", "Coconut Oil", "Organic Turmeric",
+        "Almonds Premium", "Mustard Oil", "Chana Dal", "Sesame Seeds", "Cumin Seeds",
+        "Cashew Nuts", "Coriander Powder",
+    };
+
     public void Configure(EntityTypeBuilder<Product> builder)
     {
         builder.Property(p => p.Slug).HasMaxLength(150).IsRequired();
@@ -38,6 +49,7 @@ public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
             p.InStock,
             p.Description,
             p.Popularity,
+            IsFeatured = InitiallyFeaturedNames.Contains(p.Name),
         }));
     }
 }

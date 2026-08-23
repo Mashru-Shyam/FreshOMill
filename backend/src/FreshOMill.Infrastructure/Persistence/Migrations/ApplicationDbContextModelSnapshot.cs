@@ -376,6 +376,9 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                     b.Property<bool>("InStock")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsFeatured")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTimeOffset?>("LastModified")
                         .HasColumnType("timestamp with time zone");
 
@@ -422,6 +425,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Cold, wood-pressed from farm-fresh coconut kernels — no heat, no solvents, no refining.",
                             ImageUrl = "/images/products/wood-pressed-oils/coconut-oil.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Coconut Oil",
                             Popularity = 1,
                             Price = 360m,
@@ -436,6 +440,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Pungent, kachi-ghani mustard oil pressed in small batches at low temperature.",
                             ImageUrl = "/images/products/wood-pressed-oils/mustard-oil.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Mustard Oil",
                             Popularity = 6,
                             Price = 320m,
@@ -450,6 +455,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Rich, nutty groundnut oil wood-pressed the traditional ghani way for everyday cooking.",
                             ImageUrl = "/images/products/wood-pressed-oils/groundnut-oil.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Groundnut Oil",
                             Popularity = 9,
                             Price = 280m,
@@ -464,6 +470,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Stone-pressed sesame oil with a deep, toasty aroma — a South Indian kitchen staple.",
                             ImageUrl = "/images/products/wood-pressed-oils/sesame-oil.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Sesame Oil",
                             Popularity = 12,
                             Price = 340m,
@@ -478,6 +485,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Light, wood-pressed sunflower oil that keeps every dish tasting clean and fresh.",
                             ImageUrl = "/images/products/wood-pressed-oils/sunflower-oil.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Sunflower Oil",
                             Popularity = 15,
                             Price = 260m,
@@ -492,6 +500,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "100% stone-ground whole wheat atta, milled fresh strictly after your order is placed.",
                             ImageUrl = "/images/products/flour-multigrain/chakki-fresh-atta.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Chakki Fresh Atta",
                             Popularity = 16,
                             Price = 280m,
@@ -506,6 +515,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A wholesome blend of wheat, jowar, bajra and ragi ground together into one flour.",
                             ImageUrl = "/images/products/flour-multigrain/multigrain-atta.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Multigrain Atta",
                             Popularity = 21,
                             Price = 310m,
@@ -520,6 +530,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Finger millet flour, naturally rich in calcium — stone-ground for a fine, even texture.",
                             ImageUrl = "/images/products/flour-multigrain/ragi-flour.jpg",
                             InStock = false,
+                            IsFeatured = false,
                             Name = "Ragi Flour",
                             Popularity = 24,
                             Price = 180m,
@@ -534,6 +545,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Sorghum flour milled fresh for soft, gluten-free rotis and bhakri.",
                             ImageUrl = "/images/products/flour-multigrain/jowar-flour.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Jowar Flour",
                             Popularity = 27,
                             Price = 190m,
@@ -548,6 +560,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Pearl millet flour, stone-ground for a warming winter staple with a distinct earthy taste.",
                             ImageUrl = "/images/products/flour-multigrain/bajra-flour.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Bajra Flour",
                             Popularity = 30,
                             Price = 170m,
@@ -562,6 +575,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Soft, caramel-sweet premium dates hand-picked and packed at peak freshness.",
                             ImageUrl = "/images/products/dry-fruits-dates/premium-dates.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Premium Dates",
                             Popularity = 31,
                             Price = 420m,
@@ -576,6 +590,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Sun-dried apricots with a tangy-sweet bite, naturally preserved with no added sugar.",
                             ImageUrl = "/images/products/dry-fruits-dates/dried-apricots.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Dried Apricots",
                             Popularity = 36,
                             Price = 480m,
@@ -590,6 +605,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Plump, naturally sun-dried figs — a fibre-rich snack straight from the orchard.",
                             ImageUrl = "/images/products/dry-fruits-dates/dried-figs.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Dried Figs",
                             Popularity = 39,
                             Price = 550m,
@@ -604,6 +620,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Seedless golden raisins, sun-dried for a naturally sweet, chewy everyday snack.",
                             ImageUrl = "/images/products/dry-fruits-dates/raisins.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Raisins",
                             Popularity = 42,
                             Price = 220m,
@@ -618,6 +635,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Tart-sweet dried cranberries, great over salads, cereal or eaten straight from the pack.",
                             ImageUrl = "/images/products/dry-fruits-dates/dried-cranberries.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Dried Cranberries",
                             Popularity = 45,
                             Price = 380m,
@@ -632,6 +650,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Bold, California-grade almonds sorted for size and freshness in every batch.",
                             ImageUrl = "/images/products/nuts-seeds/almonds-premium.jpg",
                             InStock = false,
+                            IsFeatured = true,
                             Name = "Almonds Premium",
                             Popularity = 46,
                             Price = 950m,
@@ -646,6 +665,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Whole, creamy cashews (W240 grade) roasted fresh to order in small batches.",
                             ImageUrl = "/images/products/nuts-seeds/cashew-nuts.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Cashew Nuts",
                             Popularity = 51,
                             Price = 1200m,
@@ -660,6 +680,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Whole walnut kernels, light and buttery — a daily source of good fats.",
                             ImageUrl = "/images/products/nuts-seeds/walnuts.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Walnuts",
                             Popularity = 54,
                             Price = 1100m,
@@ -674,6 +695,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Roasted, lightly salted pistachios shelled and packed for maximum crunch.",
                             ImageUrl = "/images/products/nuts-seeds/pistachios.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Pistachios",
                             Popularity = 57,
                             Price = 1350m,
@@ -688,6 +710,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Cleaned, hulled white sesame seeds — a nutty finish for chikki, chutneys and baking.",
                             ImageUrl = "/images/products/nuts-seeds/sesame-seeds.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Sesame Seeds",
                             Popularity = 60,
                             Price = 280m,
@@ -702,6 +725,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Whole organic pearl millet grain, sourced from certified organic farms.",
                             ImageUrl = "/images/products/millets/organic-bajra.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Organic Bajra",
                             Popularity = 61,
                             Price = 150m,
@@ -716,6 +740,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A light, easy-to-digest ancient grain — swaps in for rice in any everyday meal.",
                             ImageUrl = "/images/products/millets/foxtail-millet.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Foxtail Millet",
                             Popularity = 66,
                             Price = 160m,
@@ -730,6 +755,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A high-fibre millet with a mild, nutty flavour, ideal for pulao and khichdi.",
                             ImageUrl = "/images/products/millets/kodo-millet.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Kodo Millet",
                             Popularity = 69,
                             Price = 155m,
@@ -744,6 +770,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Small-grained, quick-cooking millet — a light everyday substitute for rice.",
                             ImageUrl = "/images/products/millets/little-millet.jpg",
                             InStock = false,
+                            IsFeatured = false,
                             Name = "Little Millet",
                             Popularity = 72,
                             Price = 145m,
@@ -758,6 +785,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A fasting-friendly millet with a soft texture, popular in upma and porridge.",
                             ImageUrl = "/images/products/millets/barnyard-millet.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Barnyard Millet",
                             Popularity = 75,
                             Price = 165m,
@@ -772,6 +800,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Sun-dried, stone-ground organic turmeric with a deep golden colour and aroma.",
                             ImageUrl = "/images/products/spices/organic-turmeric.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Organic Turmeric",
                             Popularity = 76,
                             Price = 180m,
@@ -786,6 +815,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Bright red, medium-hot chilli powder ground fresh from sun-dried whole chillies.",
                             ImageUrl = "/images/products/spices/red-chilli-powder.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Red Chilli Powder",
                             Popularity = 81,
                             Price = 200m,
@@ -800,6 +830,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Freshly ground coriander seeds with a warm, citrusy aroma for everyday curries.",
                             ImageUrl = "/images/products/spices/coriander-powder.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Coriander Powder",
                             Popularity = 84,
                             Price = 160m,
@@ -814,6 +845,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Whole, aromatic cumin seeds — cleaned and sorted for a strong, earthy tempering.",
                             ImageUrl = "/images/products/spices/cumin-seeds.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Cumin Seeds",
                             Popularity = 87,
                             Price = 350m,
@@ -828,6 +860,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Bold, sun-dried whole black peppercorns with a sharp, pungent bite.",
                             ImageUrl = "/images/products/spices/black-pepper.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Black Pepper",
                             Popularity = 90,
                             Price = 420m,
@@ -842,6 +875,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A warm, aromatic blend of roasted whole spices ground fresh in small batches.",
                             ImageUrl = "/images/products/masalas/garam-masala.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Garam Masala",
                             Popularity = 91,
                             Price = 220m,
@@ -856,6 +890,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A tangy, robust spice mix built specifically for chickpea curries.",
                             ImageUrl = "/images/products/masalas/chana-masala.jpg",
                             InStock = false,
+                            IsFeatured = false,
                             Name = "Chana Masala",
                             Popularity = 96,
                             Price = 190m,
@@ -870,6 +905,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A South Indian lentil-stew spice blend with a distinct roasted-dal aroma.",
                             ImageUrl = "/images/products/masalas/sambar-masala.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Sambar Masala",
                             Popularity = 99,
                             Price = 210m,
@@ -884,6 +920,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A tangy, black-salt forward mix that finishes fruit chaat, snacks and salads.",
                             ImageUrl = "/images/products/masalas/chaat-masala.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Chaat Masala",
                             Popularity = 102,
                             Price = 180m,
@@ -898,6 +935,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A bold, tomato-friendly spice blend made for classic street-style pav bhaji.",
                             ImageUrl = "/images/products/masalas/pav-bhaji-masala.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Pav Bhaji Masala",
                             Popularity = 105,
                             Price = 200m,
@@ -912,6 +950,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Steam-rolled whole oats — a quick, fibre-rich breakfast base.",
                             ImageUrl = "/images/products/health-foods/rolled-oats.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Rolled Oats",
                             Popularity = 106,
                             Price = 240m,
@@ -926,6 +965,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Tiny, omega-3 rich chia seeds that swell into a gel — great in smoothies and puddings.",
                             ImageUrl = "/images/products/health-foods/chia-seeds.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Chia Seeds",
                             Popularity = 111,
                             Price = 380m,
@@ -940,6 +980,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Rich in alpha-linolenic acid, these seeds support heart and brain health.",
                             ImageUrl = "/images/products/health-foods/flax-seeds.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Flax Seeds",
                             Popularity = 114,
                             Price = 260m,
@@ -954,6 +995,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Shade-dried moringa leaves ground into a fine, nutrient-dense green powder.",
                             ImageUrl = "/images/products/health-foods/moringa-powder.jpg",
                             InStock = false,
+                            IsFeatured = false,
                             Name = "Moringa Powder",
                             Popularity = 120,
                             Price = 320m,
@@ -968,6 +1010,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A classic South Indian coffee-chicory blend, roasted and ground for filter brewing.",
                             ImageUrl = "/images/products/coffee-tea/filter-coffee-powder.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Filter Coffee Powder",
                             Popularity = 121,
                             Price = 280m,
@@ -982,6 +1025,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Whole-leaf green tea with a light, grassy character and gentle antioxidant lift.",
                             ImageUrl = "/images/products/coffee-tea/green-tea.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Green Tea",
                             Popularity = 126,
                             Price = 320m,
@@ -996,6 +1040,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Robust CTC tea leaves pre-blended with warming whole spices for a strong chai.",
                             ImageUrl = "/images/products/coffee-tea/masala-chai.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Masala Chai",
                             Popularity = 129,
                             Price = 240m,
@@ -1010,6 +1055,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A caffeine-free infusion of dried herbs and flowers for a calming cup any time of day.",
                             ImageUrl = "/images/products/coffee-tea/herbal-tea.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Herbal Tea",
                             Popularity = 132,
                             Price = 260m,
@@ -1024,6 +1070,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Freeze-dried instant coffee granules for a quick, rich cup with no brewing needed.",
                             ImageUrl = "/images/products/coffee-tea/instant-coffee.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Instant Coffee",
                             Popularity = 135,
                             Price = 350m,
@@ -1038,6 +1085,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Raw mango pickled in mustard oil with a bold, tangy-spiced masala.",
                             ImageUrl = "/images/products/pickles/mango-pickle.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Mango Pickle",
                             Popularity = 136,
                             Price = 220m,
@@ -1052,6 +1100,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Sun-cured lemons pickled whole for a sharp, tangy everyday side.",
                             ImageUrl = "/images/products/pickles/lemon-pickle.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Lemon Pickle",
                             Popularity = 141,
                             Price = 200m,
@@ -1066,6 +1115,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Carrot, cauliflower and turnip pickled together in a robust spiced oil.",
                             ImageUrl = "/images/products/pickles/mixed-veg-pickle.jpg",
                             InStock = false,
+                            IsFeatured = false,
                             Name = "Mixed Veg Pickle",
                             Popularity = 144,
                             Price = 240m,
@@ -1080,6 +1130,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Whole garlic cloves slow-pickled in a fiery, richly spiced masala.",
                             ImageUrl = "/images/products/pickles/garlic-pickle.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Garlic Pickle",
                             Popularity = 147,
                             Price = 230m,
@@ -1094,6 +1145,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Whole green chillies pickled hot and tangy — not for the faint-hearted.",
                             ImageUrl = "/images/products/pickles/chilli-pickle.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Chilli Pickle",
                             Popularity = 150,
                             Price = 210m,
@@ -1108,6 +1160,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Long-grain, aged basmati rice with a fragrant aroma and fluffy texture.",
                             ImageUrl = "/images/products/rice-grains/basmati-rice.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Basmati Rice",
                             Popularity = 151,
                             Price = 320m,
@@ -1122,6 +1175,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A light, medium-grain everyday rice popular across South Indian kitchens.",
                             ImageUrl = "/images/products/rice-grains/sona-masoori-rice.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Sona Masoori Rice",
                             Popularity = 156,
                             Price = 180m,
@@ -1136,6 +1190,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Unpolished whole-grain rice with its bran intact for extra fibre.",
                             ImageUrl = "/images/products/rice-grains/brown-rice.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Brown Rice",
                             Popularity = 159,
                             Price = 210m,
@@ -1150,6 +1205,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Split, polished chana dal that cooks up soft with a mild, nutty taste.",
                             ImageUrl = "/images/products/rice-grains/chana-dal.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Chana Dal",
                             Popularity = 162,
                             Price = 220m,
@@ -1164,6 +1220,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "The everyday dal for sambar and tadka — split, cleaned and unpolished.",
                             ImageUrl = "/images/products/rice-grains/toor-dal.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Toor Dal",
                             Popularity = 165,
                             Price = 200m,
@@ -1178,6 +1235,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Slow-simmered, bilona-method cow ghee with a rich, grainy texture and aroma.",
                             ImageUrl = "/images/products/ghee-dairy/pure-cow-ghee.jpg",
                             InStock = false,
+                            IsFeatured = false,
                             Name = "Pure Cow Ghee",
                             Popularity = 166,
                             Price = 650m,
@@ -1192,6 +1250,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A2 desi cow milk ghee, hand-churned the traditional bilona way.",
                             ImageUrl = "/images/products/ghee-dairy/a2-ghee.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "A2 Ghee",
                             Popularity = 171,
                             Price = 850m,
@@ -1206,6 +1265,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Rich, dense buffalo milk ghee with a deep, full-bodied flavour.",
                             ImageUrl = "/images/products/ghee-dairy/buffalo-ghee.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Buffalo Ghee",
                             Popularity = 174,
                             Price = 600m,
@@ -1220,6 +1280,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Fresh, soft paneer set daily from full-cream milk.",
                             ImageUrl = "/images/products/ghee-dairy/paneer.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Paneer",
                             Popularity = 177,
                             Price = 180m,
@@ -1234,6 +1295,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A live curd starter culture for setting thick, creamy curd at home.",
                             ImageUrl = "/images/products/ghee-dairy/curd-culture.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Curd Culture",
                             Popularity = 180,
                             Price = 90m,
@@ -1248,6 +1310,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Raw, unheated honey harvested from multi-floral forest sources.",
                             ImageUrl = "/images/products/honey-jaggery/pure-honey.jpg",
                             InStock = true,
+                            IsFeatured = true,
                             Name = "Pure Honey",
                             Popularity = 181,
                             Price = 420m,
@@ -1262,6 +1325,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Chemical-free, sun-cured sugarcane jaggery with a deep caramel note.",
                             ImageUrl = "/images/products/honey-jaggery/organic-jaggery.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Organic Jaggery",
                             Popularity = 186,
                             Price = 140m,
@@ -1276,6 +1340,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Free-flowing granulated jaggery powder — an easy 1:1 sugar swap.",
                             ImageUrl = "/images/products/honey-jaggery/jaggery-powder.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Jaggery Powder",
                             Popularity = 189,
                             Price = 150m,
@@ -1290,6 +1355,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Wild forest honey, hand-harvested with a bold, distinct floral character.",
                             ImageUrl = "/images/products/honey-jaggery/forest-honey.jpg",
                             InStock = false,
+                            IsFeatured = false,
                             Name = "Forest Honey",
                             Popularity = 192,
                             Price = 480m,
@@ -1304,6 +1370,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Traditional date palm jaggery with a smoky-sweet, molasses-like depth.",
                             ImageUrl = "/images/products/honey-jaggery/date-palm-jaggery.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Date Palm Jaggery",
                             Popularity = 195,
                             Price = 180m,
@@ -1318,6 +1385,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Root-derived ashwagandha powder, sun-dried and stone-ground.",
                             ImageUrl = "/images/products/herbal-wellness/ashwagandha-powder.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Ashwagandha Powder",
                             Popularity = 196,
                             Price = 350m,
@@ -1332,6 +1400,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Sun-dried Indian gooseberry ground into a tangy, vitamin-C rich powder.",
                             ImageUrl = "/images/products/herbal-wellness/amla-powder.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Amla Powder",
                             Popularity = 201,
                             Price = 220m,
@@ -1346,6 +1415,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A concentrated holy basil extract, a few drops added to warm water or tea.",
                             ImageUrl = "/images/products/herbal-wellness/tulsi-drops.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Tulsi Drops",
                             Popularity = 204,
                             Price = 280m,
@@ -1360,6 +1430,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A classic three-fruit Ayurvedic blend, stone-ground into a fine powder.",
                             ImageUrl = "/images/products/herbal-wellness/triphala-powder.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Triphala Powder",
                             Popularity = 207,
                             Price = 240m,
@@ -1374,6 +1445,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Encapsulated neem leaf extract for an easy, no-taste daily dose.",
                             ImageUrl = "/images/products/herbal-wellness/neem-capsules.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Neem Capsules",
                             Popularity = 210,
                             Price = 260m,
@@ -1388,6 +1460,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "A crunchy, spiced mix of sev, lentils and nuts fried fresh in small batches.",
                             ImageUrl = "/images/products/snacks-namkeen/mixture-namkeen.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Mixture Namkeen",
                             Popularity = 211,
                             Price = 160m,
@@ -1402,6 +1475,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Dry-roasted chickpeas, lightly salted for a crunchy, high-protein snack.",
                             ImageUrl = "/images/products/snacks-namkeen/roasted-chana.jpg",
                             InStock = false,
+                            IsFeatured = false,
                             Name = "Roasted Chana",
                             Popularity = 216,
                             Price = 140m,
@@ -1416,6 +1490,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Kerala-style banana chips, fried in coconut oil with a light sprinkle of salt.",
                             ImageUrl = "/images/products/snacks-namkeen/banana-chips.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Banana Chips",
                             Popularity = 219,
                             Price = 150m,
@@ -1430,6 +1505,7 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Crisp, spiral-shaped rice-and-lentil murukku, fried fresh to order.",
                             ImageUrl = "/images/products/snacks-namkeen/murukku.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Murukku",
                             Popularity = 222,
                             Price = 170m,
@@ -1444,12 +1520,49 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                             Description = "Crunchy peanuts coated in a spiced gram-flour batter and fried whole.",
                             ImageUrl = "/images/products/snacks-namkeen/masala-peanuts.jpg",
                             InStock = true,
+                            IsFeatured = false,
                             Name = "Masala Peanuts",
                             Popularity = 225,
                             Price = 130m,
                             Slug = "masala-peanuts",
                             Unit = "250g"
                         });
+                });
+
+            modelBuilder.Entity("FreshOMill.Domain.Catalog.ProductImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages");
                 });
 
             modelBuilder.Entity("FreshOMill.Domain.Catalog.ProductVariant", b =>
@@ -3105,6 +3218,86 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("FreshOMill.Domain.Content.StoreSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("GoogleMapsUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("InstagramUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<DateTimeOffset?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LinkedInUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("OpeningHours")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("WhatsAppNumber")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("YoutubeUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StoreSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("50a80001-0000-0000-0000-000000000001"),
+                            Address = "Freshomill, GF - 3/4, Nexus Complex, Near Spring Retreat 4, White House Lane, Bhayli TP 1, Vasna Bhayli Road, Vadodara",
+                            Created = new DateTimeOffset(new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Email = "mashrushyam37@gmail.com",
+                            GoogleMapsUrl = "https://maps.app.goo.gl/b6igQ81rRruLUmxC6",
+                            InstagramUrl = "https://instagram.com/freshomill",
+                            LinkedInUrl = "https://linkedin.com/company/freshomill",
+                            OpeningHours = "Everyday: 9:30 AM - 8:00 PM",
+                            Phone = "+91 76000 62637",
+                            WhatsAppNumber = "+917600062637",
+                            YoutubeUrl = "https://youtube.com/@freshomill"
+                        });
+                });
+
             modelBuilder.Entity("FreshOMill.Domain.Content.Testimonial", b =>
                 {
                     b.Property<Guid>("Id")
@@ -3290,6 +3483,10 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -3483,6 +3680,17 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("FreshOMill.Domain.Catalog.ProductImage", b =>
+                {
+                    b.HasOne("FreshOMill.Domain.Catalog.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("FreshOMill.Domain.Catalog.ProductVariant", b =>
                 {
                     b.HasOne("FreshOMill.Domain.Catalog.Product", "Product")
@@ -3530,6 +3738,8 @@ namespace FreshOMill.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FreshOMill.Domain.Catalog.Product", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("Variants");
                 });
 

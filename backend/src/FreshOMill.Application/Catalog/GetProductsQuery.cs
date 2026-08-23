@@ -27,9 +27,14 @@ public sealed class GetProductsQueryHandler(IApplicationDbContext context)
                 p.InStock,
                 p.Description,
                 p.Popularity,
+                p.IsFeatured,
                 p.Variants
                     .OrderBy(v => v.SortOrder)
                     .Select(v => new ProductVariantDto(v.Label, v.Price, v.StockQuantity))
+                    .ToList(),
+                p.Images
+                    .OrderBy(i => i.SortOrder)
+                    .Select(i => i.ImageUrl)
                     .ToList()))
             .ToListAsync(cancellationToken);
 }

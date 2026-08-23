@@ -10,4 +10,10 @@ public sealed class User : BaseAuditableEntity<Guid>
     public User() => Id = Guid.NewGuid();
 
     public required string Email { get; set; }
+
+    /// <summary>"Customer" or "Admin" — checked into the JWT as a role claim on every login/refresh.
+    /// Granted automatically on OTP verification when the email matches the configured
+    /// <c>Admin:Emails</c> allow-list (see VerifyOtpCommandHandler); there is no in-app "make
+    /// admin" action yet since only one operator exists at this stage.</summary>
+    public string Role { get; set; } = "Customer";
 }
