@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { Observable, catchError, map, of, switchMap, tap } from 'rxjs';
+import { Observable, catchError, map, of, scan, shareReplay, startWith, switchMap, tap } from 'rxjs';
 import { API_BASE_URL } from '../config/api.config';
 import type { CartLine } from './cart.service';
 import { AuthService } from './auth.service';
 import type { RazorpayGatewayInfo, RazorpayPaymentResult } from './payment.service';
+import type { LoadStatus } from '../util/load-state';
 
 export type PaymentMethod = 'cod' | 'online';
 
@@ -88,20 +89,41 @@ export class OrdersService {
 
   private readonly refreshTrigger = signal(0);
 
-  private readonly orders$ = toObservable(
+  /** Same request and same triggers as before; the extra `status` field is what lets the
+   *  Orders page tell "still fetching" apart from "you have no orders", which both used to
+   *  render the same empty state. A failed fetch keeps any orders already on screen rather
+   *  than blanking the list. */
+  private readonly ordersState$ = toObservable(
     computed(() => ({ signedIn: this.auth.isLoggedIn(), tick: this.refreshTrigger() }))
   ).pipe(
     switchMap(({ signedIn }) =>
       signedIn
         ? this.http.get<OrderDto[]>(`${API_BASE_URL}/api/v1/orders`).pipe(
-            map((dtos) => dtos.map(fromDto)),
-            catchError(() => of<Order[]>([]))
+            map((dtos) => ({ orders: dtos.map(fromDto), status: 'ready' as LoadStatus })),
+            catchError(() => of({ orders: [] as Order[], status: 'error' as LoadStatus })),
+            startWith({ orders: [] as Order[], status: 'loading' as LoadStatus })
           )
-        : of<Order[]>([])
-    )
+        : // Signed out isn't a loading state — the page shows its sign-in gate immediately.
+          of({ orders: [] as Order[], status: 'ready' as LoadStatus })
+    ),
+    scan((previous, next) =>
+      next.status === 'error' && previous.orders.length > 0 ? { orders: previous.orders, status: 'ready' as LoadStatus } : next
+    ),
+    shareReplay({ bufferSize: 1, refCount: false })
   );
 
-  readonly orders = toSignal(this.orders$, { initialValue: [] as Order[] });
+  private readonly ordersState = toSignal(this.ordersState$, {
+    initialValue: { orders: [] as Order[], status: 'loading' as LoadStatus },
+  });
+
+  readonly orders = computed(() => this.ordersState().orders);
+  readonly isLoading = computed(() => this.ordersState().status === 'loading');
+  readonly isError = computed(() => this.ordersState().status === 'error');
+
+  /** Retry hook for the Orders page's error state. */
+  reload(): void {
+    this.refreshTrigger.update((n) => n + 1);
+  }
 
   placeOrder(
     lines: readonly CartLine[],

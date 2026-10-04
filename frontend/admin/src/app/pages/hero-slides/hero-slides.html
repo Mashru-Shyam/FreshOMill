@@ -1,37 +1,76 @@
 <div class="page">
   <div class="page-header">
-    <h1>Hero slider</h1>
+    <h1>
+      Image Slider
+      <span class="page-header__sub">The rotating banner at the top of the storefront home page.</span>
+    </h1>
     <button type="button" class="btn btn--primary" (click)="openCreate()">Add slide</button>
   </div>
 
-  <p class="hint">Slides shown on the homepage banner, in order.</p>
-
-  @if (error(); as err) {
-    <p class="banner banner--error">{{ err }}</p>
-  }
-
   <div class="card">
     @if (loading()) {
-      <p class="empty-state">Loading…</p>
+      <app-table-skeleton [count]="5" />
+    } @else if (error(); as err) {
+      <app-empty-state
+        variant="error"
+        title="We couldn't load your slides"
+        [text]="err"
+        actionLabel="Try again"
+        (action)="refresh()"
+      />
     } @else if (slides().length === 0) {
-      <p class="empty-state">No slides yet — add your first one.</p>
+      <app-empty-state
+        title="No slides yet"
+        text="Add your first slide and it becomes the storefront home page banner."
+        actionLabel="Add slide"
+        (action)="openCreate()"
+      />
     } @else {
+      <div class="filters">
+        <div class="filters__search">
+          <svg class="filters__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" /><path d="m21 21-4.34-4.34" />
+          </svg>
+          <input
+            type="search"
+            placeholder="Search slides…"
+            aria-label="Search slides"
+            [value]="search()"
+            (input)="search.set($any($event.target).value)"
+          />
+        </div>
+
+        <span class="filters__count">{{ filteredSlides().length }} of {{ slides().length }}</span>
+
+        @if (search().trim()) {
+          <button type="button" class="btn btn--secondary btn--sm" (click)="search.set('')">Clear</button>
+        }
+      </div>
+
+      @if (filteredSlides().length === 0) {
+        <app-empty-state
+          variant="filtered"
+          title="No slides match that search"
+          text="Try a different search term."
+          actionLabel="Clear search"
+          (action)="search.set('')"
+        />
+      } @else {
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>Order</th>
-              <th>Image</th>
+              <th class="col-image">Image</th>
               <th>Title</th>
-              <th>Subtitle</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            @for (slide of slides(); track slide.id) {
+            @for (slide of filteredSlides(); track slide.id) {
               <tr>
                 <td>{{ slide.displayOrder }}</td>
-                <td>
+                <td class="col-image">
                   @if (slide.imageUrl) {
                     <img [src]="slide.imageUrl" [alt]="slide.alt" class="thumb" />
                   } @else {
@@ -39,7 +78,6 @@
                   }
                 </td>
                 <td>{{ slide.title }}</td>
-                <td>{{ slide.subtitle }}</td>
                 <td class="actions">
                   <button type="button" class="btn btn--secondary btn--sm" (click)="openEdit(slide)">Edit</button>
                   <button type="button" class="btn btn--danger btn--sm" (click)="remove(slide)">Delete</button>
@@ -49,14 +87,31 @@
           </tbody>
         </table>
       </div>
+      }
     }
   </div>
 </div>
 
 @if (formOpen()) {
   <div class="modal-overlay" (click)="closeForm()">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <h2>{{ editingId() ? 'Edit slide' : 'Add slide' }}</h2>
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="heroslidesModalTitle1"
+      [appDialogFocus]="true"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__head">
+        <h2 class="modal__title" id="heroslidesModalTitle1">{{ editingId() ? 'Edit slide' : 'Add slide' }}</h2>
+        <button type="button" class="btn--icon" aria-label="Close" (click)="closeForm()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+            <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal__body">
 
       @if (formError(); as err) {
         <p class="banner banner--error">{{ err }}</p>
@@ -68,49 +123,68 @@
           <input id="hsTitle" type="text" [value]="formTitle()" (input)="formTitle.set($any($event.target).value)" />
         </div>
 
-        <div class="field form-grid--wide">
-          <label for="hsSubtitle">Subtitle</label>
-          <input id="hsSubtitle" type="text" [value]="formSubtitle()" (input)="formSubtitle.set($any($event.target).value)" />
-        </div>
-
         <div class="field">
           <label for="hsOrder">Display order</label>
           <input id="hsOrder" type="number" [value]="formDisplayOrder()" (input)="formDisplayOrder.set($any($event.target).valueAsNumber || 0)" />
         </div>
 
         <div class="field">
-          <label for="hsIcon">Icon name</label>
-          <input id="hsIcon" type="text" [value]="formIcon()" (input)="formIcon.set($any($event.target).value)" />
-          <span class="hint">Lucide icon name shown if the image fails to load (e.g. "wheat", "sprout").</span>
-        </div>
-
-        <div class="field form-grid--wide">
           <label for="hsAlt">Image alt text</label>
           <input id="hsAlt" type="text" [value]="formAlt()" (input)="formAlt.set($any($event.target).value)" />
         </div>
 
         <div class="field form-grid--wide">
-          <label for="hsGradient">Fallback gradient (CSS)</label>
-          <input id="hsGradient" type="text" [value]="formFallbackGradient()" (input)="formFallbackGradient.set($any($event.target).value)" />
-          <span class="hint">Shown behind the icon if the image is missing — e.g. "linear-gradient(135deg, #1f736f 0%, #4553c4 100%)".</span>
-        </div>
-
-        <div class="field">
           <label>Image</label>
-          <input #fileInput type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event)" />
-          @if (uploading()) {
-            <span class="hint">Uploading…</span>
+          <div
+            class="uploader"
+            [class.uploader--drag]="isDragOver()"
+            [class.uploader--filled]="formImageUrl()"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave()"
+            (drop)="onDrop($event)"
+            (click)="fileInput.click()"
+          >
+            @if (uploading()) {
+              <div class="uploader__state">
+                <svg class="uploader__spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" aria-hidden="true">
+                  <path d="M12 2v4" /><path d="m16.2 7.8 2.9-2.9" /><path d="M18 12h4" /><path d="m16.2 16.2 2.9 2.9" /><path d="M12 18v4" /><path d="m4.9 19.1 2.9-2.9" /><path d="M2 12h4" /><path d="m4.9 4.9 2.9 2.9" />
+                </svg>
+                <span>Uploading…</span>
+              </div>
+            } @else if (formImageUrl(); as url) {
+              <img [src]="url" alt="Slide preview" class="uploader__preview" />
+            } @else {
+              <div class="uploader__state">
+                <svg class="uploader__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" aria-hidden="true">
+                  <path d="M12 22V12" /><path d="m16 17 2 2 4-4" /><path d="M21 11.127V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.729l7 4a2 2 0 0 0 2 .001l1.32-.753" /><path d="M3.29 7 12 12l8.71-5" /><path d="m7.5 4.27 8.997 5.148" />
+                </svg>
+                <span class="uploader__label">Click to upload or drag and drop</span>
+                <span class="hint">JPEG, PNG or WebP, up to 5MB</span>
+              </div>
+            }
+          </div>
+          @if (formImageUrl() && !uploading()) {
+            <div class="uploader-actions">
+              <button type="button" class="btn btn--secondary btn--sm" (click)="fileInput.click()">Replace</button>
+              <button type="button" class="btn btn--danger btn--sm" (click)="removeImage()">Remove</button>
+            </div>
           }
-          @if (formImageUrl(); as url) {
-            <img [src]="url" alt="Preview" class="thumb thumb--preview" />
-          }
+          <input #fileInput type="file" accept="image/jpeg,image/png,image/webp" class="uploader__input" (change)="onFileSelected($event)" />
         </div>
       </div>
 
-      <div class="modal-actions">
+      </div>
+
+      <div class="modal__foot">
         <button type="button" class="btn btn--secondary" (click)="closeForm()">Cancel</button>
-        <button type="button" class="btn btn--primary" [disabled]="saving()" (click)="save()">
-          {{ saving() ? 'Saving…' : 'Save' }}
+        <button
+          type="button"
+          class="btn btn--primary"
+          [class.is-loading]="saving()"
+          [disabled]="saving()"
+          (click)="save()"
+        >
+          <span>Save</span>
         </button>
       </div>
     </div>

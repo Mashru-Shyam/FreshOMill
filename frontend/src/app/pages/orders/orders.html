@@ -1,25 +1,54 @@
-<div class="checkout-page">
-  <div class="checkout-page__header">
-    <a routerLink="/store" class="checkout-page__back">
+<div class="page-canvas"><div class="page page--narrow">
+  <div class="page-head">
+    <a routerLink="/store" class="page-head__back">
       <svg appIcon="arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
       Continue Shopping
     </a>
-    <h1 class="checkout-page__title">My Orders</h1>
+    <h1 class="page-head__title">My Orders</h1>
+    <p class="page-head__subtitle">Track the status of every order you've placed.</p>
   </div>
 
   @if (!auth.isLoggedIn()) {
-    <div class="checkout-empty account-gate">
-      <svg appIcon="package" class="checkout-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;" aria-hidden="true"></svg>
-      <h2 class="checkout-empty__title">Sign in to view your orders</h2>
-      <p class="checkout-empty__text">Track order status and delivery updates here.</p>
-      <button type="button" class="checkout-empty__cta" (click)="openSignIn($event)">Sign In</button>
+    <div class="empty-state empty-state--gate">
+      <svg appIcon="package" class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;" aria-hidden="true"></svg>
+      <h2 class="empty-state__title">Sign in to view your orders</h2>
+      <p class="empty-state__text">Track order status and delivery updates here.</p>
+      <button type="button" class="btn btn--primary empty-state__cta" (click)="openSignIn($event)">Sign In</button>
+    </div>
+  } @else if (orders.isLoading()) {
+    <div class="orders-list" aria-busy="true">
+      @for (i of skeletonSlots; track i) {
+        <div class="order-card-skeleton" aria-hidden="true">
+          <div class="order-card-skeleton__head">
+            <div>
+              <div class="skeleton skeleton--title order-card-skeleton__id"></div>
+              <div class="skeleton skeleton--text order-card-skeleton__date"></div>
+            </div>
+            <div class="skeleton order-card-skeleton__badge"></div>
+          </div>
+          <div class="skeleton order-card-skeleton__row"></div>
+          <div class="skeleton order-card-skeleton__row"></div>
+          <div class="skeleton skeleton--text order-card-skeleton__total"></div>
+        </div>
+      }
+    </div>
+    <span class="sr-only" role="status">Loading your orders…</span>
+  } @else if (orders.isError()) {
+    <div class="empty-state empty-state--error empty-state--gate" role="alert">
+      <svg appIcon="wifi-off" class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;" aria-hidden="true"></svg>
+      <h2 class="empty-state__title">We couldn't load your orders</h2>
+      <p class="empty-state__text">Your orders are safe — we just couldn't reach them right now.</p>
+      <button type="button" class="btn btn--primary empty-state__cta" (click)="orders.reload()">
+        <svg appIcon="refresh-cw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+        Try again
+      </button>
     </div>
   } @else if (orders.orders().length === 0) {
-    <div class="checkout-empty account-gate">
-      <svg appIcon="package" class="checkout-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;" aria-hidden="true"></svg>
-      <h2 class="checkout-empty__title">No orders yet</h2>
-      <p class="checkout-empty__text">Orders you place will show up here with their status.</p>
-      <a routerLink="/store" class="checkout-empty__cta">Browse Products</a>
+    <div class="empty-state empty-state--gate">
+      <svg appIcon="package" class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:40px;height:40px;" aria-hidden="true"></svg>
+      <h2 class="empty-state__title">No orders yet</h2>
+      <p class="empty-state__text">Orders you place will show up here with their status.</p>
+      <a routerLink="/store" class="btn btn--primary empty-state__cta">Browse Products</a>
     </div>
   } @else {
     <div class="orders-list">
@@ -28,4 +57,4 @@
       }
     </div>
   }
-</div>
+</div></div>

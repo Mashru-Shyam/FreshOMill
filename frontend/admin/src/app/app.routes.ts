@@ -15,6 +15,7 @@ export const routes: Routes = [
       { path: 'categories', loadComponent: () => import('./pages/categories/categories').then((m) => m.Categories) },
       { path: 'orders', loadComponent: () => import('./pages/orders/orders').then((m) => m.Orders) },
       { path: 'hero-slides', loadComponent: () => import('./pages/hero-slides/hero-slides').then((m) => m.HeroSlides) },
+      { path: 'customer-stories', loadComponent: () => import('./pages/customer-stories/customer-stories').then((m) => m.CustomerStories) },
       { path: 'settings', loadComponent: () => import('./pages/settings/settings').then((m) => m.Settings) },
     ],
   },

@@ -1,40 +1,71 @@
-/* Container/list layout only — .checkout-page__header/__back/__title,
-   .checkout-empty(+children) and .account-gate are all global
-   (src/styles.css); order-card's own look lives in
-   ./order-card/order-card.css.
-
-   A dedicated, narrower max-width — not `--layout-container-max` (1600px, sized for Store's
-   product grid). Every order card is single-column full width already (see the note below),
-   so at 1600px each one would stretch its item rows across nearly the full desktop viewport —
-   reads as an oversized receipt rather than a normal order-history list. 760px keeps each
-   card at a comfortable, readable width, closer to how order-history pages are laid out
-   elsewhere.
-
-   Single column, not a 2-up grid — orders vary a lot in item count/height,
-   and CSS grid rows size to their tallest cell, so a short order next to a
-   tall one left uneven gaps underneath the short card instead of the next
-   row starting right below it. Each order-card fills the full width
-   instead; its item rows use a proper column layout (see order-card.css)
-   so that width goes toward a well-structured row, not a stretched-thin
-   one. */
-.checkout-page {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: var(--space-xl);
-}
-
+/* Container/list layout only — .page-head/__back/__title, .empty-state
+   (+children) and .empty-state--gate are all global (src/styles.css); order-card's own look lives
+   in ./order-card/order-card.css. */
+/* A responsive card grid, not a single 1240px-wide column. One column stretched that far made
+   every order read as an oversized receipt with a huge dead gap after "Qty n", and left the
+   page mostly empty margin on a desktop viewport. `align-items: start` keeps a short order
+   from being stretched to match a tall one beside it. */
 .orders-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  align-items: start;
   gap: var(--space-md);
 }
 
-@media (max-width: 639px) {
-  .checkout-page {
-    padding: var(--space-md);
+@media (max-width: 899px) {
+  .orders-list {
+    grid-template-columns: minmax(0, 1fr);
   }
+}
 
+@media (max-width: 639px) {
   .orders-list {
     gap: var(--space-sm);
   }
+}
+
+/* Stands in for one `<app-order-card>`: same surface, same three bands (header / items /
+   total), so the list doesn't resize when the real orders arrive. */
+.order-card-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--elevation-raised);
+}
+
+.order-card-skeleton__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.order-card-skeleton__id {
+  width: 160px;
+}
+
+.order-card-skeleton__date {
+  width: 120px;
+  margin-top: var(--space-xxs);
+}
+
+.order-card-skeleton__badge {
+  width: 92px;
+  height: 26px;
+  border-radius: var(--rounded-full);
+}
+
+.order-card-skeleton__row {
+  height: 48px;
+  border-radius: var(--rounded-md);
+}
+
+.order-card-skeleton__total {
+  width: 40%;
+  align-self: flex-end;
+  height: 1rem;
 }

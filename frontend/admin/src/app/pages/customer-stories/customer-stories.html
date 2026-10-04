@@ -1,0 +1,195 @@
+<div class="page">
+  <div class="page-header">
+    <h1>
+      Customer Stories
+      <span class="page-header__sub">The testimonial rail on the storefront home page.</span>
+    </h1>
+    <button type="button" class="btn btn--primary" (click)="openCreate()">Add story</button>
+  </div>
+
+  <div class="card">
+    @if (loading()) {
+      <app-table-skeleton [count]="5" />
+    } @else if (error(); as err) {
+      <app-empty-state
+        variant="error"
+        title="We couldn't load your customer stories"
+        [text]="err"
+        actionLabel="Try again"
+        (action)="refresh()"
+      />
+    } @else if (stories().length === 0) {
+      <app-empty-state
+        title="No customer stories yet"
+        text="Add your first story and it appears in the storefront testimonial rail."
+        actionLabel="Add story"
+        (action)="openCreate()"
+      />
+    } @else {
+      <div class="filters">
+        <div class="filters__search">
+          <svg class="filters__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" /><path d="m21 21-4.34-4.34" />
+          </svg>
+          <input
+            type="search"
+            placeholder="Search by name or story…"
+            aria-label="Search customer stories"
+            [value]="search()"
+            (input)="search.set($any($event.target).value)"
+          />
+        </div>
+
+        <span class="filters__count">{{ filteredStories().length }} of {{ stories().length }}</span>
+
+        @if (search().trim()) {
+          <button type="button" class="btn btn--secondary btn--sm" (click)="search.set('')">Clear</button>
+        }
+      </div>
+
+      @if (filteredStories().length === 0) {
+        <app-empty-state
+          variant="filtered"
+          title="No stories match that search"
+          text="Try a different search term."
+          actionLabel="Clear search"
+          (action)="search.set('')"
+        />
+      } @else {
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Story</th>
+                <th>Video</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (story of filteredStories(); track story.id) {
+                <tr>
+                  <td>{{ story.displayOrder }}</td>
+                  <td>{{ story.name }}</td>
+                  <td class="story-text">{{ story.text }}</td>
+                  <td>
+                    @if (story.videoUrl) {
+                      <span class="badge badge--primary">Video</span>
+                    } @else {
+                      <span class="badge badge--neutral">Text only</span>
+                    }
+                  </td>
+                  <td class="actions">
+                    <button type="button" class="btn btn--secondary btn--sm" (click)="openEdit(story)">Edit</button>
+                    <button type="button" class="btn btn--danger btn--sm" (click)="remove(story)">Delete</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+@if (formOpen()) {
+  <div class="modal-overlay" (click)="closeForm()">
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="customerstoriesModalTitle1"
+      [appDialogFocus]="true"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal__head">
+        <h2 class="modal__title" id="customerstoriesModalTitle1">{{ editingId() ? 'Edit story' : 'Add story' }}</h2>
+        <button type="button" class="btn--icon" aria-label="Close" (click)="closeForm()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+            <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal__body">
+
+      @if (formError(); as err) {
+        <p class="banner banner--error">{{ err }}</p>
+      }
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="csName">Customer name</label>
+          <input id="csName" type="text" [value]="formName()" (input)="formName.set($any($event.target).value)" />
+        </div>
+
+        <div class="field">
+          <label for="csOrder">Display order</label>
+          <input id="csOrder" type="number" [value]="formDisplayOrder()" (input)="formDisplayOrder.set($any($event.target).valueAsNumber || 0)" />
+        </div>
+
+        <div class="field form-grid--wide">
+          <label for="csText">Story</label>
+          <textarea id="csText" [value]="formText()" (input)="formText.set($any($event.target).value)"></textarea>
+          <span class="hint">Shown on the homepage's Customer Stories rail. The avatar letter and its colour are generated from the name.</span>
+        </div>
+
+        <div class="field form-grid--wide">
+          <label>Video (optional)</label>
+          <div
+            class="uploader"
+            [class.uploader--drag]="isDragOver()"
+            [class.uploader--filled]="formVideoUrl()"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave()"
+            (drop)="onDrop($event)"
+            (click)="formVideoUrl() ? null : fileInput.click()"
+          >
+            @if (uploading()) {
+              <div class="uploader__state">
+                <svg class="uploader__spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" aria-hidden="true">
+                  <path d="M12 2v4" /><path d="m16.2 7.8 2.9-2.9" /><path d="M18 12h4" /><path d="m16.2 16.2 2.9 2.9" /><path d="M12 18v4" /><path d="m4.9 19.1 2.9-2.9" /><path d="M2 12h4" /><path d="m4.9 4.9 2.9 2.9" />
+                </svg>
+                <span>Uploading…</span>
+              </div>
+            } @else if (formVideoUrl(); as url) {
+              <video class="uploader__video" [src]="url" controls preload="metadata"></video>
+            } @else {
+              <div class="uploader__state">
+                <svg class="uploader__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" aria-hidden="true">
+                  <rect width="18" height="18" x="3" y="3" rx="2" /><path d="M7 3v18" /><path d="M3 7.5h4" /><path d="M3 12h18" /><path d="M3 16.5h4" /><path d="M17 3v18" /><path d="M17 7.5h4" /><path d="M17 16.5h4" />
+                </svg>
+                <span class="uploader__label">Click to upload or drag and drop</span>
+                <span class="hint">MP4, WebM or MOV, up to 50MB</span>
+              </div>
+            }
+          </div>
+          @if (formVideoUrl() && !uploading()) {
+            <div class="uploader-actions">
+              <button type="button" class="btn btn--secondary btn--sm" (click)="fileInput.click()">Replace</button>
+              <button type="button" class="btn btn--danger btn--sm" (click)="removeVideo()">Remove</button>
+            </div>
+          }
+          <input #fileInput type="file" accept="video/mp4,video/webm,video/quicktime" class="uploader__input" (change)="onFileSelected($event)" />
+        </div>
+      </div>
+
+      </div>
+
+      <div class="modal__foot">
+        <button type="button" class="btn btn--secondary" (click)="closeForm()">Cancel</button>
+        <button
+          type="button"
+          class="btn btn--primary"
+          [class.is-loading]="saving()"
+          [disabled]="saving()"
+          (click)="save()"
+        >
+          <span>Save</span>
+        </button>
+      </div>
+    </div>
+  </div>
+}

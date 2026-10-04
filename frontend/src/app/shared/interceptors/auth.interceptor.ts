@@ -4,13 +4,6 @@ import { catchError, switchMap, throwError } from 'rxjs';
 import { API_BASE_URL } from '../config/api.config';
 import { AuthService } from '../services/auth.service';
 
-/**
- * Attaches the access token to every request against our own API, and on a 401 attempts one
- * silent POST /api/v1/auth/refresh + retries the original request. Necessary because access
- * tokens expire in 15 minutes (Jwt:AccessTokenMinutes on the backend) — without this the app
- * would silently stop working every 15 minutes. Auth endpoints themselves are excluded from the
- * retry-on-401 loop so a failed login/refresh can't trigger another refresh attempt.
- */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
 

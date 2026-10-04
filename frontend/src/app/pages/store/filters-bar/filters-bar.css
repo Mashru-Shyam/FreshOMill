@@ -1,147 +1,95 @@
-/* Ported from Sample/Store.html's "STORE FILTER + SORT BAR" section (sort-dropdown/
-   filter-chip styles live in their own components — see sort-dropdown.css/filter-chips.css). */
-.store-filters {
-  background: var(--color-surface);
-  border-top: 1px solid var(--color-hairline);
-  border-bottom: 1px solid var(--color-hairline);
+/* Store toolbar — result count, sort, and (below 960px) the button that opens
+   the filters sheet.
+
+   This used to be the filter bar itself: a full-width strip carrying the
+   availability checkboxes and the price pair inline, spanning the page above
+   the grid. That put four controls across a 1500px band and left most of it
+   empty, and it pushed the products a further 60px down the page. The
+   controls moved into `<app-filters-panel>`, which the Store renders as a
+   sticky rail beside the grid on desktop and inside the sheet on mobile. */
+
+.store-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
 }
 
-.store-filters__bar {
-  max-width: var(--layout-container-max);
-  margin: 0 auto;
-  min-height: 56px;
-  padding: var(--space-sm) var(--space-xl);
+.store-toolbar__row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
   gap: var(--space-md);
+  min-height: 40px;
 }
 
-.store-filters__group {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-lg);
-}
-
-.store-filters__label {
-  font-size: var(--text-label-sm-size);
-  font-weight: 600;
-  color: var(--color-body-muted);
-}
-
-.store-filters__checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-  font-size: var(--text-label-size);
-  color: var(--color-body);
-  cursor: pointer;
-  user-select: none;
-}
-
-.store-filters__checkbox input {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--color-primary);
-  cursor: pointer;
-}
-
-.store-filters__price {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.store-filters__price-input {
-  width: 76px;
-  height: 36px;
-  padding: 0 var(--space-sm);
-  border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
-  font-family: var(--font-sans);
-  font-size: var(--text-label-size);
-  color: var(--color-ink);
-  background: var(--color-surface);
-  transition: border-color var(--duration-fast) var(--ease-standard);
-}
-
-.store-filters__price-input:hover {
-  border-color: var(--color-hairline);
-}
-
-.store-filters__price-input:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-}
-
-.store-filters__price-sep {
-  color: var(--color-body-muted);
-  font-size: var(--text-label-sm-size);
-}
-
-.store-filters__right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-lg);
-}
-
-.store-filters__count {
-  font-size: var(--text-label-sm-size);
+.store-toolbar__count {
+  font-size: var(--text-body-sm-size);
   color: var(--color-body-muted);
   white-space: nowrap;
 }
 
-/* Mobile filters trigger — hidden >=960px, replaces the inline Availability/Price controls
-   with a button that opens the filters bottom sheet. */
-.store-filters__mobile-trigger {
-  display: none;
-  align-items: center;
-  gap: var(--space-xs);
-  height: 36px;
-  padding: 0 var(--space-md);
-  border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface);
-  font-family: var(--font-sans);
-  font-size: var(--text-label-size);
-  font-weight: 500;
+.store-toolbar__count strong {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   color: var(--color-ink);
-  cursor: pointer;
 }
 
-.store-filters__mobile-trigger-count {
+.store-toolbar__count-skeleton {
+  display: inline-block;
+  width: 92px;
+  height: 0.8125rem;
+}
+
+/* Sort sits at the far right of the row on every breakpoint — it's the one
+   control that's present at all widths, so keeping its position fixed means
+   it never moves when the filter button appears or disappears. */
+.store-toolbar__sort {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-left: auto;
+}
+
+.store-toolbar__sort-label {
+  font-size: var(--text-label-sm-size);
+  font-weight: 600;
+  color: var(--color-body-muted);
+  white-space: nowrap;
+}
+
+.store-toolbar__filters-btn {
+  display: none;
+  height: 40px;
+}
+
+.store-toolbar__filters-count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 18px;
-  height: 18px;
+  min-width: 19px;
+  height: 19px;
   padding: 0 5px;
   border-radius: var(--rounded-full);
   background: var(--color-primary);
   color: var(--color-on-primary);
-  font-size: 11px;
+  font-size: var(--text-caption-size);
   font-weight: 700;
 }
 
+/* Below the rail breakpoint the filter button appears and the toolbar becomes
+   the only filter affordance on the page. */
 @media (max-width: 960px) {
-  .store-filters__group {
-    display: none;
-  }
-
-  .store-filters__mobile-trigger {
+  .store-toolbar__filters-btn {
     display: inline-flex;
   }
 }
 
-@media (max-width: 639px) {
-  .store-filters__bar {
-    padding: var(--space-sm) var(--space-md);
+@media (max-width: 479px) {
+  .store-toolbar__sort-label {
+    display: none;
   }
 
-  .store-filters__right {
-    width: 100%;
-    justify-content: space-between;
+  .store-toolbar__count {
+    font-size: var(--text-label-sm-size);
   }
 }

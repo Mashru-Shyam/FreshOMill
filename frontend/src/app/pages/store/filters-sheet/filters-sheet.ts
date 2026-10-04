@@ -1,5 +1,7 @@
 import { Component, model } from '@angular/core';
 import { Icon } from '../../../shared/icon/icon';
+import { DialogFocus } from '../../../shared/util/dialog-focus.directive';
+import { FiltersPanel } from '../filters-panel/filters-panel';
 
 /**
  * Mobile bottom-sheet version of the filter bar (Sample/Store.html's `#filtersSheet`,
@@ -19,7 +21,7 @@ import { Icon } from '../../../shared/icon/icon';
  */
 @Component({
   selector: 'app-filters-sheet',
-  imports: [Icon],
+  imports: [Icon, DialogFocus, FiltersPanel],
   templateUrl: './filters-sheet.html',
   styleUrl: './filters-sheet.css',
 })
@@ -38,15 +40,5 @@ export class FiltersSheet {
     if (event.target === event.currentTarget) {
       this.close();
     }
-  }
-
-  protected onPriceMinInput(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value;
-    this.priceMin.set(raw === '' ? null : Number(raw));
-  }
-
-  protected onPriceMaxInput(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value;
-    this.priceMax.set(raw === '' ? null : Number(raw));
   }
 }

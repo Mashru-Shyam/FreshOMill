@@ -1,8 +1,10 @@
-import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
 import { AdminProduct, ProductInput, ProductVariantInput, ProductsService } from '../../core/services/products.service';
 import { AdminCategory, CategoriesService } from '../../core/services/categories.service';
 import { ImagesService } from '../../core/services/images.service';
 import { extractErrorMessage } from '../../core/util/http-error';
+import { DialogFocus } from '../../core/util/dialog-focus.directive';
+import { EmptyState, TableSkeleton } from '../../shared/states/table-states';
 
 let nextTempId = 1;
 
@@ -14,6 +16,7 @@ interface VariantRow extends ProductVariantInput {
 
 @Component({
   selector: 'app-products',
+  imports: [DialogFocus, EmptyState, TableSkeleton],
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
@@ -27,6 +30,42 @@ export class Products {
   protected readonly categories = signal<AdminCategory[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
+
+  /** Search/filter state. The list endpoint already returns every product, so this filters the
+   *  loaded array rather than re-querying — no extra requests, and typing stays instant. */
+  protected readonly search = signal('');
+  protected readonly categoryFilter = signal('');
+  protected readonly stockFilter = signal<'' | 'in' | 'out'>('');
+
+  protected readonly filtersActive = computed(
+    () => this.search().trim() !== '' || this.categoryFilter() !== '' || this.stockFilter() !== ''
+  );
+
+  protected readonly filteredProducts = computed(() => {
+    const term = this.search().trim().toLowerCase();
+    const category = this.categoryFilter();
+    const stock = this.stockFilter();
+
+    return this.products().filter((product) => {
+      if (category && product.categoryId !== category) {
+        return false;
+      }
+      if (stock === 'in' && !product.inStock) {
+        return false;
+      }
+      if (stock === 'out' && product.inStock) {
+        return false;
+      }
+      if (!term) {
+        return true;
+      }
+      return (
+        product.name.toLowerCase().includes(term) ||
+        product.slug.toLowerCase().includes(term) ||
+        product.categoryName.toLowerCase().includes(term)
+      );
+    });
+  });
 
   protected readonly formOpen = signal(false);
   protected readonly editingId = signal<string | null>(null);
@@ -44,13 +83,16 @@ export class Products {
   protected readonly formError = signal<string | null>(null);
   protected readonly saving = signal(false);
   protected readonly uploading = signal(false);
+  protected readonly isDragOver = signal(false);
 
   constructor() {
     this.refresh();
     this.categoriesService.list().subscribe({ next: (categories) => this.categories.set(categories) });
   }
 
-  private refresh(): void {
+  /** Also the Retry action on the error state — a failed load used to leave the operator with
+   *  a red banner and no way forward short of reloading the browser. */
+  protected refresh(): void {
     this.loading.set(true);
     this.productsService.list().subscribe({
       next: (products) => {
@@ -62,6 +104,12 @@ export class Products {
         this.loading.set(false);
       },
     });
+  }
+
+  protected clearFilters(): void {
+    this.search.set('');
+    this.categoryFilter.set('');
+    this.stockFilter.set('');
   }
 
   protected openCreate(): void {
@@ -100,15 +148,36 @@ export class Products {
     this.formOpen.set(false);
   }
 
+  protected onFilesSelected(event: Event): void {
+    this.uploadFiles((event.target as HTMLInputElement).files);
+    this.fileInput()!.nativeElement.value = '';
+  }
+
+  protected onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver.set(true);
+  }
+
+  protected onDragLeave(): void {
+    this.isDragOver.set(false);
+  }
+
+  protected onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver.set(false);
+    this.uploadFiles(event.dataTransfer?.files);
+  }
+
   /** Multi-select — every chosen file uploads independently and appends to the gallery in
    * whatever order the browser reports them, so a partial failure (one bad file among five)
    * still keeps whichever uploads did succeed instead of losing the whole batch. */
-  protected onFilesSelected(event: Event): void {
-    const files = Array.from((event.target as HTMLInputElement).files ?? []);
+  private uploadFiles(fileList: FileList | null | undefined): void {
+    const files = Array.from(fileList ?? []);
     if (files.length === 0) {
       return;
     }
     this.uploading.set(true);
+    this.formError.set(null);
     let remaining = files.length;
     for (const file of files) {
       this.imagesService.upload(file).subscribe({
@@ -126,7 +195,6 @@ export class Products {
         },
       });
     }
-    this.fileInput()!.nativeElement.value = '';
   }
 
   protected removeImage(index: number): void {

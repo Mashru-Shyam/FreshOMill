@@ -5,6 +5,11 @@
 @media (max-width: 960px) {
   .bottom-nav {
     display: flex;
+    /* Frosted rather than opaque: content scrolling under the bar stays
+       faintly visible, which reads as a layer over the page instead of a
+       chunk cut out of it. */
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     align-items: stretch;
     justify-content: space-around;
     position: fixed;
@@ -15,7 +20,7 @@
     /* Clears the iOS home-indicator safe area without adding dead space on
        devices that don't have one. */
     padding-bottom: env(safe-area-inset-bottom, 0);
-    background: var(--color-surface);
+    background: rgb(255 255 255 / 92%);
     border-top: 1px solid var(--color-hairline);
     box-shadow: var(--elevation-modal);
     z-index: 90;
@@ -28,7 +33,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
+  padding-top: 2px;
   border: none;
   background: transparent;
   font-family: var(--font-sans);
@@ -44,8 +50,23 @@
   color: var(--color-ink);
 }
 
+/* The active tab gets a top marker as well as colour — on a five-item bar,
+   colour alone is a small signal at 11px type. */
 .bottom-nav__item--active {
   color: var(--color-primary);
+  position: relative;
+}
+
+.bottom-nav__item--active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 3px;
+  border-radius: 0 0 var(--rounded-full) var(--rounded-full);
+  background: var(--color-primary);
 }
 
 .bottom-nav__icon-wrap {
@@ -62,7 +83,7 @@
   padding: 0 3px;
   border-radius: var(--rounded-full);
   border: 2px solid var(--color-surface);
-  background: var(--color-primary);
+  background: var(--color-accent);
   color: var(--color-on-primary);
   font-size: 0.5625rem;
   font-weight: 700;

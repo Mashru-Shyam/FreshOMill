@@ -1,32 +1,57 @@
-<section class="bestsellers-section" aria-label="Best Sellers">
-  <h2 class="bestsellers-section__title">Best Sellers</h2>
+@if (visible()) {
+  <section class="section section--tint bestsellers-section" aria-labelledby="bestSellersTitle">
+    <div class="section__inner">
+      <div class="section__head">
+        <div class="section__heading">
+          <span class="section__eyebrow">Most loved</span>
+          <h2 class="section__title" id="bestSellersTitle">Best sellers this month</h2>
+        </div>
 
-  <div class="bestsellers-wrapper">
-    <button type="button" class="bestsellers-arrow bestsellers-arrow--prev" aria-label="Previous best seller"
-      [class.is-hidden]="isPrevHidden()" (click)="slide('prev')">
-      <svg appIcon="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;" aria-hidden="true"></svg>
-    </button>
-    <button type="button" class="bestsellers-arrow bestsellers-arrow--next" aria-label="Next best seller"
-      [class.is-hidden]="isNextHidden()" (click)="slide('next')">
-      <svg appIcon="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;" aria-hidden="true"></svg>
-    </button>
+        <!-- Arrows moved out of the rail and into the heading row. Floating
+             over the first and last card, they covered product artwork and
+             sat at different heights on every breakpoint. -->
+        <div class="bestsellers-section__controls">
+          <a routerLink="/store" [queryParams]="{ category: 'all' }" class="section__link">
+            Shop all
+            <svg appIcon="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
+          </a>
+          <div class="bestsellers-section__arrows">
+            <button type="button" class="rail-arrow" aria-label="Previous best sellers"
+              [class.is-hidden]="isPrevHidden()" (click)="slide('prev')">
+              <svg appIcon="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;" aria-hidden="true"></svg>
+            </button>
+            <button type="button" class="rail-arrow" aria-label="Next best sellers"
+              [class.is-hidden]="isNextHidden()" (click)="slide('next')">
+              <svg appIcon="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;" aria-hidden="true"></svg>
+            </button>
+          </div>
+        </div>
+      </div>
 
-    <div
-      #slider
-      class="bestsellers-slider"
-      [class.is-dragging]="isDragging()"
-      role="region"
-      aria-label="Best seller products slider"
-      (scroll)="updateArrows()"
-      (pointerdown)="onPointerDown($event)"
-      (pointermove)="onPointerMove($event)"
-      (pointerup)="endDrag()"
-      (pointercancel)="endDrag()"
-      (click)="onSliderClick($event)"
-    >
-      @for (product of products(); track product.name) {
-        <app-seller-card [product]="product" />
-      }
+      <div
+        #slider
+        class="rail bestsellers-slider"
+        [class.is-dragging]="isDragging()"
+        role="region"
+        aria-label="Best seller products"
+        (scroll)="updateArrows()"
+        (pointerdown)="onPointerDown($event)"
+        (pointermove)="onPointerMove($event)"
+        (pointerup)="endDrag()"
+        (pointercancel)="endDrag()"
+        (click)="onSliderClick($event)"
+      >
+        @if (loading()) {
+          @for (i of skeletonSlots; track i) {
+            <app-product-card-skeleton />
+          }
+          <span class="sr-only" role="status">Loading best sellers…</span>
+        } @else {
+          @for (product of products(); track product.name; let i = $index) {
+            <app-seller-card [product]="product" [eagerIndex]="i" />
+          }
+        }
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+}

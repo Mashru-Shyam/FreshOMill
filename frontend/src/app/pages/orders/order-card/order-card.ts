@@ -9,21 +9,19 @@ interface StatusMeta {
 }
 
 /**
- * Sample/Orders.html's `ORDER_STATUS_META` only covers 3 states
- * (Processing/Delivered/Cancelled) because the mockup's mock order data
- * never has a "shipped" one; `OrdersService.OrderStatus` has more. 'shipped'
- * and 'pendingpayment' are mapped onto the same warning-toned "processing"
- * badge style as 'placed' (there's no 4th badge variant in the mockup's CSS
- * to reuse), just with their own label and icon; 'paymentfailed' reuses the
- * "cancelled" badge style for the same reason.
+ * Presentation mapping for each order state. Uses the app-wide `.status-badge--*` scale
+ * (src/styles.css), which gives every stage its own hue — amber (awaiting payment) → blue
+ * (processing) → teal (shipped) → green (delivered), red for the two failure states. The
+ * three in-progress states previously all rendered the same blue badge, so a shopper
+ * couldn't tell "Processing" from "Shipped" without reading the label.
  */
 const STATUS_META: Record<OrderStatus, StatusMeta> = {
-  pendingpayment: { label: 'Payment Pending', badgeClass: 'order-badge--processing', icon: 'clock' },
-  placed: { label: 'Processing', badgeClass: 'order-badge--processing', icon: 'loader' },
-  shipped: { label: 'Shipped', badgeClass: 'order-badge--processing', icon: 'truck' },
-  delivered: { label: 'Delivered', badgeClass: 'order-badge--delivered', icon: 'check-circle' },
-  cancelled: { label: 'Cancelled', badgeClass: 'order-badge--cancelled', icon: 'x-circle' },
-  paymentfailed: { label: 'Payment Failed', badgeClass: 'order-badge--cancelled', icon: 'alert-circle' },
+  pendingpayment: { label: 'Payment Pending', badgeClass: 'status-badge--pending', icon: 'clock' },
+  placed: { label: 'Processing', badgeClass: 'status-badge--processing', icon: 'loader' },
+  shipped: { label: 'Shipped', badgeClass: 'status-badge--shipped', icon: 'truck' },
+  delivered: { label: 'Delivered', badgeClass: 'status-badge--delivered', icon: 'check-circle' },
+  cancelled: { label: 'Cancelled', badgeClass: 'status-badge--cancelled', icon: 'x-circle' },
+  paymentfailed: { label: 'Payment Failed', badgeClass: 'status-badge--cancelled', icon: 'alert-circle' },
 };
 
 /**
@@ -54,6 +52,14 @@ export class OrderCard {
   readonly order = input.required<Order>();
 
   protected readonly statusMeta = computed<StatusMeta>(() => STATUS_META[this.order().status]);
+
+  /** Name plus the locality — the whole address line would wrap to three lines in a card
+   *  that's meant to be scanned, and the name plus city is what distinguishes one saved
+   *  address from another. */
+  protected readonly shipTo = computed(() => {
+    const address = this.order().address;
+    return `${address.fullName} · ${address.city}, ${address.state} ${address.pincode}`;
+  });
 
   protected readonly itemCount = computed(() => this.order().items.reduce((sum, item) => sum + item.qty, 0));
 

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { OverlayService } from '../services/overlay.service';
 import { CartService } from '../services/cart.service';
@@ -6,6 +6,8 @@ import { AuthService } from '../services/auth.service';
 import { ToastService } from '../services/toast.service';
 import { ConfirmService } from '../services/confirm.service';
 import { Icon } from '../icon/icon';
+import { DialogFocus } from '../util/dialog-focus.directive';
+import { FREE_DELIVERY_THRESHOLD, amountToFreeDelivery } from '../data/delivery';
 
 /**
  * Shopping cart drawer (`.cart-overlay`/`.cart-drawer` in Sample/Store.html)
@@ -22,7 +24,7 @@ import { Icon } from '../icon/icon';
  */
 @Component({
   selector: 'app-cart-drawer',
-  imports: [RouterLink, Icon],
+  imports: [RouterLink, Icon, DialogFocus],
   templateUrl: './cart-drawer.html',
   styleUrl: './cart-drawer.css',
 })
@@ -34,6 +36,15 @@ export class CartDrawer {
     private readonly toast: ToastService,
     private readonly confirmService: ConfirmService
   ) {}
+
+  /** How much more the shopper needs to spend to qualify for free delivery, and how far along
+   *  they already are. Reads the same constants the checkout charges against
+   *  (shared/data/delivery.ts) rather than restating the threshold here. */
+  protected readonly amountToFreeDelivery = computed(() => amountToFreeDelivery(this.cart.subtotal()));
+
+  protected readonly freeDeliveryProgress = computed(() =>
+    Math.min(100, (this.cart.subtotal() / FREE_DELIVERY_THRESHOLD) * 100)
+  );
 
   protected readonly failedImages = signal<Set<string>>(new Set());
 

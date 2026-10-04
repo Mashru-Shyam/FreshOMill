@@ -20,6 +20,10 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Kestrel's default (~28MB) is below AdminVideoEndpoints' 50MB video cap — raise it with some
+// headroom so a max-size video isn't rejected before the endpoint's own size check ever runs.
+builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 60 * 1024 * 1024);
+
 builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .ReadFrom.Services(services)
@@ -104,10 +108,13 @@ app.MapOrderEndpoints();
 app.MapPaymentWebhookEndpoints();
 app.MapContactEndpoints();
 app.MapStoreSettingsEndpoints();
+app.MapAllProductsImageEndpoints();
 app.MapAdminCategoryEndpoints();
 app.MapAdminProductEndpoints();
 app.MapAdminOrderEndpoints();
 app.MapAdminImageEndpoints();
+app.MapAdminVideoEndpoints();
 app.MapAdminHeroSlideEndpoints();
+app.MapAdminTestimonialEndpoints();
 
 app.Run();

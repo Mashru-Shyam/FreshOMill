@@ -1,0 +1,56 @@
+<div class="filters-panel">
+  <div class="filters-panel__head">
+    <h2 class="filters-panel__heading">Filters</h2>
+    @if (anyActive()) {
+      <button type="button" class="link-action filters-panel__clear" (click)="clearAll()">Clear all</button>
+    }
+  </div>
+
+  <fieldset class="filters-panel__group">
+    <legend class="filters-panel__legend">Availability</legend>
+    <label class="filters-panel__check">
+      <input type="checkbox" [checked]="inStock()" (change)="inStock.set(!inStock())" />
+      <span>In stock</span>
+    </label>
+    <label class="filters-panel__check">
+      <input type="checkbox" [checked]="outOfStock()" (change)="outOfStock.set(!outOfStock())" />
+      <span>Out of stock</span>
+    </label>
+  </fieldset>
+
+  <fieldset class="filters-panel__group">
+    <legend class="filters-panel__legend">Price range</legend>
+    <div class="filters-panel__price">
+      <!-- The rupee prefix lives in the field rather than in a placeholder, so
+           it stays visible once a number is typed. The bare "Min"/"Max"
+           placeholders disappeared exactly when the unit mattered most. -->
+      <span class="filters-panel__price-field">
+        <span class="filters-panel__price-prefix" aria-hidden="true">Rs.</span>
+        <input
+          type="number"
+          class="filters-panel__price-input"
+          placeholder="Min"
+          min="0"
+          inputmode="numeric"
+          [value]="priceMin() ?? ''"
+          (input)="onPriceMinInput($event)"
+          aria-label="Minimum price in rupees"
+        />
+      </span>
+      <span class="filters-panel__price-sep" aria-hidden="true">&ndash;</span>
+      <span class="filters-panel__price-field">
+        <span class="filters-panel__price-prefix" aria-hidden="true">Rs.</span>
+        <input
+          type="number"
+          class="filters-panel__price-input"
+          placeholder="Max"
+          min="0"
+          inputmode="numeric"
+          [value]="priceMax() ?? ''"
+          (input)="onPriceMaxInput($event)"
+          aria-label="Maximum price in rupees"
+        />
+      </span>
+    </div>
+  </fieldset>
+</div>

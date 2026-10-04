@@ -9,8 +9,8 @@ import { AddressList } from './address-list/address-list';
 
 /**
  * Profile page (Sample/Profile.html, everything below the shared
- * navbar/search chrome). Signed-out visitors see the same `.checkout-empty`
- * gate pattern Checkout uses (`.account-gate` trims its vertical padding a
+ * navbar/search chrome). Signed-out visitors see the same `.empty-state`
+ * gate pattern Checkout uses (`.empty-state--gate` trims its vertical padding a
  * touch, matching Profile.html's own override); its CTA opens the sign-in
  * popover un-anchored (`openProfile(null)`) — the same documented deviation
  * CartDrawer's checkout-gate CTA takes, since there's no navbar

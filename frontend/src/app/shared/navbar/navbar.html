@@ -89,25 +89,30 @@
           type="button"
           class="btn--icon navbar__profile-btn"
           [class.is-logged-in]="auth.isLoggedIn()"
-          aria-label="Account menu"
+          [attr.aria-label]="auth.isLoggedIn() ? 'Account menu' : 'Sign in'"
           aria-haspopup="true"
           [attr.aria-expanded]="overlay.profileOpen()"
           (click)="onProfileToggleClick($event)"
         >
           <svg appIcon="user" class="navbar__profile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px" aria-hidden="true"></svg>
-          <span class="profile-avatar">{{ auth.currentUser()?.email?.charAt(0) }}</span>
+          <span class="profile-avatar" aria-hidden="true">{{ auth.currentUser()?.email?.charAt(0) }}</span>
         </button>
 
         <button
           type="button"
           class="btn--icon"
-          aria-label="View Cart"
+          [attr.aria-label]="cart.lineCount() ? 'View cart, ' + cart.lineCount() + ' item' + (cart.lineCount() === 1 ? '' : 's') : 'View cart, empty'"
           aria-haspopup="true"
           [attr.aria-expanded]="overlay.cartDrawerOpen()"
           (click)="overlay.openCartDrawer()"
         >
           <svg appIcon="shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px" aria-hidden="true"></svg>
-          <span class="cart-badge">{{ cart.lineCount() }}</span>
+          <!-- Only rendered when there's something in the cart. It used to render
+               unconditionally, so an empty cart carried a permanent blue "0" badge — the
+               bottom nav already got this right, and the two now agree. -->
+          @if (cart.lineCount() > 0) {
+            <span class="cart-badge" aria-hidden="true">{{ cart.lineCount() }}</span>
+          }
         </button>
       </div>
     </div>

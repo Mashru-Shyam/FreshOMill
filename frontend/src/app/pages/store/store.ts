@@ -5,9 +5,11 @@ import { map } from 'rxjs';
 import { CategoryChips } from './category-chips/category-chips';
 import { CategoryHero } from './category-hero/category-hero';
 import { ALL_CATEGORY, StoreCategory } from '../../shared/data/catalog';
+import { AllProductsImageService } from '../../shared/services/all-products-image.service';
 import { CategoryService } from '../../shared/services/category.service';
 import { ProductService } from '../../shared/services/product.service';
 import { FiltersBar } from './filters-bar/filters-bar';
+import { FiltersPanel } from './filters-panel/filters-panel';
 import { FiltersSheet } from './filters-sheet/filters-sheet';
 import { StoreProductGrid } from './product-grid/product-grid';
 import { SortValue } from './sort-dropdown/sort-dropdown';
@@ -29,13 +31,14 @@ import { SortValue } from './sort-dropdown/sort-dropdown';
  */
 @Component({
   selector: 'app-store-page',
-  imports: [CategoryHero, CategoryChips, FiltersBar, FiltersSheet, StoreProductGrid],
+  imports: [CategoryHero, CategoryChips, FiltersBar, FiltersPanel, FiltersSheet, StoreProductGrid],
   templateUrl: './store.html',
 })
 export class Store {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly categoryService = inject(CategoryService);
+  private readonly allProductsImageService = inject(AllProductsImageService);
   private readonly productService = inject(ProductService);
 
   private readonly categorySlug = toSignal(
@@ -43,11 +46,22 @@ export class Store {
     { initialValue: 'all' }
   );
 
-  private readonly allCategories = computed<StoreCategory[]>(() => [ALL_CATEGORY, ...this.categoryService.categories()]);
+  private readonly allProductsCategory = computed<StoreCategory>(() => ({
+    ...ALL_CATEGORY,
+    image: this.allProductsImageService.image(),
+  }));
+
+  private readonly allCategories = computed<StoreCategory[]>(() => [this.allProductsCategory(), ...this.categoryService.categories()]);
 
   protected readonly activeCategory = computed(
-    () => this.allCategories().find((c) => c.slug === this.categorySlug()) ?? ALL_CATEGORY
+    () => this.allCategories().find((c) => c.slug === this.categorySlug()) ?? this.allProductsCategory()
   );
+
+  /** Surfaces the catalogue request's state to the grid, so a cold load renders skeletons and
+   *  a failed load renders a retry — instead of both rendering "no products match these
+   *  filters", which was the only empty state the grid had. */
+  protected readonly productsLoading = this.productService.isLoading;
+  protected readonly productsFailed = this.productService.isError;
 
   protected readonly inStock = signal(false);
   protected readonly outOfStock = signal(false);
@@ -99,6 +113,17 @@ export class Store {
       queryParams: { category: slug },
       queryParamsHandling: 'merge',
     });
+  }
+
+  /** Whether the *user* has narrowed the list (category alone doesn't count — an empty
+   *  category is its own state, not a filter problem). Decides which empty state the grid
+   *  shows and therefore which recovery action it offers. */
+  protected readonly filtersActive = computed(
+    () => this.inStock() || this.outOfStock() || this.priceMin() !== null || this.priceMax() !== null
+  );
+
+  protected retryProducts(): void {
+    this.productService.reload();
   }
 
   protected clearAllFilters(): void {

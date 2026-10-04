@@ -4,7 +4,6 @@ import { catchError, switchMap, throwError } from 'rxjs';
 import { API_BASE_URL } from '../config/api.config';
 import { AdminAuthService } from '../services/admin-auth.service';
 
-/** Same shape as the customer app's authInterceptor — attach the token, refresh once on 401. */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AdminAuthService);
 

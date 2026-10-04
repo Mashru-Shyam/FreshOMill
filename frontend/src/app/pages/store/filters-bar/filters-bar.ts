@@ -31,6 +31,9 @@ export class FiltersBar {
   readonly sheetOpen = model(false);
 
   readonly resultCount = input(0);
+  /** While the catalogue is still loading, "Showing 0 products" is a lie — the count is
+   *  suppressed rather than reported as zero. */
+  readonly loading = input(false);
 
   protected readonly appliedChips = computed<AppliedFilterChip[]>(() => {
     const chips: AppliedFilterChip[] = [];
@@ -41,16 +44,8 @@ export class FiltersBar {
     return chips;
   });
 
-  protected onPriceMinInput(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value;
-    this.priceMin.set(raw === '' ? null : Number(raw));
-  }
-
-  protected onPriceMaxInput(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value;
-    this.priceMax.set(raw === '' ? null : Number(raw));
-  }
-
+  /** The price inputs themselves moved to <app-filters-panel>; this component keeps the
+   *  models only so the applied-filter chips can describe and clear them. */
   protected removeFilter(key: string): void {
     if (key === 'priceMin' || key === 'priceMax') {
       this[key].set(null);

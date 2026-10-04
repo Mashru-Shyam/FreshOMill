@@ -1,5 +1,6 @@
-import { Component, effect, input, signal } from '@angular/core';
-import { StoreCategory } from '../../../shared/data/catalog';
+import { Component, computed, effect, input, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ALL_CATEGORY, StoreCategory } from '../../../shared/data/catalog';
 
 /**
  * Category hero banner (Sample/Store.html's `.category-hero`) — shows the currently
@@ -12,11 +13,16 @@ import { StoreCategory } from '../../../shared/data/catalog';
  */
 @Component({
   selector: 'app-category-hero',
+  imports: [RouterLink],
   templateUrl: './category-hero.html',
   styleUrl: './category-hero.css',
 })
 export class CategoryHero {
   readonly category = input.required<StoreCategory>();
+
+  /** The "All Products" pseudo-category is the Store root, so it's the last crumb rather
+   *  than a child of itself. */
+  protected readonly isAllProducts = computed(() => this.category().slug === ALL_CATEGORY.slug);
 
   protected readonly imageFailed = signal(false);
 

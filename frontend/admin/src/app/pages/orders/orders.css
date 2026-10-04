@@ -1,22 +1,104 @@
-.hint {
-  font-size: 0.8125rem;
-  color: var(--color-body-muted);
+/* Order detail modal. Lived in products.css because Orders borrowed that stylesheet wholesale
+   — which also meant every catalogue screen shipped these rules and Orders shipped the image
+   uploader it has no use for. Split out so each page carries what it actually renders.
+
+   `.actions` is repeated here (rather than shared) because it's four declarations; a shared
+   file for that alone would cost more indirection than it saves. */
+/* Stacked, not side by side. In a row the pair of buttons set the row's width
+   and pushed the cell wider than the rest of the column, so the actions never
+   lined up down the table; stacked they occupy one button's width and each row
+   ends at the same place. */
+.actions {
+  display: grid;
+  gap: var(--space-xs);
+  justify-items: stretch;
+  justify-content: end;
+}
+
+.actions .btn {
+  width: 100%;
+}
+
+/* ---------- order detail modal ---------- */
+.hint-block {
   margin-bottom: var(--space-md);
 }
 
-.actions {
-  display: flex;
-  gap: var(--space-xs);
-  justify-content: flex-end;
+/* Customer identity sits at the top of the order modal as a labelled block rather than as a
+   run-on subtitle ("Placed <date> by <email>"), so an operator can find the address and phone
+   without reading a sentence. */
+.order-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-canvas);
 }
 
-.modal-actions {
+.order-meta__label {
+  display: block;
+  font-size: var(--text-overline-size);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--text-overline-tracking);
+  color: var(--color-body-muted);
+  margin-bottom: 2px;
+}
+
+.order-meta__value {
+  font-size: var(--text-body-size);
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+/* Status is the one thing an operator opens an order to change, so it gets its own panel at
+   the top rather than being a bare unlabelled <select> among the detail text: the current
+   state as a colored pill on the left, the control to change it on the right. */
+.status-panel {
   display: flex;
-  justify-content: flex-end;
-  gap: var(--space-sm);
-  margin-top: var(--space-lg);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-hairline);
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md) var(--space-lg);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+}
+
+.status-panel__current {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+}
+
+.status-panel__label {
+  font-size: var(--text-overline-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-body-muted);
+}
+
+.status-panel__current .badge {
+  font-size: var(--text-body-size);
+  padding: 5px var(--space-md);
+}
+
+.status-panel__control {
+  flex: 1 1 220px;
+  max-width: 280px;
+}
+
+@media (max-width: 720px) {
+  .status-panel__control {
+    max-width: none;
+  }
 }
 
 .order-detail-grid {
@@ -27,13 +109,13 @@
 }
 
 .order-detail-grid h3 {
-  font-size: 0.9375rem;
+  font-size: var(--text-h3-size);
   font-weight: 700;
   margin-bottom: var(--space-xs);
 }
 
 .order-detail-grid p {
-  font-size: 0.875rem;
+  font-size: var(--text-body-size);
   color: var(--color-body);
   line-height: 1.6;
 }

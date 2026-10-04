@@ -1,20 +1,24 @@
-import { Component, ElementRef, HostListener, effect, signal } from '@angular/core';
+import { computed, Component, ElementRef, HostListener, effect, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { OverlayService } from '../services/overlay.service';
 import { AuthService, isValidEmail } from '../services/auth.service';
 import { ToastService } from '../services/toast.service';
 import { extractErrorMessage } from '../util/http-error';
 import { Icon } from '../icon/icon';
+import { DialogFocus } from '../util/dialog-focus.directive';
 
 type AuthStep = 'email' | 'otp';
 
 @Component({
   selector: 'app-profile-popover',
-  imports: [RouterLink, Icon],
+  imports: [RouterLink, Icon, DialogFocus],
   templateUrl: './profile-popover.html',
   styleUrl: './profile-popover.css',
 })
 export class ProfilePopover {
+  /** First letter of the signed-in address, for the identity disc. */
+  protected readonly initial = computed(() => this.auth.currentUser()?.email?.charAt(0).toUpperCase() ?? '?');
+
   protected readonly authStep = signal<AuthStep>('email');
   protected readonly emailValue = signal('');
   protected readonly otpValue = signal('');
@@ -43,6 +47,22 @@ export class ProfilePopover {
         this.authError.set(null);
       }
     });
+  }
+
+  /**
+   * A popover anchored to the navbar button closes when the page scrolls,
+   * the way any dropdown does. It replaces the scroll *lock* it used to
+   * rely on: locking removed the scrollbar, and with nothing covering the
+   * page the reclaimed lane showed as a pale strip down the right edge.
+   *
+   * `{ passive: true }` semantics are what Angular uses for scroll host
+   * listeners, so this never delays the scroll it's reacting to.
+   */
+  @HostListener('window:scroll')
+  protected onWindowScroll(): void {
+    if (this.overlay.profileOpen()) {
+      this.close();
+    }
   }
 
   protected close(): void {

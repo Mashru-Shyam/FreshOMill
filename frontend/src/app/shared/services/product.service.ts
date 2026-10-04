@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of, shareReplay, switchMap, timer } from 'rxjs';
+import { map } from 'rxjs';
 import { API_BASE_URL } from '../config/api.config';
+import { toAbsoluteImageUrl } from '../util/image-url';
+import { pollCollection } from '../util/load-state';
 import type { StoreProduct } from '../data/catalog';
 
 const REFRESH_INTERVAL_MS = 15_000;
@@ -32,29 +33,39 @@ interface ProductDto {
 export class ProductService {
   private readonly http = inject(HttpClient);
 
-  private readonly products$ = timer(0, REFRESH_INTERVAL_MS).pipe(
-    switchMap(() => this.http.get<ProductDto[]>(`${API_BASE_URL}/api/v1/products`)),
-    map((dtos) =>
-      dtos.map(
-        (dto): StoreProduct => ({
-          id: dto.slug,
-          name: dto.name,
-          price: dto.price,
-          unit: dto.unit,
-          categorySlug: dto.categorySlug,
-          image: dto.imageUrl ? `${API_BASE_URL}${dto.imageUrl}` : '',
-          inStock: dto.inStock,
-          description: dto.description,
-          popularity: dto.popularity,
-          isFeatured: dto.isFeatured,
-          variants: dto.variants.map((v) => ({ label: v.label, price: v.price, stockQuantity: v.stockQuantity })),
-          images: dto.images.map((url) => `${API_BASE_URL}${url}`),
-        })
-      )
-    ),
-    catchError(() => of<StoreProduct[]>([])),
-    shareReplay({ bufferSize: 1, refCount: false })
+  /** Same endpoint, same polling cadence, same mapping as before — `pollCollection` only adds
+   *  the loading/error tracking the grids need to stop rendering "no results" during a cold
+   *  load. See shared/util/load-state.ts. */
+  private readonly resource = pollCollection<StoreProduct>(
+    () =>
+      this.http.get<ProductDto[]>(`${API_BASE_URL}/api/v1/products`).pipe(
+        map((dtos) =>
+          dtos.map(
+            (dto): StoreProduct => ({
+              id: dto.slug,
+              name: dto.name,
+              price: dto.price,
+              unit: dto.unit,
+              categorySlug: dto.categorySlug,
+              image: toAbsoluteImageUrl(dto.imageUrl),
+              inStock: dto.inStock,
+              description: dto.description,
+              popularity: dto.popularity,
+              isFeatured: dto.isFeatured,
+              variants: dto.variants.map((v) => ({ label: v.label, price: v.price, stockQuantity: v.stockQuantity })),
+              images: dto.images.map((url) => toAbsoluteImageUrl(url)),
+            })
+          )
+        )
+      ),
+    REFRESH_INTERVAL_MS
   );
 
-  readonly products = toSignal(this.products$, { initialValue: [] as StoreProduct[] });
+  readonly products = this.resource.value;
+  readonly isLoading = this.resource.isLoading;
+  readonly isError = this.resource.isError;
+
+  reload(): void {
+    this.resource.reload();
+  }
 }

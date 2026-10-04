@@ -12,6 +12,6 @@ public sealed class GetTestimonialsQueryHandler(IApplicationDbContext context)
     public async Task<IReadOnlyList<TestimonialDto>> Handle(GetTestimonialsQuery request, CancellationToken cancellationToken) =>
         await context.Testimonials
             .OrderBy(t => t.DisplayOrder)
-            .Select(t => new TestimonialDto(t.Initial, t.AvatarGradient, t.Name, t.Text, t.DisplayOrder))
+            .Select(t => new TestimonialDto(t.Initial, t.AvatarGradient, t.Name, t.Text, t.VideoUrl, t.DisplayOrder))
             .ToListAsync(cancellationToken);
 }

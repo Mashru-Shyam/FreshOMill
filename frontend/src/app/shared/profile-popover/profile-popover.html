@@ -4,82 +4,146 @@
   [style.top.px]="overlay.profileAnchor()?.top ?? null"
   [style.right.px]="overlay.profileAnchor()?.right ?? null"
   role="dialog"
-  aria-label="Account profile details"
+  aria-modal="true"
+  aria-labelledby="profilePopoverTitle"
+  [appDialogFocus]="overlay.profileOpen()"
+  [appDialogFocusLock]="false"
 >
-  <div class="profile-popover__handle" aria-hidden="true"></div>
-  <div class="profile-popover__header">
-    <span class="profile-popover__title">Account</span>
-    <button type="button" class="btn--icon" style="width:28px;height:28px" aria-label="Close profile menu" (click)="close()">
-      <svg appIcon="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
-    </button>
-  </div>
+  <div class="sheet-handle" aria-hidden="true"></div>
 
-  <div>
-    @if (auth.isLoggedIn()) {
-      <div class="profile-popover__email">
-        <svg appIcon="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--color-secondary)" aria-hidden="true"></svg>
-        {{ auth.currentUser()?.email }}
-      </div>
-      <div class="profile-popover__actions">
-        <a routerLink="/orders" class="popover-btn" (click)="close()">
-          <svg appIcon="package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
-          Orders
-        </a>
-        <a routerLink="/profile" class="popover-btn" (click)="close()">
-          <svg appIcon="user-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
-          Profile
-        </a>
-      </div>
-      <button type="button" class="popover-btn popover-btn--logout" (click)="logout()">
-        <svg appIcon="log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
-        Log Out
+  @if (auth.isLoggedIn()) {
+    <!-- Signed in: identity block, then the two places to go, then log out
+         separated by a rule so it can't be mis-clicked as a nav item. -->
+    <div class="profile-popover__header">
+      <span class="profile-popover__identity">
+        <span class="profile-popover__avatar" aria-hidden="true">{{ initial() }}</span>
+        <span class="profile-popover__identity-text">
+          <span class="profile-popover__title" id="profilePopoverTitle">Your account</span>
+          <span class="profile-popover__email">{{ auth.currentUser()?.email }}</span>
+        </span>
+      </span>
+      <button type="button" class="btn--icon profile-popover__close" aria-label="Close account menu" (click)="close()">
+        <svg appIcon="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
       </button>
-    } @else if (authStep() === 'email') {
-      <div class="profile-popover__auth">
-        <label class="profile-popover__auth-label" for="profileAuthInput">Email address</label>
-        <input
-          type="email"
-          id="profileAuthInput"
-          class="profile-popover__auth-input"
-          [class.profile-popover__auth-input--invalid]="authError()"
-          placeholder="you@example.com"
-          autocomplete="email"
-          [value]="emailValue()"
-          (input)="onEmailInput($event)"
-          (keydown)="onKeydown($event)"
-        />
-        @if (authError(); as error) {
-          <span class="profile-popover__auth-error">{{ error }}</span>
-        }
-        <button type="button" class="popover-btn popover-btn--primary" [disabled]="submitting()" (click)="onSubmit()">
-          {{ submitting() ? 'Sending…' : 'Sign In' }}
+    </div>
+
+    <div class="profile-popover__body">
+      <a routerLink="/orders" class="profile-popover__item" (click)="close()">
+        <span class="profile-popover__item-icon">
+          <svg appIcon="package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px" aria-hidden="true"></svg>
+        </span>
+        <span class="profile-popover__item-text">
+          <span class="profile-popover__item-label">My orders</span>
+          <span class="profile-popover__item-hint">Track what you've placed</span>
+        </span>
+        <svg appIcon="chevron-right" class="profile-popover__item-cue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
+      </a>
+
+      <a routerLink="/profile" class="profile-popover__item" (click)="close()">
+        <span class="profile-popover__item-icon">
+          <svg appIcon="user-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px" aria-hidden="true"></svg>
+        </span>
+        <span class="profile-popover__item-text">
+          <span class="profile-popover__item-label">Profile &amp; addresses</span>
+          <span class="profile-popover__item-hint">Your details and delivery addresses</span>
+        </span>
+        <svg appIcon="chevron-right" class="profile-popover__item-cue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px" aria-hidden="true"></svg>
+      </a>
+    </div>
+
+    <div class="profile-popover__footer">
+      <button type="button" class="profile-popover__logout" (click)="logout()">
+        <svg appIcon="log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
+        Log out
+      </button>
+    </div>
+  } @else {
+    <div class="profile-popover__header">
+      <span class="profile-popover__identity">
+        <span class="profile-popover__avatar profile-popover__avatar--anon" aria-hidden="true">
+          <svg appIcon="user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"></svg>
+        </span>
+        <span class="profile-popover__identity-text">
+          <span class="profile-popover__title" id="profilePopoverTitle">
+            {{ authStep() === 'email' ? 'Sign in' : 'Check your email' }}
+          </span>
+          <span class="profile-popover__subtitle">
+            @if (authStep() === 'email') {
+              No password — we'll email you a code.
+            } @else {
+              Sent to {{ pendingEmail() }}
+            }
+          </span>
+        </span>
+      </span>
+      <button type="button" class="btn--icon profile-popover__close" aria-label="Close account menu" (click)="close()">
+        <svg appIcon="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
+      </button>
+    </div>
+
+    <div class="profile-popover__body">
+      @if (authStep() === 'email') {
+        <div class="form-field">
+          <label class="form-field__label" for="profileAuthInput">Email address</label>
+          <input
+            type="email"
+            id="profileAuthInput"
+            class="form-field__input"
+            [class.form-field__input--invalid]="authError()"
+            placeholder="you@example.com"
+            autocomplete="email"
+            [value]="emailValue()"
+            (input)="onEmailInput($event)"
+            (keydown)="onKeydown($event)"
+          />
+          @if (authError(); as error) {
+            <span class="form-field__error">{{ error }}</span>
+          }
+        </div>
+        <button
+          type="button"
+          class="btn btn--primary btn--block"
+          [class.is-loading]="submitting()"
+          [disabled]="submitting()"
+          (click)="onSubmit()"
+        >
+          <span>Send sign-in code</span>
         </button>
-      </div>
-    } @else {
-      <div class="profile-popover__auth">
-        <label class="profile-popover__auth-label" for="profileAuthInput">
-          Enter the 6-digit code sent to <strong>{{ pendingEmail() }}</strong>
-        </label>
-        <input
-          type="text"
-          id="profileAuthInput"
-          class="profile-popover__auth-input profile-popover__auth-input--otp"
-          [class.profile-popover__auth-input--invalid]="authError()"
-          placeholder="••••••"
-          inputmode="numeric"
-          maxlength="6"
-          autocomplete="one-time-code"
-          [value]="otpValue()"
-          (input)="onOtpInput($event)"
-          (keydown)="onKeydown($event)"
-        />
-        @if (authError(); as error) {
-          <span class="profile-popover__auth-error">{{ error }}</span>
-        }
-        <button type="button" class="popover-btn popover-btn--primary" [disabled]="submitting()" (click)="onSubmit()">
-          {{ submitting() ? 'Verifying…' : 'Verify' }}
+      } @else {
+        <div class="form-field">
+          <label class="form-field__label" for="profileAuthInput">6-digit code</label>
+          <input
+            type="text"
+            id="profileAuthInput"
+            class="form-field__input profile-popover__otp"
+            [class.form-field__input--invalid]="authError()"
+            placeholder="000000"
+            inputmode="numeric"
+            maxlength="6"
+            autocomplete="one-time-code"
+            [value]="otpValue()"
+            (input)="onOtpInput($event)"
+            (keydown)="onKeydown($event)"
+          />
+          @if (authError(); as error) {
+            <span class="form-field__error">{{ error }}</span>
+          }
+        </div>
+        <button
+          type="button"
+          class="btn btn--primary btn--block"
+          [class.is-loading]="submitting()"
+          [disabled]="submitting()"
+          (click)="onSubmit()"
+        >
+          <span>Verify &amp; sign in</span>
         </button>
-      </div>
-    }
-  </div>
+      }
+
+      <p class="profile-popover__note">
+        <svg appIcon="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px" aria-hidden="true"></svg>
+        We only use your email for orders and delivery updates.
+      </p>
+    </div>
+  }
 </div>

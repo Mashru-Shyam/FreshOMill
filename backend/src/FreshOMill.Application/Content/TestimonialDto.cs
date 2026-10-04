@@ -5,4 +5,5 @@ public sealed record TestimonialDto(
     string AvatarGradient,
     string Name,
     string Text,
+    string? VideoUrl,
     int DisplayOrder);

@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of, shareReplay, switchMap, timer } from 'rxjs';
+import { map } from 'rxjs';
 import { API_BASE_URL } from '../config/api.config';
+import { toAbsoluteImageUrl } from '../util/image-url';
+import { pollCollection } from '../util/load-state';
 
 const REFRESH_INTERVAL_MS = 15_000;
 
@@ -29,26 +30,28 @@ interface HeroSlideDto {
 export class HeroSlideService {
   private readonly http = inject(HttpClient);
 
-  private readonly slides$ = timer(0, REFRESH_INTERVAL_MS).pipe(
-    switchMap(() => this.http.get<HeroSlideDto[]>(`${API_BASE_URL}/api/v1/hero-slides`)),
-    map((dtos) =>
-      dtos
-        .slice()
-        .sort((a, b) => a.displayOrder - b.displayOrder)
-        .map(
-          (dto): HeroSlide => ({
-            img: dto.imageUrl ? `${API_BASE_URL}${dto.imageUrl}` : '',
-            alt: dto.alt,
-            icon: dto.icon,
-            title: dto.title,
-            subtitle: dto.subtitle,
-            fallbackGradient: dto.fallbackGradient,
-          })
+  private readonly resource = pollCollection<HeroSlide>(
+    () =>
+      this.http.get<HeroSlideDto[]>(`${API_BASE_URL}/api/v1/hero-slides`).pipe(
+        map((dtos) =>
+          dtos
+            .slice()
+            .sort((a, b) => a.displayOrder - b.displayOrder)
+            .map(
+              (dto): HeroSlide => ({
+                img: toAbsoluteImageUrl(dto.imageUrl),
+                alt: dto.alt,
+                icon: dto.icon,
+                title: dto.title,
+                subtitle: dto.subtitle,
+                fallbackGradient: dto.fallbackGradient,
+              })
+            )
         )
-    ),
-    catchError(() => of<HeroSlide[]>([])),
-    shareReplay({ bufferSize: 1, refCount: false })
+      ),
+    REFRESH_INTERVAL_MS
   );
 
-  readonly slides = toSignal(this.slides$, { initialValue: [] as HeroSlide[] });
+  readonly slides = this.resource.value;
+  readonly isLoading = this.resource.isLoading;
 }

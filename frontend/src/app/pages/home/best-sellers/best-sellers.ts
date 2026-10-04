@@ -1,5 +1,7 @@
 import { Component, ElementRef, HostListener, ViewChild, afterNextRender, computed, effect, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { SellerCard, SellerProduct } from '../../../shared/seller-card/seller-card';
+import { ProductCardSkeleton } from '../../../shared/skeletons/product-card-skeleton';
 import { Icon } from '../../../shared/icon/icon';
 import { ProductService } from '../../../shared/services/product.service';
 
@@ -29,7 +31,7 @@ import { ProductService } from '../../../shared/services/product.service';
  */
 @Component({
   selector: 'app-best-sellers',
-  imports: [SellerCard, Icon],
+  imports: [RouterLink, SellerCard, ProductCardSkeleton, Icon],
   templateUrl: './best-sellers.html',
   styleUrl: './best-sellers.css',
 })
@@ -57,6 +59,16 @@ export class BestSellers {
       }))
   );
 
+  protected readonly loading = this.productService.isLoading;
+
+  /** One full rail-width of placeholders plus one, so the rail reads as scrollable. */
+  protected readonly skeletonSlots = Array.from({ length: 6 }, (_, i) => i);
+
+  /** The rail used to render its "Best Sellers" heading above a blank strip whenever nothing
+   *  was featured (or nothing had loaded). A section with no content isn't a section — it's
+   *  hidden outright once we know there's genuinely nothing to show. */
+  protected readonly visible = computed(() => this.loading() || this.products().length > 0);
+
   protected readonly isDragging = signal(false);
   protected readonly isPrevHidden = signal(true);
   protected readonly isNextHidden = signal(false);
@@ -76,12 +88,19 @@ export class BestSellers {
     });
   }
 
-  private get slider(): HTMLDivElement {
-    return this.sliderRef.nativeElement;
+  /** Null whenever the rail isn't rendered — the section sits behind an `@if`, so the
+   *  data effect below can (and did) run on a pass where the element doesn't exist.
+   *  Dereferencing it there threw inside change detection, which aborted the rest of
+   *  that render pass and left the page half-painted until the next interaction. */
+  private get slider(): HTMLDivElement | null {
+    return this.sliderRef?.nativeElement ?? null;
   }
 
   protected slide(direction: 'prev' | 'next'): void {
     const slider = this.slider;
+    if (!slider) {
+      return;
+    }
     const card = slider.querySelector<HTMLElement>('.seller-card');
     if (!card) return;
     const gap = parseFloat(getComputedStyle(slider).columnGap) || 0;
@@ -93,6 +112,9 @@ export class BestSellers {
 
   protected updateArrows(): void {
     const slider = this.slider;
+    if (!slider) {
+      return;
+    }
     const maxScroll = slider.scrollWidth - slider.clientWidth;
     const atStart = slider.scrollLeft <= 2;
     const atEnd = slider.scrollLeft >= maxScroll - 2;
@@ -106,22 +128,23 @@ export class BestSellers {
   }
 
   protected onPointerDown(event: PointerEvent): void {
-    if (event.pointerType !== 'mouse') return;
+    if (event.pointerType !== 'mouse' || !this.slider) return;
     this.isPressed = true;
     this.dragStartX = event.clientX;
     this.dragStartScroll = this.slider.scrollLeft;
   }
 
   protected onPointerMove(event: PointerEvent): void {
-    if (!this.isPressed) return;
+    const slider = this.slider;
+    if (!this.isPressed || !slider) return;
     const delta = event.clientX - this.dragStartX;
     if (!this.isDragging() && Math.abs(delta) > 5) {
       this.isDragging.set(true);
       this.suppressNextClick = true;
-      this.slider.setPointerCapture(event.pointerId);
+      slider.setPointerCapture(event.pointerId);
     }
     if (this.isDragging()) {
-      this.slider.scrollLeft = this.dragStartScroll - delta;
+      slider.scrollLeft = this.dragStartScroll - delta;
     }
   }
 

@@ -1,5 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { ConfirmService } from '../services/confirm.service';
+import { DialogFocus } from '../util/dialog-focus.directive';
+import { Icon } from '../icon/icon';
 
 /**
  * Presentational half of the confirm-prompt system (ConfirmService) — always mounted in the
@@ -10,6 +12,7 @@ import { ConfirmService } from '../services/confirm.service';
  */
 @Component({
   selector: 'app-confirm-dialog',
+  imports: [DialogFocus, Icon],
   templateUrl: './confirm-dialog.html',
   styleUrl: './confirm-dialog.css',
 })

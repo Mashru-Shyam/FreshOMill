@@ -1,9 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { SettingsService, StoreSettings } from '../../core/services/settings.service';
 import { extractErrorMessage } from '../../core/util/http-error';
+import { EmptyState } from '../../shared/states/table-states';
 
 @Component({
   selector: 'app-settings',
+  imports: [EmptyState],
   templateUrl: './settings.html',
   styleUrl: './settings.css',
 })
@@ -25,7 +27,22 @@ export class Settings {
   protected readonly linkedInUrl = signal('');
   protected readonly googleMapsUrl = signal('');
 
+  /** One placeholder per field in the form, so the card holds its height while the settings
+   *  load rather than collapsing to a single "Loading…" line. */
+  protected readonly skeletonSlots = Array.from({ length: 6 }, (_, i) => i);
+
   constructor() {
+    this.load();
+  }
+
+  /** Retry hook for the error state. */
+  protected refresh(): void {
+    this.error.set(null);
+    this.loading.set(true);
+    this.load();
+  }
+
+  private load(): void {
     this.settingsService.get().subscribe({
       next: (settings) => {
         this.address.set(settings.address);

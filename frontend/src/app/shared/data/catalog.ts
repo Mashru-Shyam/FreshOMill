@@ -1,15 +1,17 @@
-import { API_BASE_URL } from '../config/api.config';
-
 export interface StoreCategory {
   readonly slug: string;
   readonly name: string;
   readonly image: string;
 }
 
+// No image — category-chips.ts already renders a chip with no <img> at all when `image` is
+// empty (same as any category whose photo fails to load), so this pseudo-category just shows
+// its label. Kept text-only rather than a hardcoded asset now that every other image on the
+// site is admin-managed.
 export const ALL_CATEGORY: StoreCategory = {
   slug: 'all',
   name: 'All Products',
-  image: `${API_BASE_URL}/images/categories/all-products.jpg`,
+  image: '',
 };
 
 // Real categories (everything but the synthetic "All Products" pseudo-category above) come from

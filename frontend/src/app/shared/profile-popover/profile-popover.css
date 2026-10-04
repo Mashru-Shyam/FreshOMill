@@ -1,203 +1,276 @@
+/* Account popover — the app's sign-in surface, and on mobile a bottom sheet.
+
+   Rebuilt to match the rest of the product. It was a 290px box with a tiny
+   uppercase "ACCOUNT" label, a bare input and a button: functional, but it read
+   as a leftover from a different design and gave a first-time visitor no idea
+   why it was asking for an email or what would happen next. It now states the
+   step it's on, explains the passwordless flow, and lists the signed-in
+   destinations as real rows with an icon and a description. */
+
 .profile-popover {
   position: fixed;
-  width: 290px;
+  width: 340px;
   background: var(--color-surface);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
-  box-shadow: var(--elevation-overlay);
-  padding: var(--space-md);
+  box-shadow: var(--elevation-modal);
   z-index: 110;
   display: none;
+  overflow: hidden;
 }
 
 .profile-popover--open {
   display: block;
-  animation: popover-fade-in var(--duration-fast) var(--ease-standard);
+  animation: popover-fade-in var(--duration-normal) var(--ease-emphasized);
 }
 
 @keyframes popover-fade-in {
   from {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-8px) scale(0.98);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
-.profile-popover__handle {
-  display: none;
-  width: 36px;
-  height: 4px;
-  border-radius: var(--rounded-full);
-  background-color: var(--color-hairline-strong);
-  margin: 0 auto var(--space-sm) auto;
-}
+/* ---------------------------------------------------------------------
+   HEADER — identity on the left, close on the right.
+   --------------------------------------------------------------------- */
 
 .profile-popover__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  padding-bottom: var(--space-xs);
+  gap: var(--space-sm);
+  padding: var(--space-md);
   border-bottom: 1px solid var(--color-hairline);
-  margin-bottom: var(--space-sm);
+  background: var(--color-primary-tint);
+}
+
+.profile-popover__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.profile-popover__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--text-body-md-size);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Signed out there's no initial to show, so the disc holds the generic glyph
+   and drops to a tint — it shouldn't look like an account that exists. */
+.profile-popover__avatar--anon {
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary-border);
+  color: var(--color-primary);
+}
+
+.profile-popover__identity-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
 }
 
 .profile-popover__title {
-  font-size: var(--text-label-sm-size);
+  font-size: var(--text-label-size);
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
+  color: var(--color-ink);
+}
+
+.profile-popover__subtitle,
+.profile-popover__email {
+  font-size: var(--text-caption-size);
   color: var(--color-body-muted);
+  overflow-wrap: anywhere;
 }
 
 .profile-popover__email {
-  font-size: var(--text-body-sm-size);
-  font-weight: 600;
-  color: var(--color-ink);
-  word-break: break-all;
-  margin-bottom: var(--space-sm);
+  font-weight: 500;
+}
+
+.profile-popover__close {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  margin: -2px -4px 0 0;
+}
+
+/* ---------------------------------------------------------------------
+   BODY
+   --------------------------------------------------------------------- */
+
+.profile-popover__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+}
+
+/* Signed-in destinations: icon, label, one line of explanation, chevron. A
+   plain list of two words each gave no reason to pick one over the other. */
+.profile-popover__item {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  margin-inline: calc(var(--space-sm) * -1);
+  border-radius: var(--rounded-md);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color var(--duration-fast) var(--ease-standard);
 }
 
-.profile-popover__actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-xs);
+.profile-popover__item:hover {
+  background: var(--color-surface-hover);
 }
 
-.popover-btn {
-  display: inline-flex;
+.profile-popover__item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--rounded-md);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+}
+
+.profile-popover__item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-popover__item-label {
+  font-size: var(--text-label-size);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.profile-popover__item-hint {
+  font-size: var(--text-caption-size);
+  color: var(--color-body-muted);
+}
+
+.profile-popover__item-cue {
+  flex-shrink: 0;
+  color: var(--color-placeholder);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.profile-popover__item:hover .profile-popover__item-cue {
+  transform: translateX(2px);
+  color: var(--color-primary);
+}
+
+/* Six digits, spaced, so the field reads as a code entry rather than a short
+   text input — same treatment as the admin panel's login. */
+.profile-popover__otp {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+}
+
+.profile-popover__note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xxs);
+  font-size: var(--text-caption-size);
+  line-height: 1.45;
+  color: var(--color-body-muted);
+}
+
+.profile-popover__note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-primary);
+}
+
+/* ---------------------------------------------------------------------
+   FOOTER — log out, ruled off so it can't be mistaken for a nav row.
+   --------------------------------------------------------------------- */
+
+.profile-popover__footer {
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+  border-top: 1px solid var(--color-hairline);
+}
+
+.profile-popover__logout {
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-xs);
-  height: 38px;
-  font-family: var(--font-sans);
-  font-size: var(--text-label-sm-size);
-  font-weight: 500;
-  border-radius: var(--rounded-md);
+  width: 100%;
+  height: 40px;
   border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
   background: var(--color-surface);
-  color: var(--color-ink);
+  color: var(--color-body);
+  font-family: var(--font-sans);
+  font-size: var(--text-label-size);
+  font-weight: 600;
   cursor: pointer;
   transition: background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
     color var(--duration-fast) var(--ease-standard);
-  text-decoration: none;
-  width: 100%;
 }
 
-.popover-btn:hover:not(:disabled) {
-  background-color: var(--color-surface-hover);
-}
-
-.popover-btn--primary {
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border: none;
-  grid-column: 1 / -1;
-  font-weight: 600;
-}
-
-.popover-btn--primary:hover:not(:disabled) {
-  background-color: var(--color-primary-hover);
-  color: var(--color-on-primary);
-}
-
-.popover-btn--logout {
-  border: 1px solid var(--color-danger-subtle);
-  background-color: var(--color-danger-subtle);
-  color: var(--color-danger);
-  grid-column: 1 / -1;
-  margin-top: var(--space-xxs);
-  font-weight: 600;
-}
-
-.popover-btn--logout:hover {
-  background-color: #fce4e2;
-}
-
-.profile-popover__auth {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.profile-popover__auth-label {
-  font-size: var(--text-label-sm-size);
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
-.profile-popover__auth-input {
-  height: 40px;
-  padding: 0 var(--space-sm);
-  border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
-  font-family: var(--font-sans);
-  font-size: var(--text-body-sm-size);
-  color: var(--color-ink);
-  background: var(--color-surface);
-  transition: border-color var(--duration-fast) var(--ease-standard),
-    box-shadow var(--duration-fast) var(--ease-standard);
-}
-
-.profile-popover__auth-input::placeholder {
-  color: var(--color-placeholder);
-}
-
-.profile-popover__auth-input:focus-visible {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary-subtle);
-}
-
-.profile-popover__auth-input--invalid {
-  border-color: var(--color-danger);
-}
-
-.profile-popover__auth-input--otp {
-  letter-spacing: 4px;
-  font-weight: 700;
-  text-align: center;
-  font-family: var(--font-mono);
-}
-
-.profile-popover__auth-error {
-  font-size: var(--text-label-sm-size);
+.profile-popover__logout:hover {
+  background: var(--color-danger-subtle);
+  border-color: var(--color-danger-border);
   color: var(--color-danger);
 }
 
-@media (max-width: 960px) {
+/* ---------------------------------------------------------------------
+   PHONE — the popover becomes a bottom sheet, matching the cart and
+   quick-add sheets rather than floating a 340px card over the page.
+   --------------------------------------------------------------------- */
+
+@media (max-width: 639px) {
   .profile-popover {
-    position: fixed !important;
     top: auto !important;
-    bottom: 0 !important;
-    left: 0 !important;
     right: 0 !important;
-    width: 100% !important;
-    border-radius: var(--rounded-xl) var(--rounded-xl) 0 0 !important;
-    box-shadow: var(--elevation-modal) !important;
-    z-index: 120 !important;
-    padding: var(--space-lg) !important;
+    left: 0;
+    bottom: 0;
+    width: auto;
+    border-radius: var(--rounded-xl) var(--rounded-xl) 0 0;
+    border-bottom: none;
+    display: block;
     transform: translateY(100%);
-    transition: transform var(--duration-slow) var(--ease-emphasized);
-    display: block !important;
     visibility: hidden;
-    background: var(--color-surface) !important;
+    transition: transform var(--duration-slow) var(--ease-emphasized),
+      visibility var(--duration-slow) var(--ease-standard);
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   .profile-popover--open {
-    transform: translateY(0) !important;
-    visibility: visible !important;
+    transform: translateY(0);
+    visibility: visible;
     animation: none;
   }
 
-  .profile-popover__handle {
-    display: block !important;
+  .profile-popover__header {
+    padding-top: var(--space-xs);
   }
 }

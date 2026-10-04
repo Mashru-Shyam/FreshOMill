@@ -5,7 +5,20 @@
     role="listbox"
     aria-label="Search results"
   >
-    @if (results().length === 0) {
+    @if (loading()) {
+      <div class="search-dropdown__list" aria-busy="true">
+        @for (i of skeletonSlots; track i) {
+          <div class="search-dropdown__item search-dropdown__item--skeleton" aria-hidden="true">
+            <span class="skeleton search-dropdown__item-image"></span>
+            <span class="search-dropdown__item-info">
+              <span class="skeleton skeleton--text search-dropdown__skeleton-name"></span>
+              <span class="skeleton skeleton--text search-dropdown__skeleton-meta"></span>
+            </span>
+          </div>
+        }
+      </div>
+      <span class="sr-only" role="status">Loading products…</span>
+    } @else if (results().length === 0) {
       <div class="search-dropdown__empty">
         <svg appIcon="search-x" class="search-dropdown__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px" aria-hidden="true"></svg>
         <span class="search-dropdown__empty-text">No products found for "{{ query().trim() }}"</span>
@@ -17,7 +30,7 @@
           <button type="button" class="search-dropdown__item" (click)="selectProduct(product.id)">
             <span class="search-dropdown__item-image">
               @if (product.image && !failedImages().has(product.id)) {
-                <img [src]="product.image" [alt]="product.name" class="search-dropdown__item-img" loading="lazy" (error)="onImageError(product.id)" />
+                <img [src]="product.image" [alt]="product.name" class="search-dropdown__item-img" decoding="async" (error)="onImageError(product.id)" />
               }
             </span>
             <span class="search-dropdown__item-info">

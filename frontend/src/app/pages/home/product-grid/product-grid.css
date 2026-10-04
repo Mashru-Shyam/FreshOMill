@@ -1,135 +1,175 @@
+/* "Shop by category" — the first browsable thing under the banner.
+
+   Container width, gutter and vertical rhythm come from the global `.section`
+   (src/styles.css); this file only owns the grid and the tile. */
+
 .products-section {
-  padding: var(--space-xxl) var(--space-xl) var(--space-xl);
-  max-width: var(--layout-container-max);
-  margin: 0 auto;
+  background: var(--color-canvas);
 }
 
-.products-section__title {
-  font-size: var(--text-h2-size);
-  font-weight: var(--text-h2-weight);
-  color: var(--color-ink);
-  margin-bottom: var(--space-xl);
-  letter-spacing: -0.3px;
-}
-
-.products-view-all {
-  display: flex;
-  justify-content: center;
-  padding: var(--space-lg) 0 0 0;
-}
-
+/* Five across at the widest. Six made each tile ~215px, which is small for
+   artwork a shopper is meant to recognise a shelf from; five gives ~265px
+   without turning the row into a handful of oversized panels. */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: var(--space-lg);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-md);
 }
 
-/* Extra rows revealed by "View All" — @if in the template already handles
-   mount/unmount, so this only needs to keep the grid flowing across both
-   the always-visible cards and this block's own children. */
-.products-grid__hidden {
-  display: contents;
-}
+/* ---------------------------------------------------------------------
+   CATEGORY TILE — one photo, one label over it.
+   --------------------------------------------------------------------- */
 
-.btn--view-all {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-xs);
-  height: 40px;
-  padding: 0 var(--space-lg);
-  font-family: var(--font-sans);
-  font-size: var(--text-label-size);
-  font-weight: var(--text-label-weight);
-  border-radius: var(--rounded-md);
-  border: 1px solid var(--color-hairline-strong);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard),
-    border-color var(--duration-fast) var(--ease-standard),
-    color var(--duration-fast) var(--ease-standard);
-}
-
-.btn--view-all:hover {
-  background-color: var(--color-surface-hover);
-  border-color: var(--color-hairline);
-}
-
-.btn--view-all:active {
-  background-color: var(--color-surface-active);
-}
-
-.product-card {
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  background: var(--color-surface);
+.category-tile {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1.12;
   border-radius: var(--rounded-lg);
   overflow: hidden;
-  box-shadow: var(--elevation-raised);
-  transition: box-shadow var(--duration-fast) var(--ease-standard),
-    transform var(--duration-fast) var(--ease-standard);
-}
-
-.product-card:hover {
-  box-shadow: var(--elevation-hover);
-  transform: translateY(-2px);
-}
-
-.product-card__image-box {
-  width: 100%;
-  aspect-ratio: 1 / 0.85;
+  text-decoration: none;
+  color: #fff;
   background: var(--color-surface-sunken);
+  box-shadow: var(--elevation-raised);
+  transition: box-shadow var(--duration-normal) var(--ease-standard),
+    transform var(--duration-normal) var(--ease-standard);
+}
+
+.category-tile:hover {
+  box-shadow: var(--elevation-overlay);
+  transform: translateY(-3px);
+}
+
+.category-tile__media {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.category-tile__media .media-frame__img {
+  transition: transform var(--duration-slow) var(--ease-standard);
+}
+
+/* Builds on the resting overscan from `.media-frame--trim` (1.06). */
+.category-tile:hover .media-frame__img {
+  transform: scale(1.12);
+}
+
+/* Scrim only over the bottom third. A full-tile overlay would mute the
+   artwork this section exists to show; this darkens exactly the strip the
+   label sits on, which is what keeps the text legible over a light photo. */
+.category-tile__body {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  padding: var(--space-xl) var(--space-md) var(--space-md);
+  background: linear-gradient(
+    to top,
+    rgb(16 16 14 / 88%) 0%,
+    rgb(16 16 14 / 62%) 45%,
+    rgb(16 16 14 / 0) 100%
+  );
+}
+
+.category-tile__name {
+  font-size: var(--text-label-size);
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+  text-shadow: 0 1px 2px rgb(16 16 14 / 45%);
+}
+
+/* Affordance disc — appears on hover/focus so the tile reads as navigation
+   rather than as decoration, without adding permanent clutter to every cell. */
+.category-tile__cue {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--rounded-full);
+  background: rgb(255 255 255 / 18%);
+  color: #fff;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
 }
 
-.product-card__img {
+.category-tile:hover .category-tile__cue,
+.category-tile:focus-visible .category-tile__cue {
+  opacity: 1;
+  transform: none;
+  background: var(--color-primary);
+}
+
+.category-tile--skeleton {
+  pointer-events: none;
+  box-shadow: none;
+}
+
+.category-tile__skeleton-fill {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
+  border-radius: inherit;
 }
 
-.product-card__body {
-  padding: var(--space-md) var(--space-lg) var(--space-lg);
-}
-
-.product-card__name {
+/* Section-level failure: one quiet line with a retry, not a full-page error
+   card — a homepage section that can't load shouldn't take over the page. */
+.products-section__notice {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: var(--space-xxl) 0;
   font-size: var(--text-body-sm-size);
-  font-weight: 700;
-  color: var(--color-ink);
-  text-align: left;
-  line-height: var(--text-body-sm-lh);
+  color: var(--color-body-muted);
 }
 
-@media (max-width: 960px) {
+.products-section__notice svg {
+  color: var(--color-danger);
+  flex-shrink: 0;
+}
+
+/* 5 -> 4 -> 3 -> 2. Category tiles stay legible at every step because the
+   label is inside the tile: there's no caption strip to run out of room. */
+@media (max-width: 1280px) {
   .products-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-md);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 639px) {
-  .products-section {
-    padding: var(--space-xl) var(--space-md) var(--space-md);
-  }
-
+@media (max-width: 1023px) {
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-sm);
   }
+}
 
-  .product-card__body {
-    padding: var(--space-sm) var(--space-md) var(--space-md);
+@media (max-width: 479px) {
+  .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .product-card__name {
-    font-size: var(--text-label-sm-size);
+  .category-tile__body {
+    padding: var(--space-lg) var(--space-sm) var(--space-sm);
+  }
+
+  .category-tile__cue {
+    display: none;
   }
 }

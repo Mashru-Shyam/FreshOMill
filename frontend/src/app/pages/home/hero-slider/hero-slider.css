@@ -1,17 +1,36 @@
+/* Full-bleed merchandising banner. Was a 190-460px letterbox inside the page
+   container with a hard edge on a white page; it now runs edge to edge and is
+   materially taller, so the banner art is the first thing the page shows
+   rather than a thin strip above a fold of empty canvas.
+
+   The height is a clamp rather than a fixed value or an aspect-ratio: banner
+   art is uploaded at whatever ratio the admin has, so the frame owns the
+   height and the image covers it. */
 .hero-slider-section {
-  padding: var(--space-md) var(--space-xl);
-  max-width: var(--layout-container-max);
-  margin: 0 auto;
+  padding: 0;
+  background: var(--color-canvas-alt);
 }
 
 .hero-slider {
   position: relative;
   width: 100%;
-  height: 340px;
-  border-radius: var(--rounded-xl);
+  height: clamp(280px, 38vw, 560px);
   overflow: hidden;
-  box-shadow: var(--elevation-raised);
   background: var(--color-surface-sunken);
+}
+
+/* A soft vignette top and bottom. Banner art is uploaded by the shop, so it
+   can be light at the edges — this guarantees the arrows and dots keep their
+   contrast without dimming the middle of the image where the product is. */
+.hero-slider::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background:
+    linear-gradient(to bottom, rgb(16 16 14 / 22%) 0%, rgb(16 16 14 / 0) 22%),
+    linear-gradient(to top, rgb(16 16 14 / 34%) 0%, rgb(16 16 14 / 0) 30%);
 }
 
 .hero-slider__track {
@@ -27,6 +46,10 @@
   position: relative;
 }
 
+/* `cover` fills the banner edge to edge with no distortion. Without an object-fit the image
+   defaults to `fill`, which stretches it to the box and warps the artwork; `contain` keeps
+   every pixel but leaves letterbox bands. Cover is the standard banner trade-off: the whole
+   box is filled and only the overflowing edge is trimmed. */
 .hero-slider__img {
   width: 100%;
   height: 100%;
@@ -58,67 +81,120 @@
   margin-top: var(--space-xxs);
 }
 
+/* Glass discs rather than white buttons: over photography, an opaque white
+   circle reads as a sticker sitting on top of the picture, while a blurred
+   translucent one reads as part of the surface. */
 .hero-slider__arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--rounded-full);
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--color-hairline);
+  background: rgb(255 255 255 / 82%);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgb(255 255 255 / 55%);
   color: var(--color-ink);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  box-shadow: var(--elevation-raised);
+  box-shadow: var(--elevation-overlay);
   transition: background-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard),
               transform var(--duration-fast) var(--ease-standard);
 }
 
 .hero-slider__arrow:hover {
-  background: #ffffff;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   transform: translateY(-50%) scale(1.06);
 }
 
 .hero-slider__arrow--prev {
-  left: var(--space-md);
+  left: var(--layout-gutter);
 }
 
 .hero-slider__arrow--next {
-  right: var(--space-md);
+  right: var(--layout-gutter);
 }
 
 .hero-slider__dots {
   position: absolute;
-  bottom: var(--space-md);
+  bottom: var(--space-lg);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: var(--space-xs);
   z-index: 10;
-  background: rgba(28, 34, 42, 0.4);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: var(--rounded-full);
+  background: rgb(16 16 14 / 42%);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgb(255 255 255 / 16%);
 }
 
+/* The button is 8px of visible dot inside a 24px hit box — a bare 8px target
+   is well under any usable minimum on a touch screen. */
 .hero-slider__dot {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-slider__dot::before {
+  content: '';
   width: 8px;
   height: 8px;
   border-radius: var(--rounded-full);
-  background: rgba(255, 255, 255, 0.5);
-  border: none;
-  cursor: pointer;
+  background: rgb(255 255 255 / 55%);
   transition: background-color var(--duration-fast) var(--ease-standard),
-              width var(--duration-fast) var(--ease-standard);
+              width var(--duration-normal) var(--ease-emphasized);
 }
 
-.hero-slider__dot--active {
+.hero-slider__dot--active::before {
   background: var(--color-on-primary);
-  width: 20px;
+  width: 22px;
+}
+
+/* Arrows shrink and tuck in on phones so they don't cover a third of the banner; the dots stay
+   as the primary way to move between slides (swipe/scroll still works). */
+@media (max-width: 960px) {
+  .hero-slider {
+    height: clamp(240px, 46vw, 400px);
+  }
+}
+
+@media (max-width: 639px) {
+  /* Arrows go entirely on phones: they cover a third of the banner and swipe
+     already does the job. The dots stay as the position indicator. */
+  .hero-slider__arrow {
+    display: none;
+  }
+
+  .hero-slider {
+    height: clamp(200px, 56vw, 320px);
+  }
+
+  .hero-slider__dots {
+    bottom: var(--space-sm);
+  }
+}
+
+/* Fills the banner box while slides load, so the sections below it don't leap upward when
+   the first image arrives. */
+.hero-slider__skeleton {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
 }

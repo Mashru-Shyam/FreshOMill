@@ -29,4 +29,10 @@ public sealed class StoreSettings : BaseAuditableEntity<Guid>
     public string? LinkedInUrl { get; set; }
 
     public string? GoogleMapsUrl { get; set; }
+
+    /// <summary>Image for the storefront's synthetic "All Products" category chip/filter — not a
+    /// real Category row (that slug means "no filter" everywhere it's checked), so it lives here
+    /// as its own field instead, edited from its own admin endpoint independent of the rest of
+    /// Store Settings.</summary>
+    public string? AllProductsImageUrl { get; set; }
 }

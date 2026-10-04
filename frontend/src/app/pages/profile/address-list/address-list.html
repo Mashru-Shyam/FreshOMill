@@ -1,5 +1,5 @@
-<section class="checkout-section">
-  <h2 class="checkout-section__title">Saved Addresses</h2>
+<section class="card">
+  <h2 class="card__title">Saved Addresses</h2>
 
   @if (addresses().length === 0 && formMode() === null) {
     <p class="account-page__saved-note account-page__saved-note--muted">
@@ -154,7 +154,7 @@
     <div class="address-list__form-actions">
       <button
         type="button"
-        class="checkout-summary__place-btn address-list__save-btn"
+        class="btn btn--primary btn--lg address-list__save-btn"
         (click)="submitForm(fullName, phone, addressLine1, addressLine2, city, pincode)"
       >
         <svg appIcon="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>

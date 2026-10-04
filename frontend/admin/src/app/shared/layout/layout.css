@@ -3,54 +3,156 @@
   min-height: 100dvh;
 }
 
+/* ---------- mobile top bar ---------- */
+
+/* Only exists below the sidebar breakpoint; above it the sidebar carries the brand. */
+.topbar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  align-items: center;
+  gap: var(--space-xs);
+  height: var(--layout-topbar-height);
+  padding: 0 var(--space-xs);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.topbar__brand {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-ink);
+}
+
+.topbar__brand span {
+  color: var(--color-body-muted);
+}
+
+.shell__scrim {
+  display: none;
+}
+
+/* ---------- sidebar ----------
+
+   White, against the tinted page canvas. A dark rail gave the panel an edge
+   but made the whole tool read heavy; white-on-tint gives it the same edge
+   with none of the weight, which is the right trade for a screen an operator
+   stares at all day. */
+
 .sidebar {
-  width: 220px;
+  width: var(--layout-sidebar-width);
   flex-shrink: 0;
   background: var(--color-surface);
   border-right: 1px solid var(--color-hairline);
   display: flex;
   flex-direction: column;
-  padding: var(--space-lg) var(--space-md);
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-sm);
   position: sticky;
   top: 0;
   height: 100dvh;
 }
 
 .sidebar__brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  padding: 0 var(--space-xs);
   font-weight: 700;
   font-size: 1.05rem;
   color: var(--color-ink);
-  margin-bottom: var(--space-lg);
 }
 
 .sidebar__brand span {
-  color: var(--color-primary);
+  color: var(--color-body-muted);
   font-weight: 600;
+}
+
+.sidebar__close {
+  display: none;
+  margin-left: auto;
 }
 
 .sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-md);
   flex: 1;
+  overflow-y: auto;
 }
 
-.sidebar__nav a {
-  display: block;
-  padding: var(--space-sm) var(--space-sm);
+.sidebar__group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Section label, not a link — sized and spaced so it reads as a divider rather than as a
+   disabled nav item. */
+.sidebar__group-title {
+  padding: 0 var(--space-xs) var(--space-xxs);
+  font-size: var(--text-overline-size);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--text-overline-tracking);
+  color: var(--color-placeholder);
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: var(--tap-target);
+  padding: 0 var(--space-sm);
   border-radius: var(--rounded-md);
   color: var(--color-body);
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: var(--text-body-size);
+  transition: background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
 }
 
-.sidebar__nav a:hover {
+.sidebar__icon {
+  flex-shrink: 0;
+  color: var(--color-placeholder);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.sidebar__link:hover {
   background: var(--color-surface-hover);
+  color: var(--color-ink);
 }
 
-.sidebar__nav a.is-active {
+.sidebar__link:hover .sidebar__icon {
+  color: var(--color-body);
+}
+
+/* Active row is filled and carries a left marker — a tint alone is a weak
+   signal on a list of six. */
+.sidebar__link.is-active {
+  position: relative;
   background: var(--color-primary-subtle);
+  color: var(--color-primary);
+}
+
+.sidebar__link.is-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+}
+
+.sidebar__link.is-active .sidebar__icon {
   color: var(--color-primary);
 }
 
@@ -62,8 +164,32 @@
   gap: var(--space-sm);
 }
 
+/* The signed-in address used to be a bare truncated line of grey text. An initial disc gives
+   it an anchor and makes "who am I logged in as" answerable at a glance. */
+.sidebar__account {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 0 var(--space-xxs);
+  min-width: 0;
+}
+
+.sidebar__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--rounded-full);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+  font-size: var(--text-label-size);
+  font-weight: 700;
+}
+
 .sidebar__email {
-  font-size: 0.8125rem;
+  font-size: var(--text-label-size);
   color: var(--color-body-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -73,4 +199,59 @@
 .content {
   flex: 1;
   min-width: 0;
+}
+
+/* ---------- ≤960px: sidebar becomes an off-canvas drawer ---------- */
+
+@media (max-width: 960px) {
+  .topbar {
+    display: flex;
+  }
+
+  .content {
+    padding-top: var(--layout-topbar-height);
+  }
+
+  .shell__scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background: var(--overlay-scrim);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--duration-normal) var(--ease-standard),
+      visibility var(--duration-normal) var(--ease-standard);
+  }
+
+  .shell__scrim.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 80;
+    width: min(280px, 84vw);
+    height: 100dvh;
+    box-shadow: var(--elevation-overlay);
+    transform: translateX(-100%);
+    /* `visibility` rather than display so the transform can animate, and so the links aren't
+       tab-reachable while the drawer is closed. */
+    visibility: hidden;
+    transition: transform var(--duration-normal) var(--ease-emphasized),
+      visibility var(--duration-normal) var(--ease-standard);
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .sidebar__close {
+    display: inline-flex;
+  }
 }

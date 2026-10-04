@@ -1,7 +1,12 @@
+/* Freshness-claims marquee, docked above the navbar.
+
+   A soft green strip rather than a near-black bar. As a dark band it was the
+   very first thing on the page and set a heavy tone before a single product was
+   seen; tinted, it reads as a quiet note attached to the header. */
 .top-ticker {
   block-size: var(--layout-ticker-height);
-  background: var(--color-primary-active);
-  color: var(--color-on-primary);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
   overflow: hidden;
   white-space: nowrap;
   display: flex;
@@ -9,7 +14,7 @@
   position: sticky;
   top: 0;
   user-select: none;
-  border-bottom: 1px solid var(--color-hairline-dark);
+  border-bottom: 1px solid var(--color-primary-border);
   z-index: 30;
 }
 
@@ -39,13 +44,13 @@
   align-items: center;
   gap: var(--space-xs);
   font-size: var(--text-label-sm-size);
-  font-weight: var(--text-label-sm-weight);
+  font-weight: 600;
   letter-spacing: 0.2px;
-  color: var(--color-on-primary);
+  color: var(--color-primary-active);
 }
 
 .top-ticker__icon {
-  color: var(--color-on-primary);
+  color: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -53,7 +58,7 @@
   width: 4px;
   height: 4px;
   border-radius: var(--rounded-full);
-  background-color: rgba(255, 255, 255, 0.45);
+  background-color: var(--color-primary-border);
   margin-left: var(--space-xs);
 }
 

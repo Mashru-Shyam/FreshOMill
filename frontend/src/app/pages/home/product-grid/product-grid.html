@@ -1,53 +1,68 @@
-<section class="products-section" aria-label="Our Products">
-  <h2 class="products-section__title">Our Products</h2>
-
-  <div class="products-grid">
-    @for (category of visibleCategories(); track category.slug) {
-      <a [routerLink]="['/store']" [queryParams]="{ category: category.slug }" class="product-card">
-        <div class="product-card__image-box">
-          @if (category.image && !failedImages().has(category.slug)) {
-            <img [src]="category.image" [alt]="category.name" class="product-card__img" (error)="onImageError(category.slug)" />
-          }
-        </div>
-        <div class="product-card__body">
-          <span class="product-card__name">{{ category.name }}</span>
-        </div>
+<section class="section products-section" aria-labelledby="homeCategoriesTitle">
+  <div class="section__inner">
+    <div class="section__head">
+      <div class="section__heading">
+        <span class="section__eyebrow">Shop by category</span>
+        <h2 class="section__title" id="homeCategoriesTitle">Everything we mill, press and pack</h2>
+        <p class="section__subtitle">
+          Stone-ground flours, cold-pressed oils, whole spices and pantry staples — pick a shelf to browse.
+        </p>
+      </div>
+      <a routerLink="/store" [queryParams]="{ category: 'all' }" class="section__link">
+        View all products
+        <svg appIcon="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px" aria-hidden="true"></svg>
       </a>
-    }
+    </div>
 
-    @if (expanded()) {
-      <div class="products-grid__hidden">
-        @for (category of hiddenCategories(); track category.slug) {
-          <a [routerLink]="['/store']" [queryParams]="{ category: category.slug }" class="product-card">
-            <div class="product-card__image-box">
+    <div class="products-grid" [attr.aria-busy]="loading() ? 'true' : null">
+      @if (loading()) {
+        @for (i of skeletonSlots; track i) {
+          <div class="category-tile category-tile--skeleton" aria-hidden="true">
+            <div class="skeleton category-tile__skeleton-fill"></div>
+          </div>
+        }
+        <span class="sr-only" role="status">Loading categories…</span>
+      } @else if (failed()) {
+        <p class="products-section__notice" role="alert">
+          <svg appIcon="wifi-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+          We couldn't load our categories.
+          <button type="button" class="link-action" (click)="retry()">Try again</button>
+        </p>
+      } @else {
+        @for (category of categories(); track category.slug; let i = $index) {
+          <!-- The name is set *over* the photo rather than in a caption strip
+               below it. The old tile was a small image above a tall white band
+               holding one short line of text, which is where most of this
+               section's dead space came from — and it made every tile look the
+               same regardless of its artwork. -->
+          <a
+            [routerLink]="['/store']"
+            [queryParams]="{ category: category.slug }"
+            class="category-tile"
+          >
+            <span class="category-tile__media media-frame media-frame--cover media-frame--trim">
               @if (category.image && !failedImages().has(category.slug)) {
-                <img [src]="category.image" [alt]="category.name" class="product-card__img" loading="lazy" (error)="onImageError(category.slug)" />
+                <img
+                  [src]="category.image"
+                  alt=""
+                  class="media-frame__img"
+                  decoding="async"
+                  [attr.fetchpriority]="i < 6 ? 'high' : 'low'"
+                  (error)="onImageError(category.slug)"
+                />
+              } @else {
+                <svg appIcon="leaf" class="media-frame__fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px" aria-hidden="true"></svg>
               }
-            </div>
-            <div class="product-card__body">
-              <span class="product-card__name">{{ category.name }}</span>
-            </div>
+            </span>
+            <span class="category-tile__body">
+              <span class="category-tile__name">{{ category.name }}</span>
+              <span class="category-tile__cue" aria-hidden="true">
+                <svg appIcon="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"></svg>
+              </span>
+            </span>
           </a>
         }
-      </div>
-    }
-  </div>
-
-  <div class="products-view-all">
-    <button
-      type="button"
-      class="btn--view-all"
-      aria-label="Show all product categories"
-      [attr.aria-expanded]="expanded()"
-      (click)="toggleExpanded()"
-    >
-      @if (expanded()) {
-        <svg appIcon="chevron-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
-        Show Less
-      } @else {
-        <svg appIcon="chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
-        View All Products
       }
-    </button>
+    </div>
   </div>
 </section>

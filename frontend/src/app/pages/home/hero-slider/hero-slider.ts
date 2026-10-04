@@ -1,4 +1,4 @@
-import { Component, DestroyRef, afterNextRender, inject, signal } from '@angular/core';
+import { Component, DestroyRef, afterNextRender, computed, inject, signal } from '@angular/core';
 import { Icon } from '../../../shared/icon/icon';
 import { HeroSlideService } from '../../../shared/services/hero-slide.service';
 
@@ -28,6 +28,12 @@ export class HeroSlider {
   private readonly heroSlideService = inject(HeroSlideService);
 
   protected readonly slides = this.heroSlideService.slides;
+  protected readonly loading = this.heroSlideService.isLoading;
+
+  /** An empty banner box with two dead arrows and no dots is worse than no banner at all —
+   *  once we know there are no slides, the section doesn't render. While we're still
+   *  fetching, a placeholder holds the banner's height so the page below it doesn't jump. */
+  protected readonly visible = computed(() => this.loading() || this.slides().length > 0);
 
   protected readonly currentSlide = signal(0);
   protected readonly failedImages = signal<Set<number>>(new Set());

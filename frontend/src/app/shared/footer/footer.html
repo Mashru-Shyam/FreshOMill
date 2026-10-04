@@ -1,42 +1,106 @@
+@let settings = storeSettings.settings();
+
 <footer class="site-footer" aria-label="Site footer">
-  <div class="site-footer__socials">
-    <a [href]="storeSettings.settings().instagramUrl" target="_blank" rel="noopener" class="site-footer__social-link"
-      aria-label="FreshOMill on Instagram">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-      </svg>
-    </a>
-    <a [href]="storeSettings.settings().youtubeUrl" target="_blank" rel="noopener" class="site-footer__social-link"
-      aria-label="FreshOMill on YouTube">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path
-          d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z">
-        </path>
-        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor" stroke="none"></polygon>
-      </svg>
-    </a>
-    <a [href]="storeSettings.settings().linkedInUrl" target="_blank" rel="noopener"
-      class="site-footer__social-link" aria-label="FreshOMill on LinkedIn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-        <rect x="2" y="9" width="4" height="12"></rect>
-        <circle cx="4" cy="4" r="2"></circle>
-      </svg>
-    </a>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand-col">
+      <span class="site-footer__brand">
+        <span class="site-footer__brand-fresh">freshO</span><span class="site-footer__brand-mill">mill</span>
+      </span>
+      <p class="site-footer__pitch">
+        Stone-ground staples, cold-pressed oils and everyday essentials — packed on order, never off a shelf.
+      </p>
+
+      <div class="site-footer__socials">
+        @if (settings.instagramUrl) {
+          <a [href]="settings.instagramUrl" target="_blank" rel="noopener" class="site-footer__social-link"
+            aria-label="FreshOMill on Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+        }
+        @if (settings.youtubeUrl) {
+          <a [href]="settings.youtubeUrl" target="_blank" rel="noopener" class="site-footer__social-link"
+            aria-label="FreshOMill on YouTube">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z">
+              </path>
+              <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor" stroke="none"></polygon>
+            </svg>
+          </a>
+        }
+        @if (settings.linkedInUrl) {
+          <a [href]="settings.linkedInUrl" target="_blank" rel="noopener"
+            class="site-footer__social-link" aria-label="FreshOMill on LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+          </a>
+        }
+      </div>
+    </div>
+
+    <nav class="site-footer__col" aria-label="Footer navigation">
+      <h2 class="site-footer__col-title">Shop</h2>
+      <a routerLink="/">Home</a>
+      <a routerLink="/store">All products</a>
+      <a routerLink="/orders">My orders</a>
+      <a routerLink="/contact">Contact us</a>
+    </nav>
+
+    <!-- The whole column is conditional, not just its rows. Store settings can
+         come back with blank fields, and a column heading standing over nothing
+         reads as a layout that failed to load — which is exactly what "Visit the
+         store" and "Get in touch" were doing on an unconfigured shop. -->
+    @if (settings.address || settings.openingHours || settings.googleMapsUrl) {
+    <div class="site-footer__col">
+      <h2 class="site-footer__col-title">Visit the store</h2>
+      @if (settings.address) {
+        <p class="site-footer__line">{{ settings.address }}</p>
+      }
+      @if (settings.openingHours) {
+      <p class="site-footer__line site-footer__line--hours">
+        <svg appIcon="clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px" aria-hidden="true"></svg>
+        {{ settings.openingHours }}
+      </p>
+      }
+      @if (settings.googleMapsUrl) {
+        <a [href]="settings.googleMapsUrl" target="_blank" rel="noopener" class="site-footer__map-link">
+          <svg appIcon="navigation" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px" aria-hidden="true"></svg>
+          Get directions
+        </a>
+      }
+    </div>
+    }
+
+    @if (settings.phone || settings.email) {
+    <div class="site-footer__col">
+      <h2 class="site-footer__col-title">Get in touch</h2>
+      @if (settings.phone) {
+      <a [href]="'tel:' + settings.phone" class="site-footer__contact">
+        <svg appIcon="phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px" aria-hidden="true"></svg>
+        {{ settings.phone }}
+      </a>
+      }
+      @if (settings.email) {
+      <a [href]="'mailto:' + settings.email" class="site-footer__contact">
+        <svg appIcon="mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px" aria-hidden="true"></svg>
+        {{ settings.email }}
+      </a>
+      }
+    </div>
+    }
   </div>
 
   <div class="site-footer__bottom">
-    <nav class="site-footer__nav" aria-label="Footer navigation">
-      <a routerLink="/">Home</a>
-      <a routerLink="/store">Store</a>
-      <a routerLink="/contact">Contact</a>
-      <a href="#">Privacy Policy</a>
-    </nav>
     <p class="site-footer__copyright">&copy; {{ year }} FreshOMill. All rights reserved.</p>
   </div>
 </footer>

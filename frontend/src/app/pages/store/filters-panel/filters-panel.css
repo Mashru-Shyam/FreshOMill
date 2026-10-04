@@ -1,0 +1,151 @@
+/* Filter controls, laid out vertically. Deliberately unstyled as a *container*
+   — no card chrome, no background — because it's dropped into two different
+   surfaces (the Store's desktop rail card and the mobile bottom sheet), and
+   each of those owns its own frame. */
+
+.filters-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.filters-panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.filters-panel__heading {
+  font-size: var(--text-h5-size);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.filters-panel__clear {
+  font-size: var(--text-label-sm-size);
+}
+
+.filters-panel__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  border: none;
+  padding: 0;
+  margin: 0;
+  /* A rule above each group instead of a card per group: the panel is short
+     enough that boxing every filter set would be more chrome than content. */
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-hairline);
+}
+
+.filters-panel__legend {
+  padding: 0;
+  margin-bottom: var(--space-xs);
+  font-size: var(--text-overline-size);
+  font-weight: var(--text-overline-weight);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-body-muted);
+}
+
+/* Whole row is the label, so the hit area is the width of the panel rather
+   than the 16px box — the previous inline checkboxes were a genuinely small
+   target on a phone. */
+.filters-panel__check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 36px;
+  padding: 0 var(--space-xs);
+  margin-inline: calc(var(--space-xs) * -1);
+  border-radius: var(--rounded-sm);
+  font-size: var(--text-body-sm-size);
+  color: var(--color-body);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.filters-panel__check:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-ink);
+}
+
+.filters-panel__check input {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.filters-panel__price {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.filters-panel__price-field {
+  display: flex;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 40px;
+  padding-left: var(--space-sm);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface);
+  transition: border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.filters-panel__price-field:hover {
+  border-color: var(--color-body-muted);
+}
+
+/* The halo goes on the wrapper, since the input itself has no border of its
+   own — focusing the number field has to light up the whole control. */
+.filters-panel__price-field:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring-inset);
+}
+
+.filters-panel__price-prefix {
+  flex-shrink: 0;
+  font-size: var(--text-label-sm-size);
+  font-weight: 600;
+  color: var(--color-body-muted);
+  pointer-events: none;
+}
+
+.filters-panel__price-input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0 var(--space-xs);
+  border: none;
+  background: none;
+  font-family: var(--font-sans);
+  font-size: var(--text-label-size);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+}
+
+.filters-panel__price-input:focus-visible {
+  outline: none;
+}
+
+/* Number spinners take horizontal room the field can't spare at rail width,
+   and the value is typed rather than stepped here. */
+.filters-panel__price-input::-webkit-outer-spin-button,
+.filters-panel__price-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.filters-panel__price-input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

@@ -1,10 +1,32 @@
 <div class="seller-card" [class.seller-card--out-of-stock]="!inStock()" [attr.data-product]="product().name">
-  <div class="seller-card__image">
+  <!-- The whole card is the affordance for opening the product, not just the
+       small round cart button in the corner. Shoppers expect a product tile to
+       be clickable; before this the only way into the detail sheet was a 40px
+       target that reads as "add to cart". It's a <button>, so it's
+       keyboard-reachable and announces the product name. -->
+  <button
+    type="button"
+    class="seller-card__open"
+    [disabled]="!inStock()"
+    [attr.aria-label]="'View details for ' + product().name"
+    (click)="openQuickAdd()"
+  ></button>
+
+  <div class="seller-card__image media-frame media-frame--trim">
     @if (showStockBadge() && !inStock()) {
-      <span class="seller-card__stock-badge">Out of Stock</span>
+      <span class="seller-card__stock-badge">Out of stock</span>
     }
     @if (product().image && !imageFailed()) {
-      <img [src]="product().image" [alt]="product().name" class="seller-card__product-img" loading="lazy" (error)="onImageError()" />
+      <img
+        [src]="product().image"
+        [alt]="product().name"
+        class="media-frame__img seller-card__product-img"
+        decoding="async"
+        [attr.fetchpriority]="isPriority() ? 'high' : 'low'"
+        (error)="onImageError()"
+      />
+    } @else {
+      <svg appIcon="package" class="media-frame__fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" style="width:34px;height:34px;" aria-hidden="true"></svg>
     }
 
     @if (!inStock()) {
@@ -30,11 +52,18 @@
       </button>
     }
   </div>
+
   <div class="seller-card__body">
     <div class="seller-card__name">{{ product().name }}</div>
     <div class="seller-card__meta">
-      <span class="seller-card__price">Rs. {{ product().price.toFixed(2) }}</span>
+      <span class="seller-card__price">Rs.&nbsp;{{ product().price.toFixed(2) }}</span>
       <span class="seller-card__unit">/ {{ product().unit }}</span>
     </div>
+    @if (qty() > 0) {
+      <span class="seller-card__in-cart">
+        <svg appIcon="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;" aria-hidden="true"></svg>
+        {{ qty() }} in cart
+      </span>
+    }
   </div>
 </div>

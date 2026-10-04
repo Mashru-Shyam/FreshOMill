@@ -1,25 +1,72 @@
-/* No color-block background (unlike .top-ticker/.navbar/.search-bar-row) —
-   sits on the plain page canvas with just a hairline to separate it, and
-   lives in normal document flow (not sticky/fixed) since it's the actual
-   end of the page, not persistent chrome. */
+/* Site footer. In normal document flow (not sticky/fixed) since it's the actual end of the
+   page, not persistent chrome.
+
+   Restructured from a single centred row (socials + four links + copyright) into a four-column
+   block. The old footer told a first-time visitor nothing: on an e-commerce site the footer is
+   where a shopper checks that there's a real shop behind the checkout — address, hours, a phone
+   number they can dial. All of it is already in StoreSettingsService and was being rendered on
+   the Contact page only.
+
+   Light, not inverted. The page still needs a definite bottom, but it gets one from a tint
+   change plus a firm top rule rather than from a slab of near-black — which is what was making
+   the whole site feel dark. */
 .site-footer {
-  border-top: 1px solid var(--color-hairline);
-  padding: var(--space-lg) var(--space-xl);
+  background: var(--color-canvas-alt);
+  border-top: 1px solid var(--color-hairline-strong);
+  color: var(--color-body);
+  padding: var(--space-page) var(--layout-gutter) var(--space-lg);
 }
 
-/* Line 1: social icons — same outline-circle language as
-   .bestsellers-arrow / .stories-arrow, not a filled/colored button. */
+/* `auto-fit` rather than a fixed four-track grid: the store-info and contact
+   columns only render when the shop has that data, and a fixed grid would hold
+   their empty tracks open. */
+.site-footer__inner {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.6fr) repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-xxl);
+  max-width: var(--layout-container-max);
+  margin: 0 auto;
+}
+
+.site-footer__brand-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.site-footer__brand {
+  font-size: var(--text-h4-size);
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.site-footer__brand-fresh {
+  color: var(--color-brand-green);
+}
+
+.site-footer__brand-mill {
+  color: var(--color-brand-brown);
+}
+
+.site-footer__pitch {
+  max-width: 36ch;
+  font-size: var(--text-body-sm-size);
+  line-height: 1.6;
+  color: var(--color-body-muted);
+}
+
+/* Same outline-disc language as the global .rail-arrow, not a filled button. */
 .site-footer__socials {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  gap: var(--space-xs);
+  margin-top: var(--space-xxs);
 }
 
 .site-footer__social-link {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--rounded-full);
   border: 1px solid var(--color-hairline-strong);
   background: var(--color-surface);
@@ -28,45 +75,92 @@
   align-items: center;
   justify-content: center;
   transition: background-color var(--duration-fast) var(--ease-standard),
-    border-color var(--duration-fast) var(--ease-standard);
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
 }
 
 .site-footer__social-link:hover {
-  background-color: var(--color-surface-hover);
-  border-color: var(--color-hairline);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
-/* Line 2: nav links + copyright share one row */
+.site-footer__col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+.site-footer__col-title {
+  font-size: var(--text-overline-size);
+  font-weight: var(--text-overline-weight);
+  line-height: var(--text-overline-lh);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-body-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.site-footer__col a {
+  font-size: var(--text-body-sm-size);
+  font-weight: 500;
+  color: var(--color-body);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.site-footer__col a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.site-footer__line {
+  font-size: var(--text-body-sm-size);
+  line-height: 1.6;
+  color: var(--color-body-muted);
+}
+
+.site-footer__line--hours,
+.site-footer__map-link,
+.site-footer__contact {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xxs);
+}
+
+.site-footer__line--hours svg,
+.site-footer__map-link svg,
+.site-footer__contact svg {
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.site-footer__map-link {
+  font-weight: 600;
+  color: var(--color-primary) !important;
+  margin-top: var(--space-xxs);
+}
+
+.site-footer__map-link:hover {
+  color: var(--color-primary-hover) !important;
+}
+
+/* Long e-mail addresses would otherwise push the column wider than its track. */
+.site-footer__contact {
+  overflow-wrap: anywhere;
+}
+
 .site-footer__bottom {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--space-md);
-}
-
-.site-footer__nav {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-lg);
-}
-
-.site-footer__nav a {
-  font-size: var(--text-label-sm-size);
-  font-weight: 600;
-  color: var(--color-body);
-  text-decoration: none;
-  border-bottom: 2px solid transparent;
-  padding-bottom: 2px;
-  transition: color var(--duration-fast) var(--ease-standard),
-    border-color var(--duration-fast) var(--ease-standard);
-}
-
-.site-footer__nav a:hover {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+  max-width: var(--layout-container-max);
+  margin: var(--space-section) auto 0;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-hairline);
 }
 
 .site-footer__copyright {
@@ -74,8 +168,34 @@
   color: var(--color-body-muted);
 }
 
+/* Tablet: brand block spans the full width above a three-up row of link columns, rather than
+   squeezing four tracks into ~700px. */
+@media (max-width: 1023px) {
+  .site-footer__inner {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-xl);
+  }
+
+  .site-footer__brand-col {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 639px) {
   .site-footer {
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--space-xxl) var(--layout-gutter) var(--space-md);
+  }
+
+  .site-footer__bottom {
+    margin-top: var(--space-xl);
+  }
+
+  .site-footer__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-xl);
+  }
+
+  .site-footer__pitch {
+    max-width: none;
   }
 }

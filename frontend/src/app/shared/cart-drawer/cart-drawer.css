@@ -9,9 +9,9 @@
 .cart-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(12, 17, 26, 0.5);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  background: var(--overlay-scrim);
+  -webkit-backdrop-filter: var(--overlay-blur);
+  backdrop-filter: var(--overlay-blur);
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   z-index: 120;
@@ -32,14 +32,16 @@
 
 .cart-drawer {
   width: 100%;
-  max-width: 860px;
-  /* Fixed height (not just a cap) so the popup is always the same
-     footprint whether the cart holds 1 item or 15 — it never grows or
-     shrinks with content. .cart-drawer__body's own overflow-y: auto
-     handles scrolling once items exceed it. */
-  height: min(640px, calc(100dvh - 2 * var(--space-xl)));
-  max-height: calc(100dvh - 2 * var(--space-xl));
+  max-width: 560px;
+  /* Sizes to its content up to a cap, rather than always being 640px tall. The fixed height it
+     used to have meant a one-item cart still rendered a 640px panel: a mostly-empty body with
+     a scroll container that had nothing to scroll. .cart-drawer__body's overflow-y: auto now
+     only engages once the items actually exceed the cap — same pattern the mobile bottom sheet
+     below already used. */
+  height: auto;
+  max-height: min(680px, calc(100dvh - 2 * var(--space-xl)));
   background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-xl);
   box-shadow: var(--elevation-modal);
   display: flex;
@@ -56,36 +58,53 @@
   opacity: 1;
 }
 
-/* Hidden on desktop/tablet (centered modal, not a bottom sheet there) —
-   shown ≤639px below, matching the drag-handle pattern every other mobile
-   bottom sheet in the app uses (profile-popover, filters-sheet). */
-.cart-drawer__handle {
-  display: none;
+/* Reads "3 items", not "(3)" — a bare parenthesised number next to a heading is ambiguous
+   about whether it counts lines or units. */
+.cart-drawer__count {
+  padding: 1px var(--space-xs);
+  border-radius: var(--rounded-full);
+  background: var(--color-primary-subtle);
+  font-size: var(--text-caption-size);
+  font-weight: 700;
+  color: var(--color-primary);
 }
 
-.cart-drawer__header {
+/* Free-delivery nudge. A labelled progress bar rather than a bare sentence: the bar answers
+   "how close am I?" at a glance, and the sentence answers "by how much?" precisely. */
+.cart-drawer__delivery {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-md) var(--space-lg);
-  border-bottom: 1px solid var(--color-hairline);
-  flex-shrink: 0;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--rounded-md);
+  background: var(--color-primary-subtle);
+  font-size: var(--text-label-sm-size);
+  color: var(--color-ink);
 }
 
-.cart-drawer__title {
-  display: flex;
+.cart-drawer__delivery--met {
+  flex-direction: row;
   align-items: center;
   gap: var(--space-xs);
-  font-size: var(--text-h3-size);
-  font-weight: var(--text-h3-weight);
-  color: var(--color-ink);
-  letter-spacing: -0.3px;
+  background: var(--color-success-subtle);
+  color: var(--color-success);
+  font-weight: 600;
 }
 
-.cart-drawer__count {
-  font-size: var(--text-label-sm-size);
-  font-weight: 600;
-  color: var(--color-body-muted);
+.cart-drawer__delivery-track {
+  display: block;
+  height: 5px;
+  border-radius: var(--rounded-full);
+  background: rgb(69 83 196 / 18%);
+  overflow: hidden;
+}
+
+.cart-drawer__delivery-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--rounded-full);
+  background: var(--color-primary);
+  transition: width var(--duration-slow) var(--ease-emphasized);
 }
 
 .cart-drawer__body {
@@ -96,178 +115,14 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-}
-
-.cart-drawer__empty {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  padding: var(--space-xxl) var(--space-lg);
-  text-align: center;
-}
-
-.cart-drawer__empty-icon {
-  color: var(--color-placeholder);
-}
-
-.cart-drawer__empty-text {
-  font-size: var(--text-body-sm-size);
-  color: var(--color-body-muted);
-}
-
-.cart-drawer__empty-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  padding: 0 var(--space-lg);
-  border-radius: var(--rounded-md);
-  border: 1px solid var(--color-hairline-strong);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  font-size: var(--text-label-size);
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard);
-}
-
-.cart-drawer__empty-cta:hover {
-  background-color: var(--color-surface-hover);
-}
-
-.cart-item {
-  display: flex;
-  gap: var(--space-sm);
-  padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--color-hairline);
-}
-
-.cart-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.cart-item__image {
-  width: 64px;
-  height: 64px;
-  flex-shrink: 0;
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-sunken);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-primary);
-  overflow: hidden;
-}
-
-.cart-item__img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.cart-item__info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.cart-item__name {
-  font-size: var(--text-body-sm-size);
-  font-weight: 700;
-  color: var(--color-ink);
-  line-height: var(--text-body-sm-lh);
-}
-
-.cart-item__variant {
-  font-size: var(--text-label-sm-size);
-  color: var(--color-body-muted);
-}
-
-.cart-item__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-xs) var(--space-sm);
-  margin-top: var(--space-xs);
-}
-
-.cart-item__stepper {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.cart-item__stepper-btn {
-  width: 28px;
-  height: 28px;
-  border: none;
-  background: var(--color-surface);
-  color: var(--color-ink);
-  font-size: 1rem;
-  font-family: var(--font-sans);
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard);
-}
-
-.cart-item__stepper-btn:hover {
-  background-color: var(--color-surface-hover);
-}
-
-.cart-item__stepper-value {
-  min-width: 26px;
-  text-align: center;
-  font-size: var(--text-label-sm-size);
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
-.cart-item__price {
-  flex: 1;
-  text-align: right;
-  font-size: var(--text-body-sm-size);
-  font-weight: 700;
-  color: var(--color-ink);
-  white-space: nowrap;
-}
-
-.cart-item__remove {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: transparent;
-  color: var(--color-body-muted);
-  border-radius: var(--rounded-sm);
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard),
-    color var(--duration-fast) var(--ease-standard);
-}
-
-.cart-item__remove:hover {
-  background-color: var(--color-danger-subtle);
-  color: var(--color-danger);
+  background: var(--color-canvas);
 }
 
 .cart-drawer__footer {
   flex-shrink: 0;
   padding: var(--space-lg);
   border-top: 1px solid var(--color-hairline);
+  background: var(--color-surface);
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
@@ -288,7 +143,9 @@
 .cart-drawer__subtotal-value {
   font-size: var(--text-h4-size);
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
   color: var(--color-ink);
+  letter-spacing: -0.4px;
 }
 
 .cart-drawer__tax-note {
@@ -297,32 +154,11 @@
   margin-top: -4px;
 }
 
-.cart-drawer__checkout-btn {
-  width: 100%;
-  height: 48px;
-  border: none;
-  border-radius: var(--rounded-md);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-family: var(--font-sans);
-  font-size: var(--text-label-size);
-  font-weight: 700;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-xs);
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard);
-}
-
-.cart-drawer__checkout-btn:hover {
-  background-color: var(--color-primary-hover);
-}
-
+/* Signed out, Checkout is a link that intercepts its own click to open sign-in instead — so
+   it can't be a real `:disabled` button. It's dimmed to say so, and the notice below it says
+   why. */
 .cart-drawer__checkout-btn--disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .cart-drawer__auth-notice {
@@ -366,13 +202,8 @@
     transform: translateY(0);
   }
 
-  .cart-drawer__handle {
-    display: block;
-    width: 36px;
-    height: 4px;
-    border-radius: var(--rounded-full);
-    background-color: var(--color-hairline-strong);
-    margin: 0 auto var(--space-sm) auto;
-    flex-shrink: 0;
+  .cart-drawer__body,
+  .cart-drawer__footer {
+    padding: var(--space-md);
   }
 }

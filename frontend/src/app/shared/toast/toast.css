@@ -1,6 +1,7 @@
 .pq-toast-container {
   position: fixed;
-  bottom: var(--space-xl);
+  /* Clears the mobile bottom nav so a toast never lands on top of the tab bar. */
+  bottom: calc(var(--space-xl) + var(--layout-bottom-nav-height));
   left: 50%;
   transform: translateX(-50%);
   z-index: 200;
@@ -11,15 +12,21 @@
   pointer-events: none;
 }
 
+@media (min-width: 961px) {
+  .pq-toast-container {
+    bottom: var(--space-xl);
+  }
+}
+
 .pq-toast {
   display: flex;
   flex-direction: column;
   width: 380px;
   max-width: calc(100vw - 2 * var(--space-xl));
   background: var(--color-surface, #ffffff);
-  color: var(--color-ink, #1c222a);
-  border: 1px solid var(--color-hairline, rgb(16 24 40 / 8%));
-  border-radius: var(--rounded-md);
+  color: var(--color-ink, #17211c);
+  border: 1px solid var(--color-hairline, rgb(23 33 28 / 10%));
+  border-radius: var(--rounded-lg);
   box-shadow: var(--elevation-toast, 0 16px 32px rgb(16 24 40 / 18%), 0 40px 72px rgb(16 24 40 / 22%));
   overflow: hidden;
   opacity: 0;

@@ -3,7 +3,10 @@
     <div class="login-brand">freshOmill <span>Admin</span></div>
 
     @if (step() === 'email') {
-      <p class="login-lede">Sign in with your admin email to continue.</p>
+      <div class="login-head">
+        <h1 class="login-title">Sign in</h1>
+        <p class="login-lede">We'll email you a one-time code — no password to remember.</p>
+      </div>
       <div class="field">
         <label for="email">Email address</label>
         <input
@@ -11,35 +14,57 @@
           type="email"
           placeholder="you@example.com"
           autocomplete="email"
+          [attr.aria-invalid]="error() ? 'true' : null"
           [value]="email()"
           (input)="onEmailInput($event)"
           (keydown.enter)="onSubmit()"
         />
       </div>
     } @else {
-      <p class="login-lede">Enter the 6-digit code sent to <strong>{{ pendingEmail() }}</strong></p>
+      <div class="login-head">
+        <h1 class="login-title">Check your email</h1>
+        <!-- The address is repeated back so a typo is caught here rather than after waiting
+             for a code that was never going to arrive. -->
+        <p class="login-lede">
+          We sent a 6-digit code to <strong>{{ pendingEmail() }}</strong>.
+        </p>
+      </div>
       <div class="field">
         <label for="otp">Verification code</label>
         <input
           id="otp"
+          class="login-otp"
           type="text"
           inputmode="numeric"
           maxlength="6"
-          placeholder="••••••"
+          placeholder="000000"
           autocomplete="one-time-code"
+          [attr.aria-invalid]="error() ? 'true' : null"
           [value]="otp()"
           (input)="onOtpInput($event)"
           (keydown.enter)="onSubmit()"
         />
+        <span class="hint">The code expires shortly — request a new one if it stops working.</span>
       </div>
     }
 
     @if (error(); as err) {
-      <p class="login-error">{{ err }}</p>
+      <p class="login-error" role="alert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" /><path d="M12 8v4" /><path d="M12 16h.01" />
+        </svg>
+        {{ err }}
+      </p>
     }
 
-    <button type="button" class="btn btn--primary login-submit" [disabled]="submitting()" (click)="onSubmit()">
-      {{ submitting() ? 'Please wait…' : (step() === 'email' ? 'Send code' : 'Verify & sign in') }}
+    <button
+      type="button"
+      class="btn btn--primary btn--block login-submit"
+      [class.is-loading]="submitting()"
+      [disabled]="submitting()"
+      (click)="onSubmit()"
+    >
+      <span>{{ step() === 'email' ? 'Send code' : 'Verify & sign in' }}</span>
     </button>
   </div>
 </div>

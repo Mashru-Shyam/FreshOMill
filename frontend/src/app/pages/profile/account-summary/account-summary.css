@@ -1,48 +1,69 @@
-/* `.checkout-section` isn't among the globally-shared classes (only the
-   header/back/title, empty-state, and form-field pieces are) so it's
-   redefined here, verbatim from Sample/Profile.html's <style> block. */
-.checkout-section {
-  background: var(--color-surface);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--elevation-raised);
-  padding: var(--space-lg);
-}
+/* `.card` is global (src/styles.css). This overrides only the padding and adds the
+   identity row on top of it.
 
+   Was a full-bleed primary→primary-active gradient panel — the single heaviest block of solid
+   brand color anywhere in the app, which is part of why Profile read as a different product
+   than the rest of the site. It's a standard surface card now, consistent with every other
+   section on the page; the brand color stays, carried by the avatar and a thin top accent
+   instead of a full panel wash. */
 .account-summary {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-active) 100%);
-  padding: var(--space-lg);
+  overflow: hidden;
+}
+
+.account-summary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
 }
 
 .account-summary__avatar {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   border-radius: var(--rounded-full);
-  background: var(--color-surface);
-  color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-active) 100%);
+  color: var(--color-on-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.375rem;
   font-weight: 700;
   text-transform: uppercase;
   flex-shrink: 0;
-  box-shadow: 0 0 0 3px rgb(255 255 255 / 30%);
+  letter-spacing: -0.5px;
 }
 
 .account-summary__email {
   font-size: var(--text-body-md-size);
   font-weight: 700;
-  color: var(--color-on-primary);
+  color: var(--color-ink);
   overflow-wrap: anywhere;
 }
 
 .account-summary__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xxs);
   font-size: var(--text-label-sm-size);
-  color: var(--color-on-dark);
+  color: var(--color-body-muted);
   margin-top: 2px;
+}
+
+/* Small "signed in" dot — a quieter, more standard affordance than a colored panel. */
+.account-summary__hint::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: var(--rounded-full);
+  background: var(--color-success);
+  flex-shrink: 0;
 }
 
 @media (max-width: 479px) {
@@ -51,8 +72,8 @@
   }
 
   .account-summary__avatar {
-    width: 44px;
-    height: 44px;
-    font-size: 1.1rem;
+    width: 46px;
+    height: 46px;
+    font-size: 1.125rem;
   }
 }

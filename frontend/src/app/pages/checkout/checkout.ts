@@ -35,7 +35,9 @@ type ViewState = 'empty' | 'form';
 })
 export class Checkout implements OnDestroy {
   private readonly addressForm = viewChild(AddressForm);
-  private readonly paymentOptions = viewChild(PaymentOptions);
+  /** Read from the template so the order-summary CTA can label itself for the method the
+   *  shopper actually picked ("Pay Now" vs "Place Order"). */
+  protected readonly paymentOptions = viewChild(PaymentOptions);
 
   protected readonly submitting = signal(false);
 

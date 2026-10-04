@@ -32,6 +32,12 @@ export class SearchDropdown {
     return `${count} result${count === 1 ? '' : 's'} for "${q}"`;
   });
 
+  /** While the catalogue is still loading there is nothing to search, and reporting "No
+   *  products found for X" is a claim we can't back — the dropdown says it's still looking
+   *  instead. */
+  protected readonly loading = this.productService.isLoading;
+  protected readonly skeletonSlots = Array.from({ length: 4 }, (_, i) => i);
+
   protected readonly failedImages = signal<Set<string>>(new Set());
 
   constructor(private readonly overlay: OverlayService) {}

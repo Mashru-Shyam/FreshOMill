@@ -1,17 +1,17 @@
 <section class="category-selector-section" aria-label="Browse by category">
   <div class="category-selector-wrapper">
-    <button type="button" class="category-selector-arrow category-selector-arrow--prev"
+    <button type="button" class="rail-arrow category-selector-arrow category-selector-arrow--prev"
       aria-label="Previous categories" [class.is-hidden]="isPrevHidden()" (click)="slide('prev')">
       <svg appIcon="chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" aria-hidden="true"></svg>
     </button>
-    <button type="button" class="category-selector-arrow category-selector-arrow--next"
+    <button type="button" class="rail-arrow category-selector-arrow category-selector-arrow--next"
       aria-label="Next categories" [class.is-hidden]="isNextHidden()" (click)="slide('next')">
       <svg appIcon="chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;" aria-hidden="true"></svg>
     </button>
 
     <div
       #slider
-      class="category-selector-slider"
+      class="rail category-selector-slider"
       [class.is-dragging]="isDragging()"
       role="region"
       aria-label="Category selector"
@@ -22,7 +22,7 @@
       (pointercancel)="endDrag()"
       (click)="onSliderClick($event)"
     >
-      @for (chip of chips(); track chip.slug) {
+      @for (chip of chips(); track chip.slug; let i = $index) {
         <button
           type="button"
           class="category-chip"
@@ -32,7 +32,8 @@
         >
           <span class="category-chip__image">
             @if (chip.image && !failedImages().has(chip.slug)) {
-              <img [src]="chip.image" [alt]="chip.name" class="category-chip__img" loading="lazy" (error)="onImageError(chip.slug)" />
+              <img [src]="chip.image" [alt]="" class="category-chip__img" decoding="async"
+                [attr.fetchpriority]="i < 8 ? 'high' : 'low'" (error)="onImageError(chip.slug)" />
             }
           </span>
           <span class="category-chip__name">{{ chip.name }}</span>

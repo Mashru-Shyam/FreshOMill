@@ -1,15 +1,55 @@
 <section class="product-grid-section" aria-label="Products">
-  <div class="product-grid" role="region" aria-label="Product listing">
-    @if (products().length) {
-      @for (product of products(); track product.id) {
-        <app-seller-card [product]="toSellerProduct(product)" [showStockBadge]="true" />
+  <div
+    class="product-grid"
+    role="region"
+    aria-label="Product listing"
+    [attr.aria-busy]="loading() ? 'true' : null"
+  >
+    @if (loading()) {
+      @for (i of skeletonSlots; track i) {
+        <app-product-card-skeleton />
       }
+      <span class="sr-only" role="status">Loading products…</span>
+    } @else if (failed()) {
+      <div class="product-grid__state">
+        <div class="empty-state empty-state--error" role="alert">
+          <svg appIcon="wifi-off" class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px;" aria-hidden="true"></svg>
+          <h2 class="empty-state__title">We couldn't load the products</h2>
+          <p class="empty-state__text">
+            Something went wrong reaching our store. Check your connection and try again.
+          </p>
+          <button type="button" class="btn btn--primary empty-state__cta" (click)="retry.emit()">
+            <svg appIcon="refresh-cw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
+            Try again
+          </button>
+        </div>
+      </div>
+    } @else if (products().length) {
+      @for (product of products(); track product.id; let i = $index) {
+        <app-seller-card [product]="toSellerProduct(product)" [showStockBadge]="true" [eagerIndex]="i" />
+      }
+    } @else if (filtersActive()) {
+      <div class="product-grid__state">
+        <div class="empty-state">
+          <svg appIcon="search-x" class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px;" aria-hidden="true"></svg>
+          <h2 class="empty-state__title">No products match these filters</h2>
+          <p class="empty-state__text">Try widening your price range or including out-of-stock items.</p>
+          <button type="button" class="btn btn--secondary empty-state__cta" (click)="clearFilters.emit()">
+            Clear filters
+          </button>
+        </div>
+      </div>
     } @else {
-      <div class="product-grid__empty">
-        <svg appIcon="search-x" class="product-grid__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px;" aria-hidden="true"></svg>
-        <div>
-          <div class="product-grid__empty-text">No products match these filters.</div>
-          <button type="button" class="product-grid__empty-clear" (click)="clearFilters.emit()">Clear filters</button>
+      <div class="product-grid__state">
+        <div class="empty-state">
+          <svg appIcon="package" class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px;" aria-hidden="true"></svg>
+          <h2 class="empty-state__title">Nothing here yet</h2>
+          <p class="empty-state__text">
+            We're still stocking this category. Browse everything else in the meantime.
+          </p>
+          <a routerLink="/store" [queryParams]="{ category: 'all' }" class="btn btn--primary empty-state__cta">
+            Browse all products
+          </a>
         </div>
       </div>
     }

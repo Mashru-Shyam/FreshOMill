@@ -1,68 +1,54 @@
-/* Ported from Sample/Store.html's "PRODUCT GRID" section — `.seller-card` itself lives in
-   shared/seller-card (reused as-is), this only lays out the grid + empty state around it. */
+/* Product grid + its loading / error / empty states. The card itself lives in
+   shared/seller-card and is reused as-is.
+
+   No container or gutter of its own any more — `.store-layout` (src/styles.css)
+   owns both, so the grid simply fills the column it's given. It used to
+   re-declare the page container, which is why it could never sit beside the
+   filter rail. */
+
 .product-grid-section {
-  max-width: var(--layout-container-max);
-  margin: 0 auto;
-  padding: var(--space-xl);
+  min-width: 0;
 }
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-lg);
 }
 
-.product-grid__empty {
+/* Any of the non-product states takes the full grid width and centres its
+   card, rather than sitting in a single column cell where it would render as
+   a narrow sliver on desktop. */
+.product-grid__state {
   grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-md);
   padding: var(--space-xxl) 0;
-  color: var(--color-body-muted);
 }
 
-.product-grid__empty-icon {
-  color: var(--color-placeholder);
-  flex-shrink: 0;
+/* Steps down with the column the grid is in, not with the viewport, which is
+   why these thresholds are lower than the page's: from 961px up the rail has
+   already taken 250px off the available width. */
+@media (max-width: 1100px) {
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
-.product-grid__empty-text {
-  font-size: var(--text-body-sm-size);
-  color: var(--color-body-muted);
-}
-
-.product-grid__empty-clear {
-  display: block;
-  margin-top: var(--space-xxs);
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: var(--text-label-sm-size);
-  font-weight: 600;
-  color: var(--color-primary);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.product-grid__empty-clear:hover {
-  color: var(--color-primary-hover);
-}
-
+/* The rail is gone below 960px, so the grid has the full width back and can
+   hold three across again on a tablet. */
 @media (max-width: 960px) {
   .product-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-md);
   }
 }
 
 @media (max-width: 639px) {
-  .product-grid-section {
-    padding: var(--space-md);
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-sm);
   }
 
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-sm);
+  .product-grid__state {
+    padding: var(--space-xl) 0;
   }
 }

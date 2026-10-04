@@ -1,9 +1,3 @@
-.checkout-page {
-  max-width: var(--layout-container-max);
-  margin: 0 auto;
-  padding: var(--space-xl);
-}
-
 /* RF-01 pair: content + sticky rail on wide viewports, stacked otherwise. */
 .checkout-grid {
   display: grid;
@@ -43,12 +37,6 @@
   }
 }
 
-@media (max-width: 639px) {
-  .checkout-page {
-    padding: var(--space-md);
-  }
-}
-
 /* Room at the bottom of the page so OrderSummary's sticky `.checkout-mobile-actionbar`
    never covers content. Hidden entirely ≤639px (order-summary.css) — the summary card is
    inline/static there already, so there's nothing left to reserve space for beyond the
@@ -56,7 +44,7 @@
    above the bottom nav rather than sitting under it, so this reserves room for both bars
    together. */
 @media (min-width: 640px) and (max-width: 899px) {
-  .checkout-page {
+  .page {
     padding-bottom: calc(var(--space-xl) + 68px + var(--layout-bottom-nav-height));
   }
 }

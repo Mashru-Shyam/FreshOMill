@@ -2,17 +2,47 @@
 
 <app-category-chips [activeSlug]="activeCategory().slug" (categorySelected)="selectCategory($event)" />
 
-<app-filters-bar
-  [(inStock)]="inStock"
-  [(outOfStock)]="outOfStock"
-  [(priceMin)]="priceMin"
-  [(priceMax)]="priceMax"
-  [(sort)]="sort"
-  [(sheetOpen)]="filtersSheetOpen"
-  [resultCount]="filteredProducts().length"
-/>
+<!-- Two columns from 961px: a sticky filter rail beside the grid. The filters
+     used to be a full-width strip above the products, which spent a whole band
+     of the page on four controls and pushed the catalogue further down. Beside
+     the grid they're always in view while browsing, and the space they occupy
+     is space the products weren't using. -->
+<div class="store-layout">
+  <div class="store-layout__inner">
+    <aside class="store-layout__rail" aria-label="Product filters">
+      <div class="store-layout__rail-card">
+        <app-filters-panel
+          [(inStock)]="inStock"
+          [(outOfStock)]="outOfStock"
+          [(priceMin)]="priceMin"
+          [(priceMax)]="priceMax"
+        />
+      </div>
+    </aside>
 
-<app-store-product-grid [products]="filteredProducts()" (clearFilters)="clearAllFilters()" />
+    <div class="store-layout__main">
+      <app-filters-bar
+        [(inStock)]="inStock"
+        [(outOfStock)]="outOfStock"
+        [(priceMin)]="priceMin"
+        [(priceMax)]="priceMax"
+        [(sort)]="sort"
+        [(sheetOpen)]="filtersSheetOpen"
+        [resultCount]="filteredProducts().length"
+        [loading]="productsLoading()"
+      />
+
+      <app-store-product-grid
+        [products]="filteredProducts()"
+        [loading]="productsLoading()"
+        [failed]="productsFailed()"
+        [filtersActive]="filtersActive()"
+        (clearFilters)="clearAllFilters()"
+        (retry)="retryProducts()"
+      />
+    </div>
+  </div>
+</div>
 
 <app-filters-sheet
   [(open)]="filtersSheetOpen"

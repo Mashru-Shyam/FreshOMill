@@ -12,18 +12,18 @@
           <span class="cart-item__name">{{ line.name }}</span>
           <span class="cart-item__variant">{{ line.variant }}</span>
           <div class="cart-item__row">
-            <div class="cart-item__stepper">
+            <div class="stepper stepper--sm" role="group" [attr.aria-label]="'Quantity for ' + line.name">
               <button
                 type="button"
-                class="cart-item__stepper-btn"
-                aria-label="Decrease quantity"
+                class="stepper__btn"
+                [attr.aria-label]="'Decrease ' + line.name + ' quantity'"
                 (click)="decrement(line.id, line.qty)"
               >&minus;</button>
-              <span class="cart-item__stepper-value">{{ line.qty }}</span>
+              <span class="stepper__value">{{ line.qty }}</span>
               <button
                 type="button"
-                class="cart-item__stepper-btn"
-                aria-label="Increase quantity"
+                class="stepper__btn"
+                [attr.aria-label]="'Increase ' + line.name + ' quantity'"
                 (click)="increment(line.id, line.qty)"
               >+</button>
             </div>
@@ -60,10 +60,20 @@
       Please <button type="button" class="checkout-summary__auth-link" (click)="openSignIn($event)">sign in</button> to place your order.
     </p>
   }
-  <button type="button" class="checkout-summary__place-btn" [disabled]="!auth.isLoggedIn()" (click)="onPlaceOrderClick()">
-    Pay Now
+  <button
+    type="button"
+    class="btn btn--primary btn--lg btn--block checkout-summary__place-btn"
+    [class.is-loading]="submitting()"
+    [disabled]="!canSubmit()"
+    [attr.aria-busy]="submitting() ? 'true' : null"
+    (click)="onPlaceOrderClick()"
+  >
+    <span>{{ ctaLabel() }}</span>
     <svg appIcon="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
   </button>
+  @if (submitting()) {
+    <p class="checkout-summary__submitting" role="status">Placing your order — please don't close this page.</p>
+  }
 </aside>
 
 <div class="checkout-mobile-actionbar">
@@ -71,8 +81,15 @@
     <div class="checkout-mobile-actionbar__label">Total</div>
     <div class="checkout-mobile-actionbar__value">Rs. {{ total().toFixed(2) }}</div>
   </div>
-  <button type="button" class="checkout-summary__place-btn" [disabled]="!auth.isLoggedIn()" (click)="onPlaceOrderClick()">
-    Pay Now
+  <button
+    type="button"
+    class="btn btn--primary btn--lg btn--block checkout-summary__place-btn"
+    [class.is-loading]="submitting()"
+    [disabled]="!canSubmit()"
+    [attr.aria-busy]="submitting() ? 'true' : null"
+    (click)="onPlaceOrderClick()"
+  >
+    <span>{{ ctaLabel() }}</span>
     <svg appIcon="arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
   </button>
 </div>

@@ -1,19 +1,20 @@
-<div class="checkout-page">
-  <div class="checkout-page__header">
-    <a routerLink="/store" class="checkout-page__back">
+<div class="page-canvas"><div class="page">
+  <div class="page-head">
+    <a routerLink="/store" class="page-head__back">
       <svg appIcon="arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;" aria-hidden="true"></svg>
       Continue Shopping
     </a>
-    <h1 class="checkout-page__title">Checkout</h1>
+    <h1 class="page-head__title">Checkout</h1>
+    <p class="page-head__subtitle">Confirm your delivery details and payment method.</p>
   </div>
 
   @switch (viewState()) {
     @case ('empty') {
-      <div class="checkout-empty">
-        <svg appIcon="shopping-bag" class="checkout-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;" aria-hidden="true"></svg>
-        <h2 class="checkout-empty__title">Your cart is empty</h2>
-        <p class="checkout-empty__text">Add a few products before checking out.</p>
-        <a routerLink="/store" class="checkout-empty__cta">Browse Products</a>
+      <div class="empty-state">
+        <svg appIcon="shopping-bag" class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;" aria-hidden="true"></svg>
+        <h2 class="empty-state__title">Your cart is empty</h2>
+        <p class="empty-state__text">Add a few products before checking out.</p>
+        <a routerLink="/store" class="btn btn--primary empty-state__cta">Browse Products</a>
       </div>
     }
     @default {
@@ -22,8 +23,12 @@
           <app-address-form></app-address-form>
           <app-payment-options></app-payment-options>
         </div>
-        <app-order-summary (placeOrder)="onPlaceOrder()"></app-order-summary>
+        <app-order-summary
+          [submitting]="submitting()"
+          [paymentMethod]="paymentOptions()?.selected() ?? 'cod'"
+          (placeOrder)="onPlaceOrder()"
+        ></app-order-summary>
       </div>
     }
   }
-</div>
+</div></div>

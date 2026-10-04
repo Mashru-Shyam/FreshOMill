@@ -1,4 +1,11 @@
+@if (visible()) {
 <section class="hero-slider-section" aria-label="FreshOMill Featured Highlights">
+  @if (loading()) {
+    <div class="hero-slider">
+      <div class="skeleton hero-slider__skeleton" aria-hidden="true"></div>
+      <span class="sr-only" role="status">Loading featured highlights…</span>
+    </div>
+  } @else {
   <div class="hero-slider" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
     <div class="hero-slider__track" [style.transform]="'translateX(-' + currentSlide() * 100 + '%)'">
       @for (slide of slides(); track slide.img; let i = $index) {
@@ -8,7 +15,7 @@
               [src]="slide.img"
               [alt]="slide.alt"
               class="hero-slider__img"
-              [attr.loading]="i === 0 ? null : 'lazy'"
+              decoding="async"
               [attr.fetchpriority]="i === 0 ? 'high' : null"
               (error)="onImageError(i)"
             />
@@ -44,4 +51,6 @@
       }
     </div>
   </div>
+  }
 </section>
+}

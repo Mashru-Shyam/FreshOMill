@@ -1,17 +1,21 @@
+/* Signed-out entry point. The one screen an operator sees before anything else, so it carries
+   the same surface, field and button anatomy as the rest of the panel rather than its own. */
 .login-page {
   min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-md);
+  background: var(--color-canvas);
 }
 
 .login-card {
   width: 100%;
-  max-width: 360px;
+  max-width: 380px;
   background: var(--color-surface);
   border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
+  box-shadow: var(--elevation-raised);
   padding: var(--space-xl);
   display: flex;
   flex-direction: column;
@@ -25,21 +29,60 @@
 }
 
 .login-brand span {
-  color: var(--color-primary);
+  color: var(--color-body-muted);
+  font-weight: 600;
+}
+
+/* A real heading, not just a lede line — the step the operator is on (enter email vs enter
+   code) is now stated rather than inferred from the field label. */
+.login-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+}
+
+.login-title {
+  font-size: var(--text-h2-size);
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--color-ink);
 }
 
 .login-lede {
-  font-size: 0.875rem;
+  font-size: var(--text-body-size);
   color: var(--color-body-muted);
 }
 
+/* Six digits, spaced and centred, so the field reads as a code entry rather than as a
+   short text input. */
+.login-otp {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  height: 52px;
+}
+
 .login-error {
-  font-size: 0.8125rem;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--rounded-md);
+  background: var(--color-danger-subtle);
   color: var(--color-danger);
+  font-size: var(--text-label-size);
+  font-weight: 500;
   margin: 0;
 }
 
+.login-error svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
 .login-submit {
-  width: 100%;
   height: 44px;
+  margin-top: var(--space-xxs);
 }

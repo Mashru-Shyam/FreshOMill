@@ -11,7 +11,7 @@ public sealed class UpdateHeroSlideCommandValidator : AbstractValidator<UpdateHe
         RuleFor(x => x.Alt).NotEmpty().MaximumLength(300);
         RuleFor(x => x.Icon).NotEmpty().MaximumLength(50);
         RuleFor(x => x.Title).NotEmpty().MaximumLength(200);
-        RuleFor(x => x.Subtitle).NotEmpty().MaximumLength(300);
+        RuleFor(x => x.Subtitle).MaximumLength(300);
         RuleFor(x => x.FallbackGradient).NotEmpty().MaximumLength(200);
         RuleFor(x => x.DisplayOrder).GreaterThanOrEqualTo(0);
     }

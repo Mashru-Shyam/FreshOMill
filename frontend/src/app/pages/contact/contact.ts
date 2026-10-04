@@ -13,9 +13,9 @@ import { Icon } from '../../shared/icon/icon';
  * Validates the required fields (name, email, message — phone is optional) client-side same as
  * the original mock did, then submits to POST /api/v1/contact (ContactService) before swapping
  * to the success state. That success state reuses the global
- * `.checkout-success`/`__icon`/`__title`/`__text` classes verbatim, exactly like the mockup
+ * `.success-state`/`__icon`/`__title`/`__text` classes verbatim, exactly like the mockup
  * itself does (its `.contact-form__success` wrapper still uses
- * `checkout-success__title`/`__text` for the text).
+ * `success-state__title`/`__text` for the text).
  */
 @Component({
   selector: 'app-contact-page',

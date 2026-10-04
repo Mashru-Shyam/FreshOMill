@@ -1,21 +1,6 @@
-/* Ported from Sample/Checkout.html's CHECKOUT PAGE style block.
-   `.checkout-section`/`.checkout-form-grid` are reused by payment-options too — each
-   component keeps its own copy since Angular's emulated view encapsulation scopes styles
-   per-component, but the rules themselves are identical everywhere they're used. */
-.checkout-section {
-  background: var(--color-surface);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--elevation-raised);
-  padding: var(--space-lg);
-}
-
-.checkout-section__title {
-  font-size: var(--text-h4-size);
-  font-weight: var(--text-h4-weight);
-  color: var(--color-ink);
-  margin-bottom: var(--space-md);
-}
-
+/* `.card`/`.card__title` are global now (src/styles.css) — they were
+   duplicated verbatim across five component stylesheets, which let the card surface drift
+   between checkout and profile. Only the grid, which is genuinely local, stays here. */
 .checkout-form-grid {
   display: grid;
   grid-template-columns: 1fr;

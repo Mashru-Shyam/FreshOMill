@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, computed, signal } from '@angular/core';
+import { Component, EventEmitter, Output, computed, input, signal } from '@angular/core';
 import { CartService } from '../../../shared/services/cart.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { OverlayService } from '../../../shared/services/overlay.service';
@@ -6,9 +6,8 @@ import { ToastService } from '../../../shared/services/toast.service';
 import { ConfirmService } from '../../../shared/services/confirm.service';
 import { BuyNowService } from '../../../shared/services/buy-now.service';
 import { Icon } from '../../../shared/icon/icon';
-
-const FREE_DELIVERY_THRESHOLD = 999;
-const DELIVERY_FEE = 40;
+import type { PaymentMethod } from '../../../shared/services/orders.service';
+import { DELIVERY_FEE, FREE_DELIVERY_THRESHOLD, amountToFreeDelivery } from '../../../shared/data/delivery';
 
 /**
  * Order summary rail (Sample/Checkout.html's `.checkout-summary` aside) plus the sticky
@@ -27,7 +26,7 @@ const DELIVERY_FEE = 40;
  *
  * `:host { display: contents }` (see order-summary.css) so the `<aside>` lands as a direct
  * child of the parent's `.checkout-grid` and the mobile bar as a direct child of
- * `.checkout-page` — matching the mockup's flat DOM structure (the mobile bar is a *sibling*
+ * `.page` — matching the mockup's flat DOM structure (the mobile bar is a *sibling*
  * of `.checkout-grid`, not nested inside it) without needing two separate host components.
  */
 @Component({
@@ -38,6 +37,25 @@ const DELIVERY_FEE = 40;
 })
 export class OrderSummary {
   @Output() readonly placeOrder = new EventEmitter<void>();
+
+  /** True from the moment "Pay Now" is pressed until the order (and, for online payments,
+   *  the Razorpay round-trip) resolves. Checkout already refused re-entrant submits, but
+   *  nothing on screen said so — the button sat inert and the natural read was that the
+   *  click hadn't registered. */
+  readonly submitting = input(false);
+
+  /** Drives the CTA copy only. "Pay Now" on a Cash-on-Delivery order promises a payment step
+   *  that isn't coming; COD orders say "Place Order" instead. */
+  readonly paymentMethod = input<PaymentMethod>('cod');
+
+  protected readonly ctaLabel = computed(() => (this.paymentMethod() === 'online' ? 'Pay Now' : 'Place Order'));
+
+  /** The order can't be placed signed out (CartService/Checkout both gate on it), so the
+   *  button says so up front rather than accepting the click and bouncing the shopper to a
+   *  sign-in prompt. */
+  protected readonly canSubmit = computed(
+    () => this.auth.isLoggedIn() && !this.submitting() && this.lines().length > 0
+  );
 
   protected readonly lines = computed(() => {
     const buyNowLine = this.buyNow.line();
@@ -57,6 +75,14 @@ export class OrderSummary {
   });
 
   protected readonly total = computed(() => this.subtotal() + this.delivery());
+
+  /** Shown as a nudge above the total when the order is close to qualifying — the shopper
+   *  otherwise only discovers the free-delivery line by accidentally crossing it. */
+  protected readonly amountToFreeDelivery = computed(() =>
+    this.subtotal() > 0 ? amountToFreeDelivery(this.subtotal()) : 0
+  );
+
+  protected readonly freeDeliveryThreshold = FREE_DELIVERY_THRESHOLD;
 
   constructor(
     protected readonly cart: CartService,

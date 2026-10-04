@@ -1,216 +1,243 @@
-.stories-section {
-  padding: var(--space-xxl) var(--space-xl) var(--space-xl);
-  max-width: var(--layout-container-max);
-  margin: 0 auto;
+/* Customer Stories — a draggable rail of review cards.
+
+   Container width, gutter, rhythm come from the global `.section`; the scroll
+   mechanics and arrow discs from the global `.rail`/`.rail-arrow`.
+
+   The card was restructured: identity used to sit at the top, above the
+   stars and the quote, so every card opened with a name and an avatar and
+   the review itself came third. Reviews are read for the *review*, so the
+   rating and the quote lead and the attribution closes underneath — which is
+   also how the card stops looking like a contact card. */
+
+.customer-stories {
+  background: var(--color-canvas);
 }
 
-.stories-section__header {
+.stories-section__arrows {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-md);
-  margin-bottom: var(--space-xl);
-}
-
-.stories-section__title {
-  font-size: var(--text-h2-size);
-  font-weight: var(--text-h2-weight);
-  color: var(--color-ink);
-  letter-spacing: -0.3px;
-}
-
-.stories-section__controls {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
   flex-shrink: 0;
-}
-
-.stories-arrow {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--rounded-full);
-  background: var(--color-surface);
-  border: 1px solid var(--color-hairline-strong);
-  color: var(--color-ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background-color var(--duration-fast) var(--ease-standard),
-    border-color var(--duration-fast) var(--ease-standard);
-}
-
-.stories-arrow:hover {
-  background-color: var(--color-surface-hover);
-  border-color: var(--color-hairline);
-}
-
-.stories-arrow.is-hidden {
-  display: none;
 }
 
 .stories-slider {
-  display: flex;
-  gap: var(--space-lg);
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  scroll-padding-left: var(--space-xl);
-  scrollbar-width: none;
-  cursor: grab;
-}
-
-.stories-slider::-webkit-scrollbar {
-  display: none;
-}
-
-.stories-slider.is-dragging {
-  cursor: grabbing;
-  scroll-snap-type: none;
-  scroll-behavior: auto;
+  align-items: stretch;
+  padding: var(--space-xs) var(--space-xxs) var(--space-md);
 }
 
 .story-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  background: var(--color-surface-sunken);
-  border-radius: var(--rounded-lg);
-  padding: var(--space-lg);
-  transition: box-shadow var(--duration-fast) var(--ease-standard),
-    transform var(--duration-fast) var(--ease-standard);
-  flex: 0 0 calc((100% - 2 * var(--space-lg)) / 3);
+  flex: 0 0 clamp(280px, 30%, 380px);
   scroll-snap-align: start;
+  padding: var(--space-xl);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  background: var(--color-surface);
+  box-shadow: var(--elevation-raised);
+  transition: box-shadow var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
 }
 
 .story-card:hover {
-  box-shadow: var(--elevation-raised);
+  box-shadow: var(--elevation-hover);
+  border-color: var(--color-hairline-strong);
   transform: translateY(-2px);
 }
 
-.story-card__header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
+.story-card__video {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-sunken);
   margin-bottom: var(--space-md);
 }
 
-.story-card__avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--rounded-full);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-on-primary);
+/* Oversized, low-contrast quote glyph in the corner. Reads as a texture
+   rather than as content, which is what stops the card being a plain box of
+   grey text. */
+.story-card__quote-mark {
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-lg);
+  font-size: 4.5rem;
+  line-height: 1;
   font-weight: 700;
-  font-size: var(--text-label-size);
-}
-
-.story-card__identity {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.story-card__name {
-  font-size: var(--text-body-sm-size);
-  font-weight: 700;
-  color: var(--color-ink);
-  line-height: 1.2;
-}
-
-.story-card__source {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xxs);
-  font-size: var(--text-label-sm-size);
-  color: var(--color-body-muted);
-}
-
-.story-card__source svg {
-  flex-shrink: 0;
+  color: var(--color-primary-subtle);
+  pointer-events: none;
+  user-select: none;
 }
 
 .story-card__stars {
   display: flex;
   gap: 2px;
   margin-bottom: var(--space-sm);
+  color: #e0a12a;
 }
 
 .story-card__star {
-  width: 16px;
-  height: 16px;
-  color: var(--color-warning);
-  fill: var(--color-warning);
+  width: 15px;
+  height: 15px;
 }
 
 .story-card__text {
+  position: relative;
+  z-index: 1;
   font-size: var(--text-body-sm-size);
-  line-height: var(--text-body-sm-lh);
+  line-height: 1.62;
   color: var(--color-body);
   display: -webkit-box;
   -webkit-line-clamp: 5;
   line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: var(--space-sm);
+}
+
+/* Expanded: drop the clamp so the whole quote reads. The card grows in place
+   rather than opening a dialog — the rail is already scrollable and a modal
+   for three extra lines of text would be more ceremony than the content
+   warrants. */
+.story-card__text--expanded {
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
 }
 
 .story-card__read-more {
-  align-self: center;
+  align-self: flex-start;
+  margin-top: var(--space-xs);
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
   font-size: var(--text-label-sm-size);
   font-weight: 600;
   color: var(--color-primary);
-  text-decoration: none;
-  background: transparent;
-  border: none;
   cursor: pointer;
-  margin-top: auto;
-  padding-top: var(--space-xs);
+  transition: color var(--duration-fast) var(--ease-standard);
 }
 
 .story-card__read-more:hover {
   color: var(--color-primary-hover);
   text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Attribution closes the card, pinned to the bottom so cards of different
+   quote lengths still line their footers up across the rail. */
+.story-card__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: auto;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-hairline);
+}
+
+.story-card__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--rounded-full);
+  color: #fff;
+  font-size: var(--text-label-size);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.story-card__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.story-card__name {
+  font-size: var(--text-label-size);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.story-card__source {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xxs);
+  font-size: var(--text-caption-size);
+  color: var(--color-body-muted);
+}
+
+/* ---------- loading placeholders ---------- */
+
+.story-card--skeleton {
+  gap: var(--space-xs);
+  pointer-events: none;
+  box-shadow: none;
+}
+
+.story-card--skeleton .story-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.story-card__avatar-skeleton {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.story-card__name-skeleton {
+  width: 120px;
+}
+
+.story-card__source-skeleton {
+  width: 90px;
+  margin-top: var(--space-xxs);
+}
+
+.story-card__line {
+  margin-top: var(--space-xxs);
+}
+
+.story-card__line--full {
+  width: 100%;
+}
+
+.story-card__line--short {
+  width: 60%;
 }
 
 @media (max-width: 960px) {
-  .stories-slider {
-    gap: var(--space-md);
-  }
-
   .story-card {
-    flex-basis: calc((100% - 1 * var(--space-md)) / 2);
+    flex-basis: clamp(260px, 46%, 340px);
+    padding: var(--space-lg);
   }
 }
 
 @media (max-width: 639px) {
-  .stories-section {
-    padding: var(--space-xl) var(--space-md) var(--space-md);
-  }
-
-  .stories-section__header {
-    flex-wrap: wrap;
-    row-gap: var(--space-sm);
+  .stories-section__arrows {
+    display: none;
   }
 
   .stories-slider {
     gap: var(--space-sm);
+    margin-inline: calc(var(--layout-gutter) * -1);
+    padding-inline: var(--layout-gutter);
+    scroll-padding-inline-start: var(--layout-gutter);
   }
 
   .story-card {
-    flex-basis: 100%;
-    padding: var(--space-md);
+    flex-basis: min(80vw, 320px);
   }
 
-  .stories-arrow {
-    display: none;
+  .story-card__quote-mark {
+    font-size: 3.5rem;
   }
 }

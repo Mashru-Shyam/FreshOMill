@@ -10,7 +10,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--elevation-hover);
+  /* A white ring separates the disc from the page. Without it a green circle on
+     a warm off-white canvas has roughly 2:1 against its surroundings, which is
+     under the 3:1 WCAG asks of a non-text control. */
+  box-shadow: 0 0 0 3px var(--color-canvas), var(--elevation-overlay);
   z-index: 40;
   transition: transform var(--duration-fast) var(--ease-standard);
 }

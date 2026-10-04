@@ -4,7 +4,7 @@ import { validateAddressFields } from '../../../shared/util/address-validation';
 import { StateSelect } from '../../../shared/state-select/state-select';
 
 /**
- * Shipping details form (Sample/Checkout.html's "Shipping details" `.checkout-section` —
+ * Shipping details form (Sample/Checkout.html's "Shipping details" `.card` —
  * full name, phone, address line, apartment/suite, city, state, pincode).
  *
  * A disposable, in-page form — it doesn't go through AddressService at all (that service's

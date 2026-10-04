@@ -1,43 +1,53 @@
-.checkout-section {
-  background: var(--color-surface);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--elevation-raised);
-  padding: var(--space-lg);
-}
-
-.checkout-section__title {
-  font-size: var(--text-h4-size);
-  font-weight: var(--text-h4-weight);
-  color: var(--color-ink);
-  margin-bottom: var(--space-md);
-}
-
+/* `.card`/`.card__title` are global (src/styles.css). */
 .payment-options {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
 }
 
+/* Selectable tiles rather than flat rows: a taller hit area, a visible selected ring, and a
+   left accent bar so the chosen method is obvious at a glance instead of relying on a subtle
+   background tint alone. */
 .payment-option {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-md);
   border: 1px solid var(--color-hairline-strong);
   border-radius: var(--rounded-md);
   cursor: pointer;
+  overflow: hidden;
   transition:
     border-color var(--duration-fast) var(--ease-standard),
-    background-color var(--duration-fast) var(--ease-standard);
+    background-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
 }
 
 .payment-option:hover {
   background-color: var(--color-surface-hover);
+  border-color: var(--color-body-muted);
 }
 
 .payment-option:has(input:checked) {
   border-color: var(--color-primary);
   background-color: var(--color-primary-subtle);
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.payment-option:has(input:checked)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: var(--color-primary);
+}
+
+.payment-option:has(input:focus-visible) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .payment-option input {

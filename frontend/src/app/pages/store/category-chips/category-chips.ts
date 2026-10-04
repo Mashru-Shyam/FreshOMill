@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { Icon } from '../../../shared/icon/icon';
 import { ALL_CATEGORY, StoreCategory } from '../../../shared/data/catalog';
+import { AllProductsImageService } from '../../../shared/services/all-products-image.service';
 import { CategoryService } from '../../../shared/services/category.service';
 
 /**
@@ -38,8 +39,12 @@ export class CategoryChips {
   @ViewChild('slider') private readonly sliderRef!: ElementRef<HTMLDivElement>;
 
   private readonly categoryService = inject(CategoryService);
+  private readonly allProductsImageService = inject(AllProductsImageService);
 
-  protected readonly chips = computed<StoreCategory[]>(() => [ALL_CATEGORY, ...this.categoryService.categories()]);
+  protected readonly chips = computed<StoreCategory[]>(() => [
+    { ...ALL_CATEGORY, image: this.allProductsImageService.image() },
+    ...this.categoryService.categories(),
+  ]);
 
   protected readonly isDragging = signal(false);
   protected readonly isPrevHidden = signal(true);
@@ -67,8 +72,12 @@ export class CategoryChips {
     });
   }
 
-  private get slider(): HTMLDivElement {
-    return this.sliderRef.nativeElement;
+  /** Null whenever the rail isn't rendered — the section sits behind an `@if`, so the
+   *  data effect below can (and did) run on a pass where the element doesn't exist.
+   *  Dereferencing it there threw inside change detection, which aborted the rest of
+   *  that render pass and left the page half-painted until the next interaction. */
+  private get slider(): HTMLDivElement | null {
+    return this.sliderRef?.nativeElement ?? null;
   }
 
   private scrollActiveIntoView(index: number): void {
@@ -88,6 +97,9 @@ export class CategoryChips {
 
   protected slide(direction: 'prev' | 'next'): void {
     const slider = this.slider;
+    if (!slider) {
+      return;
+    }
     const chip = slider.querySelector<HTMLElement>('.category-chip');
     if (!chip) return;
     const gap = parseFloat(getComputedStyle(slider).columnGap) || 0;
@@ -99,6 +111,9 @@ export class CategoryChips {
 
   protected updateArrows(): void {
     const slider = this.slider;
+    if (!slider) {
+      return;
+    }
     const maxScroll = slider.scrollWidth - slider.clientWidth;
     const atStart = slider.scrollLeft <= 2;
     const atEnd = slider.scrollLeft >= maxScroll - 2;
@@ -112,22 +127,23 @@ export class CategoryChips {
   }
 
   protected onPointerDown(event: PointerEvent): void {
-    if (event.pointerType !== 'mouse') return;
+    if (event.pointerType !== 'mouse' || !this.slider) return;
     this.isPressed = true;
     this.dragStartX = event.clientX;
     this.dragStartScroll = this.slider.scrollLeft;
   }
 
   protected onPointerMove(event: PointerEvent): void {
-    if (!this.isPressed) return;
+    const slider = this.slider;
+    if (!this.isPressed || !slider) return;
     const delta = event.clientX - this.dragStartX;
     if (!this.isDragging() && Math.abs(delta) > 5) {
       this.isDragging.set(true);
       this.suppressNextClick = true;
-      this.slider.setPointerCapture(event.pointerId);
+      slider.setPointerCapture(event.pointerId);
     }
     if (this.isDragging()) {
-      this.slider.scrollLeft = this.dragStartScroll - delta;
+      slider.scrollLeft = this.dragStartScroll - delta;
     }
   }
 

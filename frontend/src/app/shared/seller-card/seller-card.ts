@@ -4,6 +4,9 @@ import { OverlayService } from '../services/overlay.service';
 import { ProductVariant } from '../data/catalog';
 import { Icon } from '../icon/icon';
 
+/** One row at the widest (five-column) breakpoint, plus a little headroom. */
+const PRIORITY_IMAGE_COUNT = 6;
+
 export interface SellerProduct {
   id?: string;
   name: string;
@@ -25,6 +28,17 @@ export interface SellerProduct {
 export class SellerCard {
   readonly product = input.required<SellerProduct>();
   readonly showStockBadge = input(false);
+
+  /** Cards in the first row fetch their photo at high priority; the rest at
+   *  low. Every image still loads — priority only orders them, so nothing can
+   *  end up permanently blank the way `loading="lazy"` did inside the
+   *  horizontally scrolling rails. Callers pass the grid index. */
+  readonly eagerIndex = input<number | null>(null);
+
+  protected readonly isPriority = computed(() => {
+    const index = this.eagerIndex();
+    return index !== null && index < PRIORITY_IMAGE_COUNT;
+  });
 
   protected readonly productId = computed(() => this.product().id ?? slugifyProductId(this.product().name));
   protected readonly inStock = computed(() => this.product().inStock ?? true);

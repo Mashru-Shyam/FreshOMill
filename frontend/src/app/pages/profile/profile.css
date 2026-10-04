@@ -1,41 +1,30 @@
-/* `.checkout-page` itself (the outer container) isn't among the
-   globally-shared classes, so it's redefined here; `.checkout-page__header
-   --tight` and `.account-gate` are global (src/styles.css).
-
-   A dedicated, narrower max-width — not `--layout-container-max` (1600px, sized for Store's
-   product grid/Checkout's two-rail layout). Profile is a single stack of forms/cards with no
-   grid-heavy content to fill that width, so reusing it just stretched short form rows and
-   card grids edge-to-edge across a huge desktop viewport, reading as an oversized page. 840px
-   comfortably fits Basic Information's two-field rows and 2-3 address cards per row without
-   ever feeling like it's straining for width to fill. */
-.checkout-page {
-  max-width: 840px;
-  margin: 0 auto;
-  padding: var(--space-xl);
-}
-
+/* `.page-head`, `.empty-state--gate` and `.card` are global (src/styles.css).
+   Container/list layout only. */
 .account-page {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
 }
 
-/* Basic Information, then Saved Addresses below it — both full width. A side-by-side rail
-   used to hold Saved Addresses in a narrow column, but its add/edit form (the same
-   two-field-per-row layout Basic Information uses) never had room there and forced a tall,
-   scrolling single column; stacking both sections full-width instead gives Saved Addresses'
-   card grid and its edit form the same width Basic Information already gets. */
+/* Basic Information beside Saved Addresses on a wide desktop, stacked below it otherwise.
+   They used to stack at every width — fine when the page was capped at 840px, but at full
+   desktop width it left two short cards in one tall column with the right half of the page
+   empty. Both sections still get a comfortable column; the address form inside the right
+   card reflows via its own container query (address-list.css), so it never gets squeezed. */
 .account-page__grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
   gap: var(--space-md);
 }
 
-@media (max-width: 639px) {
-  .checkout-page {
-    padding: var(--space-md);
+@media (min-width: 1080px) {
+  .account-page__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
+}
 
+@media (max-width: 639px) {
   .account-page,
   .account-page__grid {
     gap: var(--space-sm);

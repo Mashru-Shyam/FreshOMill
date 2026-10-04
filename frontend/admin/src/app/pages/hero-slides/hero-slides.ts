@@ -1,12 +1,16 @@
-import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
 import { AdminHeroSlide, HeroSlideInput, HeroSlidesService } from '../../core/services/hero-slides.service';
 import { ImagesService } from '../../core/services/images.service';
 import { extractErrorMessage } from '../../core/util/http-error';
+import { DialogFocus } from '../../core/util/dialog-focus.directive';
+import { EmptyState, TableSkeleton } from '../../shared/states/table-states';
 
 const DEFAULT_GRADIENT = 'linear-gradient(135deg, #1f736f 0%, #4553c4 100%)';
+const DEFAULT_ICON = 'package';
 
 @Component({
   selector: 'app-hero-slides',
+  imports: [DialogFocus, EmptyState, TableSkeleton],
   templateUrl: './hero-slides.html',
   styleUrl: '../products/products.css',
 })
@@ -19,24 +23,43 @@ export class HeroSlides {
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
+  /** Client-side over the already-loaded list — see the same note on Products. */
+  protected readonly search = signal('');
+
+  protected readonly filteredSlides = computed(() => {
+    const term = this.search().trim().toLowerCase();
+    if (!term) {
+      return this.slides();
+    }
+    return this.slides().filter(
+      (slide) => slide.title.toLowerCase().includes(term) || slide.alt.toLowerCase().includes(term)
+    );
+  });
+
   protected readonly formOpen = signal(false);
   protected readonly editingId = signal<string | null>(null);
   protected readonly formImageUrl = signal<string | null>(null);
   protected readonly formAlt = signal('');
-  protected readonly formIcon = signal('wheat');
   protected readonly formTitle = signal('');
-  protected readonly formSubtitle = signal('');
-  protected readonly formFallbackGradient = signal(DEFAULT_GRADIENT);
   protected readonly formDisplayOrder = signal(0);
   protected readonly formError = signal<string | null>(null);
   protected readonly saving = signal(false);
   protected readonly uploading = signal(false);
+  protected readonly isDragOver = signal(false);
+
+  // Subtitle/icon/fallback-gradient aren't collected in this simplified form anymore — they only
+  // ever render if a slide's image fails to load (see the customer hero-slider's fallback panel),
+  // so a new slide gets harmless defaults and an edited slide keeps whatever it already had.
+  private editingSubtitle = '';
+  private editingIcon = DEFAULT_ICON;
+  private editingFallbackGradient = DEFAULT_GRADIENT;
 
   constructor() {
     this.refresh();
   }
 
-  private refresh(): void {
+  /** Also the Retry action on the error state. */
+  protected refresh(): void {
     this.loading.set(true);
     this.heroSlidesService.list().subscribe({
       next: (slides) => {
@@ -44,7 +67,7 @@ export class HeroSlides {
         this.loading.set(false);
       },
       error: (err: unknown) => {
-        this.error.set(extractErrorMessage(err) ?? 'Could not load hero slides.');
+        this.error.set(extractErrorMessage(err) ?? 'Could not load slides.');
         this.loading.set(false);
       },
     });
@@ -54,11 +77,11 @@ export class HeroSlides {
     this.editingId.set(null);
     this.formImageUrl.set(null);
     this.formAlt.set('');
-    this.formIcon.set('wheat');
     this.formTitle.set('');
-    this.formSubtitle.set('');
-    this.formFallbackGradient.set(DEFAULT_GRADIENT);
     this.formDisplayOrder.set(this.slides().length + 1);
+    this.editingSubtitle = '';
+    this.editingIcon = DEFAULT_ICON;
+    this.editingFallbackGradient = DEFAULT_GRADIENT;
     this.formError.set(null);
     this.formOpen.set(true);
   }
@@ -67,11 +90,11 @@ export class HeroSlides {
     this.editingId.set(slide.id);
     this.formImageUrl.set(slide.imageUrl);
     this.formAlt.set(slide.alt);
-    this.formIcon.set(slide.icon);
     this.formTitle.set(slide.title);
-    this.formSubtitle.set(slide.subtitle);
-    this.formFallbackGradient.set(slide.fallbackGradient);
     this.formDisplayOrder.set(slide.displayOrder);
+    this.editingSubtitle = slide.subtitle;
+    this.editingIcon = slide.icon;
+    this.editingFallbackGradient = slide.fallbackGradient;
     this.formError.set(null);
     this.formOpen.set(true);
   }
@@ -82,10 +105,35 @@ export class HeroSlides {
 
   protected onFileSelected(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
+    this.uploadFile(file);
+    this.fileInput()!.nativeElement.value = '';
+  }
+
+  protected onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver.set(true);
+  }
+
+  protected onDragLeave(): void {
+    this.isDragOver.set(false);
+  }
+
+  protected onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver.set(false);
+    this.uploadFile(event.dataTransfer?.files?.[0]);
+  }
+
+  protected removeImage(): void {
+    this.formImageUrl.set(null);
+  }
+
+  private uploadFile(file: File | undefined): void {
     if (!file) {
       return;
     }
     this.uploading.set(true);
+    this.formError.set(null);
     this.imagesService.upload(file).subscribe({
       next: (url) => {
         this.formImageUrl.set(url);
@@ -96,28 +144,24 @@ export class HeroSlides {
         this.uploading.set(false);
       },
     });
-    this.fileInput()!.nativeElement.value = '';
   }
 
   protected save(): void {
-    const alt = this.formAlt().trim();
-    const icon = this.formIcon().trim();
     const title = this.formTitle().trim();
-    const subtitle = this.formSubtitle().trim();
-    const fallbackGradient = this.formFallbackGradient().trim();
+    const alt = this.formAlt().trim();
 
-    if (!alt || !icon || !title || !subtitle || !fallbackGradient) {
-      this.formError.set('Every field except the image is required.');
+    if (!title || !alt) {
+      this.formError.set('Title and image alt text are both required.');
       return;
     }
 
     const input: HeroSlideInput = {
       imageUrl: this.formImageUrl(),
       alt,
-      icon,
+      icon: this.editingIcon,
       title,
-      subtitle,
-      fallbackGradient,
+      subtitle: this.editingSubtitle,
+      fallbackGradient: this.editingFallbackGradient,
       displayOrder: this.formDisplayOrder(),
     };
 
@@ -131,7 +175,7 @@ export class HeroSlides {
         this.refresh();
       },
       error: (err: unknown) => {
-        this.formError.set(extractErrorMessage(err) ?? 'Could not save hero slide.');
+        this.formError.set(extractErrorMessage(err) ?? 'Could not save slide.');
         this.saving.set(false);
       },
     });
@@ -143,7 +187,7 @@ export class HeroSlides {
     }
     this.heroSlidesService.remove(slide.id).subscribe({
       next: () => this.refresh(),
-      error: (err: unknown) => alert(extractErrorMessage(err) ?? 'Could not delete hero slide.'),
+      error: (err: unknown) => alert(extractErrorMessage(err) ?? 'Could not delete slide.'),
     });
   }
 }

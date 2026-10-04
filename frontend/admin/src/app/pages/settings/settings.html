@@ -1,23 +1,42 @@
 <div class="page">
   <div class="page-header">
-    <h1>Store settings</h1>
+    <h1>
+      Store settings
+      <span class="page-header__sub">
+        The single source of truth for the contact details shown in the storefront's navbar, footer,
+        Contact page and WhatsApp button.
+      </span>
+    </h1>
   </div>
 
-  <p class="hint">
-    Single source of truth for contact info shown across the storefront's navbar, footer, Contact page, and
-    WhatsApp button.
-  </p>
-
-  @if (error(); as err) {
-    <p class="banner banner--error">{{ err }}</p>
-  }
   @if (saved()) {
-    <p class="banner banner--success">Settings saved.</p>
+    <p class="banner banner--success" role="status">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+        <path d="M21.8 10A10 10 0 1 1 17 3.3" /><path d="m9 11 3 3L22 4" />
+      </svg>
+      Settings saved.
+    </p>
   }
 
   <div class="card">
     @if (loading()) {
-      <p class="empty-state">Loading…</p>
+      <div class="settings-skeleton" aria-hidden="true">
+        @for (i of skeletonSlots; track i) {
+          <div class="settings-skeleton__field">
+            <div class="skeleton skeleton--text settings-skeleton__label"></div>
+            <div class="skeleton settings-skeleton__input"></div>
+          </div>
+        }
+      </div>
+      <span class="sr-only" role="status">Loading settings…</span>
+    } @else if (error(); as err) {
+      <app-empty-state
+        variant="error"
+        title="We couldn't load your settings"
+        [text]="err"
+        actionLabel="Try again"
+        (action)="refresh()"
+      />
     } @else {
       <div class="form-grid">
         <div class="field form-grid--wide">
@@ -66,9 +85,17 @@
         </div>
       </div>
 
-      <div class="modal-actions">
-        <button type="button" class="btn btn--primary" [disabled]="saving()" (click)="save()">
-          {{ saving() ? 'Saving…' : 'Save changes' }}
+      <!-- Not a modal footer: this is the page's own action bar, sticky to the bottom of the
+           card so Save stays reachable on a long form instead of sitting below the fold. -->
+      <div class="settings-actions">
+        <button
+          type="button"
+          class="btn btn--primary"
+          [class.is-loading]="saving()"
+          [disabled]="saving()"
+          (click)="save()"
+        >
+          <span>Save changes</span>
         </button>
       </div>
     }

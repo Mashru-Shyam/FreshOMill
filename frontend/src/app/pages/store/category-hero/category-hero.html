@@ -1,9 +1,28 @@
 <section class="category-hero" aria-label="Selected category">
-  @if (category().image && !imageFailed()) {
-    <img [src]="category().image" [alt]="category().name" class="category-hero__bg-img" (error)="onImageError()" />
-    <div class="category-hero__overlay" aria-hidden="true"></div>
-  }
   <div class="category-hero__inner">
-    <h1 class="category-hero__name">{{ category().name }}</h1>
+    @if (category().image && !imageFailed()) {
+      <span class="category-hero__badge">
+        <img [src]="category().image" [alt]="" class="category-hero__badge-img" (error)="onImageError()" />
+      </span>
+    }
+    <div class="category-hero__text">
+      <!-- Breadcrumb. The Store page gave no indication of where you were in the catalogue —
+           a category page and the full catalogue looked identical apart from the heading, and
+           there was no one-click route back to "everything". -->
+      <nav class="category-hero__crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a routerLink="/">Home</a></li>
+          <li aria-hidden="true" class="category-hero__crumb-sep">/</li>
+          @if (isAllProducts()) {
+            <li><span aria-current="page">Store</span></li>
+          } @else {
+            <li><a [routerLink]="['/store']" [queryParams]="{ category: 'all' }">Store</a></li>
+            <li aria-hidden="true" class="category-hero__crumb-sep">/</li>
+            <li><span aria-current="page">{{ category().name }}</span></li>
+          }
+        </ol>
+      </nav>
+      <h1 class="category-hero__name">{{ category().name }}</h1>
+    </div>
   </div>
 </section>

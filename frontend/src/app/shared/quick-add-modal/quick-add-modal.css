@@ -1,9 +1,17 @@
+/* Product-detail sheet. This is the app's product detail *page* — there's no /product/:slug
+   route — so it carries the full hierarchy a PDP owes a shopper: photo gallery, name, price,
+   stock, pack size, quantity, and the two actions, in that order.
+
+   The quantity stepper, drag handle and scrim now come from the global component layer
+   (src/styles.css) instead of being redeclared here; that's most of what used to push this
+   file past its style budget. */
+
 .pq-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(12, 17, 26, 0.5);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  background: var(--overlay-scrim);
+  -webkit-backdrop-filter: var(--overlay-blur);
+  backdrop-filter: var(--overlay-blur);
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   z-index: 150;
@@ -24,14 +32,14 @@
 
 .pq-modal {
   width: 100%;
-  max-width: 860px;
+  max-width: 900px;
   max-height: calc(100dvh - 2 * var(--space-xl));
   overflow-y: auto;
   background: var(--color-surface);
   border-radius: var(--rounded-xl);
   box-shadow: var(--elevation-modal);
   display: grid;
-  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
   transform: translateY(12px) scale(0.98);
   opacity: 0;
   transition: transform var(--duration-slow) var(--ease-emphasized),
@@ -43,16 +51,26 @@
   opacity: 1;
 }
 
-.pq-modal__handle {
-  display: none;
+.pq-modal .sheet-handle {
   grid-column: 1 / -1;
 }
 
 .pq-modal__header {
   grid-column: 1 / -1;
   display: flex;
-  justify-content: flex-end;
-  padding: var(--space-sm) var(--space-sm) 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-sm) var(--space-sm) var(--space-xl);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.pq-modal__eyebrow {
+  font-size: var(--text-overline-size);
+  font-weight: var(--text-overline-weight);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-body-muted);
 }
 
 .pq-modal__media {
@@ -69,16 +87,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-primary);
   border-bottom: 1px solid var(--color-hairline);
   overflow: hidden;
 }
 
 .pq-modal__product-img {
+  object-fit: cover;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
+}
+
+/* A missing photo used to leave a blank square; a muted glyph reads as "no photo" rather
+   than as a broken layout. */
+.pq-modal__image-fallback {
+  color: var(--color-placeholder);
 }
 
 .pq-modal__thumbs {
@@ -91,10 +114,10 @@
 
 .pq-modal__thumb {
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   padding: 0;
-  border: 2px solid transparent;
+  border: 2px solid var(--color-hairline);
   border-radius: var(--rounded-md);
   overflow: hidden;
   cursor: pointer;
@@ -102,10 +125,14 @@
   transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
+.pq-modal__thumb:hover {
+  border-color: var(--color-hairline-strong);
+}
+
 .pq-modal__thumb img {
+  object-fit: cover;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
 }
 
@@ -122,10 +149,10 @@
 }
 
 .pq-modal__description-label {
-  font-size: var(--text-label-sm-size);
-  font-weight: 700;
+  font-size: var(--text-overline-size);
+  font-weight: var(--text-overline-weight);
+  letter-spacing: var(--text-overline-tracking);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
   color: var(--color-body-muted);
 }
 
@@ -136,15 +163,25 @@
 }
 
 .pq-modal__content {
-  padding: var(--space-md) var(--space-xl) var(--space-xl);
+  padding: var(--space-lg) var(--space-xl) var(--space-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
+}
+
+/* Name, price and tax note are one block with tight internal spacing, so the gap between
+   them reads as smaller than the gap to the next section. */
+.pq-modal__headline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
 }
 
 .pq-modal__name {
   font-size: var(--text-h3-size);
   font-weight: var(--text-h3-weight);
+  line-height: var(--text-h3-lh);
+  letter-spacing: var(--text-h3-tracking);
   color: var(--color-ink);
 }
 
@@ -169,38 +206,39 @@
 .pq-modal__tax-note {
   font-size: var(--text-label-sm-size);
   color: var(--color-body-muted);
-  margin-top: 2px;
 }
 
 .pq-modal__stock {
   display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
-  font-size: var(--text-label-size);
+  padding: var(--space-xxs) var(--space-sm);
+  border-radius: var(--rounded-full);
+  font-size: var(--text-label-sm-size);
   font-weight: 600;
   width: fit-content;
 }
 
 .pq-modal__stock-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: var(--rounded-full);
+  background: currentcolor;
   flex-shrink: 0;
 }
 
-.pq-modal__stock--in .pq-modal__stock-dot {
-  background: var(--color-warning);
-}
-
 .pq-modal__stock--in {
-  color: var(--color-body);
+  background: var(--color-success-subtle);
+  color: var(--color-success);
 }
 
-.pq-modal__stock--out .pq-modal__stock-dot {
-  background: var(--color-danger);
+.pq-modal__stock--low {
+  background: var(--color-warning-subtle);
+  color: var(--color-warning);
 }
 
 .pq-modal__stock--out {
+  background: var(--color-danger-subtle);
   color: var(--color-danger);
 }
 
@@ -217,16 +255,21 @@
   gap: var(--space-xs);
 }
 
+/* Each pack size shows its own price. The picker used to list bare labels ("500g", "1kg"),
+   so choosing between them meant selecting one, reading the price above, then selecting the
+   other to compare. */
 .pq-modal__weight-btn {
-  height: 44px;
-  padding: 0 var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: var(--tap-target);
+  padding: var(--space-xs) var(--space-md);
   border-radius: var(--rounded-md);
   border: 1px solid var(--color-hairline-strong);
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: var(--text-label-size);
-  font-weight: 600;
   cursor: pointer;
   transition: border-color var(--duration-fast) var(--ease-standard),
     background-color var(--duration-fast) var(--ease-standard),
@@ -234,12 +277,26 @@
 }
 
 .pq-modal__weight-btn:hover {
-  border-color: var(--color-hairline);
+  border-color: var(--color-body-muted);
+}
+
+.pq-modal__weight-label {
+  font-size: var(--text-label-size);
+  font-weight: 600;
+}
+
+.pq-modal__weight-price {
+  font-size: var(--text-caption-size);
+  color: var(--color-body-muted);
 }
 
 .pq-modal__weight-btn--active {
   border-color: var(--color-primary);
   background: var(--color-primary-subtle);
+  color: var(--color-primary);
+}
+
+.pq-modal__weight-btn--active .pq-modal__weight-price {
   color: var(--color-primary);
 }
 
@@ -249,105 +306,52 @@
 }
 
 .pq-modal__stepper {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--color-hairline-strong);
-  border-radius: var(--rounded-md);
-  overflow: hidden;
   flex-shrink: 0;
+  border-radius: var(--rounded-md);
 }
 
-.pq-modal__stepper-btn {
-  width: 44px;
-  height: 44px;
-  border: none;
-  background: var(--color-surface);
-  color: var(--color-ink);
-  font-size: 1.1rem;
-  font-family: var(--font-sans);
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard);
-}
-
-.pq-modal__stepper-btn:hover:not(:disabled) {
-  background-color: var(--color-surface-hover);
-}
-
-.pq-modal__stepper-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.pq-modal__stepper-value {
-  min-width: 40px;
-  text-align: center;
-  font-size: var(--text-label-size);
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
+/* Secondary-weight action next to the full-strength "Buy it now" — outlined, not filled, so
+   the primary purchase path stays visually singular. */
 .pq-modal__add-btn {
   flex: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-xs);
-  height: 44px;
-  border-radius: var(--rounded-md);
-  border: 1px solid var(--color-primary);
+  border-color: var(--color-primary);
   background: var(--color-surface);
   color: var(--color-primary);
-  font-family: var(--font-sans);
-  font-size: var(--text-label-size);
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard);
 }
 
 .pq-modal__add-btn:hover:not(:disabled) {
   background-color: var(--color-primary-subtle);
 }
 
-.pq-modal__add-btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  border-color: var(--color-hairline);
-  color: var(--color-placeholder);
+.pq-modal__add-btn--remove {
+  border-color: var(--color-hairline-strong);
+  color: var(--color-danger);
 }
 
-.pq-modal__add-btn--added {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-on-primary);
-}
-
-.pq-modal__add-btn--added:hover:not(:disabled) {
-  background-color: var(--color-primary-hover);
+.pq-modal__add-btn--remove:hover:not(:disabled) {
+  background-color: var(--color-danger-subtle);
+  border-color: var(--color-danger);
 }
 
 .pq-modal__buy-btn {
-  width: 100%;
-  height: 48px;
-  border: none;
-  border-radius: var(--rounded-md);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-family: var(--font-sans);
-  font-size: var(--text-label-size);
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard);
+  justify-content: space-between;
 }
 
-.pq-modal__buy-btn:hover:not(:disabled) {
-  background-color: var(--color-primary-hover);
+.pq-modal__buy-total {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.92;
 }
 
-.pq-modal__buy-btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
+.pq-modal__in-cart-note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxs);
+  font-size: var(--text-label-sm-size);
+  color: var(--color-success);
 }
 
+/* Phone: the sheet rises from the bottom edge and the media column becomes a compact
+   photo strip beside the name, so the buy controls stay above the fold. */
 @media (max-width: 639px) {
   .pq-overlay {
     padding: 0;
@@ -355,19 +359,24 @@
   }
 
   .pq-modal {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     max-height: 92dvh;
     border-radius: var(--rounded-xl) var(--rounded-xl) 0 0;
+  }
+
+  .pq-modal__header {
+    padding: var(--space-xs) var(--space-xs) var(--space-xs) var(--space-lg);
   }
 
   .pq-modal__media {
     flex-direction: row;
     border-right: none;
     border-bottom: 1px solid var(--color-hairline);
+    border-radius: 0;
   }
 
   .pq-modal__image {
-    width: 140px;
+    width: 132px;
     aspect-ratio: auto;
     border-bottom: none;
     border-right: 1px solid var(--color-hairline);
@@ -378,20 +387,12 @@
     display: none;
   }
 
+  .pq-modal__description {
+    padding: var(--space-md);
+  }
+
   .pq-modal__content {
-    padding: var(--space-md) var(--space-lg) var(--space-lg);
-  }
-
-  .pq-modal__handle {
-    display: block;
-    width: 36px;
-    height: 4px;
-    border-radius: var(--rounded-full);
-    background-color: var(--color-hairline-strong);
-    margin: var(--space-sm) auto 0;
-  }
-
-  .pq-modal__header {
-    padding: var(--space-xs) var(--space-sm) 0;
+    padding: var(--space-md) var(--space-lg) var(--space-xl);
+    gap: var(--space-md);
   }
 }

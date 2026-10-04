@@ -8,45 +8,49 @@
 .order-card {
   position: relative;
   background: var(--color-surface);
-  border: 1px solid transparent;
+  border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   box-shadow: var(--elevation-raised);
-  padding: var(--space-md);
-  padding-left: calc(var(--space-md) + 4px);
+  padding: var(--space-lg);
+  padding-left: calc(var(--space-lg) + 3px);
+  overflow: hidden;
   transition: box-shadow var(--duration-fast) var(--ease-standard),
-    transform var(--duration-fast) var(--ease-standard),
     border-color var(--duration-fast) var(--ease-standard);
 }
 
 .order-card:hover {
   box-shadow: var(--elevation-hover);
-  border-color: var(--color-primary-subtle);
-  transform: translateY(-2px);
+  border-color: var(--color-hairline-strong);
 }
 
-/* Status-colored left accent — a quick-scan cue for the order list, driven
-   entirely by the `data-status` attribute the template already binds from
-   `order().status`, so no extra component state is needed. */
+/* Status-colored left accent — a quick-scan cue for the order list, driven entirely by the
+   `data-status` attribute the template already binds from `order().status`, so no extra
+   component state is needed. Hues match the `.status-badge--*` scale the badge itself uses
+   (src/styles.css), so the rail and the badge always agree. */
 .order-card::before {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
-  width: 4px;
-  border-radius: var(--rounded-lg) 0 0 var(--rounded-lg);
+  width: 3px;
   background: var(--color-primary);
 }
 
-/* placed/shipped ("processing") use the base rule's blue — the app's own primary color
-   doubles as the "in progress" cue, the state a fresh order is in most often. delivered/
-   cancelled keep the universal green/red — changing those away from success/danger would
-   read as a broken status color, not a theme choice. */
+.order-card[data-status='pendingpayment']::before {
+  background: var(--color-warning);
+}
+
+.order-card[data-status='shipped']::before {
+  background: var(--color-info);
+}
+
 .order-card[data-status='delivered']::before {
   background: var(--color-success);
 }
 
-.order-card[data-status='cancelled']::before {
+.order-card[data-status='cancelled']::before,
+.order-card[data-status='paymentfailed']::before {
   background: var(--color-danger);
 }
 
@@ -56,48 +60,34 @@
   justify-content: space-between;
   gap: var(--space-sm);
   flex-wrap: wrap;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-md);
   padding-bottom: var(--space-sm);
   border-bottom: 1px solid var(--color-hairline);
 }
 
+/* Order ids are long opaque GUIDs — at full width they dominate the header over the thing a
+   shopper actually scans for (date and status), so they read as a quiet monospace label with
+   the date promoted above it. */
 .order-card__id {
   font-family: var(--font-mono);
-  font-size: var(--text-body-sm-size);
-  font-weight: 700;
-  color: var(--color-primary);
+  font-size: var(--text-caption-size);
+  font-weight: 500;
+  color: var(--color-body-muted);
+  overflow-wrap: anywhere;
 }
 
 .order-card__date {
-  font-size: var(--text-label-sm-size);
-  color: var(--color-body-muted);
-  margin-top: 2px;
+  order: -1;
+  font-size: var(--text-body-sm-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 2px;
 }
 
-.order-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xxs);
-  padding: var(--space-xxs) var(--space-sm);
-  border-radius: var(--rounded-full);
-  font-size: var(--text-label-sm-size);
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.order-badge--processing {
-  background: var(--color-primary-subtle);
-  color: var(--color-primary);
-}
-
-.order-badge--delivered {
-  background: var(--color-success-subtle);
-  color: var(--color-success);
-}
-
-.order-badge--cancelled {
-  background: var(--color-danger-subtle);
-  color: var(--color-danger);
+.order-card__header > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .order-card__items {
@@ -136,9 +126,9 @@
 }
 
 .order-card__item-img {
+  object-fit: cover;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
 }
 
@@ -176,8 +166,8 @@
 
 @media (max-width: 479px) {
   .order-card {
-    padding: var(--space-sm);
-    padding-left: calc(var(--space-sm) + 4px);
+    padding: var(--space-md);
+    padding-left: calc(var(--space-md) + 3px);
   }
 
   /* Too narrow for four inline columns without squeezing the name down to
@@ -198,23 +188,40 @@
   }
 }
 
-.order-card__delivered-note {
+.order-card__ship-to {
   display: flex;
-  align-items: center;
-  gap: var(--space-xxs);
+  align-items: flex-start;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-sunken);
   font-size: var(--text-label-sm-size);
-  color: var(--color-success);
-  margin-top: var(--space-sm);
+  color: var(--color-body);
+}
+
+.order-card__ship-to svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-body-muted);
+}
+
+.order-card__ship-to-label {
+  display: block;
+  font-size: var(--text-caption-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-body-muted);
 }
 
 .order-card__footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: var(--space-sm);
-  padding: var(--space-xs) var(--space-sm);
-  background: var(--color-primary-subtle);
-  border-radius: var(--rounded-md);
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-hairline);
 }
 
 .order-card__footer-count {
@@ -228,7 +235,7 @@
   gap: var(--space-xs);
   font-size: var(--text-h5-size);
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-ink);
 }
 
 .order-card__total-label {

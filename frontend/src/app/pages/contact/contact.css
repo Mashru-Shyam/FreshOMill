@@ -1,35 +1,40 @@
+/* The page container was --layout-container-max (1600px) while `.contact-grid` inside it was
+   capped at 1040px, so the outer width did nothing except add empty margin. One shared content
+   width now, with the grid filling it. */
 .contact-page {
-  max-width: var(--layout-container-max);
+  max-width: var(--layout-content-wide);
   margin: 0 auto;
-  padding: var(--space-xxl) var(--space-xl);
+  padding: var(--space-page) var(--layout-gutter);
 }
 
 .contact-hero {
   max-width: 640px;
-  margin: 0 auto var(--space-xxl);
+  margin: 0 auto var(--space-section);
   text-align: center;
 }
 
+/* Sans in ink, matching every other page heading — was IBM Plex Mono in brand blue, one of
+   the last places still using the old mono-title treatment. */
 .contact-hero__title {
-  font-family: 'IBM Plex Mono', var(--font-sans);
+  font-family: var(--font-sans);
   font-size: var(--text-h1-size);
   font-weight: var(--text-h1-weight);
-  color: var(--color-primary);
+  line-height: var(--text-h1-lh);
+  letter-spacing: var(--text-h1-tracking);
+  color: var(--color-ink);
   margin-bottom: var(--space-sm);
 }
 
 .contact-hero__subtitle {
-  font-size: var(--text-body-md-size);
-  color: var(--color-body);
-  line-height: var(--text-body-md-lh);
+  font-size: var(--text-body-lg-size);
+  color: var(--color-body-muted);
+  line-height: var(--text-body-lg-lh);
 }
 
 .contact-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-xl);
-  max-width: 1040px;
-  margin: 0 auto;
+  gap: var(--space-lg);
   align-items: start;
 }
 
@@ -39,14 +44,14 @@
   }
 }
 
-/* Card wrapper — scoped equivalent of Checkout's `.checkout-section`
-   (background/shadow/padding), not global, so redefined here rather than
-   reused across pages. */
+/* Matches the global `.card` surface (src/styles.css) so cards read identically
+   across Contact, Checkout and Profile. */
 .contact-card {
   background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--rounded-lg);
   box-shadow: var(--elevation-raised);
-  padding: var(--space-lg);
+  padding: var(--space-xl);
 }
 
 .contact-info__row {
@@ -124,57 +129,37 @@
   background-color: var(--color-primary-hover);
 }
 
-/* Form grid — scoped equivalent of Checkout's `.checkout-form-grid`. The
-   `.form-field`/`__label`/`__input`/`--wide`/`--invalid` classes inside it
-   are the global ones from styles.css (textarea sizing included). */
+/* Layout only — `.form-grid` (global, src/styles.css) supplies the two-column grid and its
+   single-column phone fallback; this only widens the row gap for the taller contact fields.
+   The one-off submit button and required marker are gone: both are design-system classes now
+   (`.btn.btn--primary`, `.form-field__required`). */
 .contact-form-grid {
-  display: grid;
-  grid-template-columns: 1fr;
   gap: var(--space-lg);
 }
 
-@media (min-width: 560px) {
-  .contact-form-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.contact-form__required {
-  color: var(--color-danger);
-}
-
 .contact-form__submit {
-  width: 100%;
-  height: 48px;
-  border: none;
-  border-radius: var(--rounded-md);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-family: var(--font-sans);
-  font-size: var(--text-label-size);
-  font-weight: 700;
-  cursor: pointer;
   margin-top: var(--space-sm);
-  transition: background-color var(--duration-fast) var(--ease-standard);
-}
-
-.contact-form__submit:hover:not(:disabled) {
-  background-color: var(--color-primary-hover);
-}
-
-.contact-form__submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .contact-form__error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--rounded-md);
+  background: var(--color-danger-subtle);
   color: var(--color-danger);
   font-size: var(--text-label-sm-size);
-  margin-top: var(--space-sm);
+  font-weight: 500;
 }
 
 @media (max-width: 639px) {
   .contact-page {
-    padding: var(--space-xl) var(--space-md);
+    padding: var(--space-xxl) var(--layout-gutter);
+  }
+
+  .contact-hero {
+    margin-bottom: var(--space-xxl);
   }
 }

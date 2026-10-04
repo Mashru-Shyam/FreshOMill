@@ -48,9 +48,22 @@ public sealed class UpdateProductCommandHandler(IApplicationDbContext context)
         // Images have no admin-facing state tied to their row (unlike variants, whose Id is what
         // AdjustStockCommand targets) — a full replace each save is simpler than diffing and just
         // as correct, since the admin form always submits its complete current gallery.
+        //
+        // New rows are added via context.ProductImages.Add() (not product.Images.Add()) —
+        // ProductImage's Id is already a real, non-default Guid the moment it's constructed (see
+        // ProductImage()), and a new entity only reached through a navigation fixup from an
+        // already-tracked, Unchanged parent (product, since this is an update, not a create) gets
+        // treated by EF as "this key looks real, it must already exist" (Modified) rather than
+        // Added — generating an UPDATE for a row that was never inserted, which then fails as a
+        // 0-rows-affected DbUpdateConcurrencyException. Adding explicitly through the DbSet marks
+        // the state unambiguously before that fixup inference ever runs; fixup then adds it to
+        // product.Images automatically via the matching ProductId, so adding it there too would
+        // just duplicate the in-memory entry.
         product.Images.Clear();
-        product.Images.AddRange(
-            request.ImageUrls.Select((url, index) => new ProductImage { ImageUrl = url, SortOrder = index }));
+        foreach (var (url, index) in request.ImageUrls.Select((url, index) => (url, index)))
+        {
+            context.ProductImages.Add(new ProductImage { ProductId = product.Id, ImageUrl = url, SortOrder = index });
+        }
 
         var incomingIds = request.Variants.Where(v => v.Id.HasValue).Select(v => v.Id!.Value).ToHashSet();
         product.Variants.RemoveAll(existing => !incomingIds.Contains(existing.Id));
@@ -63,8 +76,12 @@ public sealed class UpdateProductCommandHandler(IApplicationDbContext context)
 
             if (variant is null)
             {
-                product.Variants.Add(new ProductVariant
+                // Same reasoning as ProductImages above — explicitly Add() through the DbSet (not
+                // product.Variants.Add()) so a newly added pack size doesn't hit the identical
+                // Modified-vs-Added misdetection; fixup adds it to product.Variants on its own.
+                context.ProductVariants.Add(new ProductVariant
                 {
+                    ProductId = product.Id,
                     Label = input.Label,
                     Price = input.Price,
                     StockQuantity = input.StockQuantity,

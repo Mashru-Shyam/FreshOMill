@@ -10,8 +10,8 @@ import { OrderCard } from './order-card/order-card';
  * Orders page (Sample/Orders.html) — a read-only history of everything
  * `OrdersService` has recorded, newest first. Three states, mirroring the
  * mockup's `renderOrdersPage()`:
- *  1. signed-out — `.checkout-empty` sign-in gate (mockup's `#ordersSignedOut`);
- *  2. signed-in with no orders yet — `.checkout-empty` empty state
+ *  1. signed-out — `.empty-state` sign-in gate (mockup's `#ordersSignedOut`);
+ *  2. signed-in with no orders yet — `.empty-state` empty state
  *     (`#ordersEmpty`), CTA to /store;
  *  3. signed-in with orders — `.orders-list` of `<app-order-card>`, one per
  *     `OrdersService.orders()` entry (already newest-first from the service).
@@ -27,6 +27,10 @@ import { OrderCard } from './order-card/order-card';
   styleUrl: './orders.css',
 })
 export class Orders {
+  /** Placeholder cards while the history loads — the page used to render "No orders yet"
+   *  during that window, which reads as a factual (and wrong) statement about the account. */
+  protected readonly skeletonSlots = Array.from({ length: 2 }, (_, i) => i);
+
   constructor(
     protected readonly orders: OrdersService,
     protected readonly auth: AuthService,

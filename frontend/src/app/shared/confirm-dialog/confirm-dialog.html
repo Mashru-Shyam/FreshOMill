@@ -1,15 +1,28 @@
 @if (confirmService.request(); as req) {
   <div class="confirm-overlay" (click)="onOverlayClick($event)">
-    <div class="confirm-dialog" role="alertdialog" aria-modal="true" aria-live="assertive">
-      <p class="confirm-dialog__message">{{ req.message }}</p>
+    <div
+      class="confirm-dialog"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="confirmDialogMessage"
+      [appDialogFocus]="true"
+    >
+      <!-- The icon carries the severity, so a destructive prompt reads as destructive before
+           the wording is parsed — the dialog used to be a line of text and two buttons whose
+           only difference was the confirm button's fill colour. -->
+      <div class="confirm-dialog__icon" [class.confirm-dialog__icon--danger]="req.danger" aria-hidden="true">
+        <svg [appIcon]="req.danger ? 'alert-circle' : 'info'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;"></svg>
+      </div>
+      <p class="confirm-dialog__message" id="confirmDialogMessage">{{ req.message }}</p>
       <div class="confirm-dialog__actions">
-        <button type="button" class="confirm-dialog__btn confirm-dialog__btn--cancel" (click)="cancel()">
+        <button type="button" class="btn btn--secondary" (click)="cancel()">
           {{ req.cancelLabel }}
         </button>
         <button
           type="button"
-          class="confirm-dialog__btn confirm-dialog__btn--confirm"
-          [class.confirm-dialog__btn--danger]="req.danger"
+          class="btn"
+          [class.btn--danger]="req.danger"
+          [class.btn--primary]="!req.danger"
           (click)="confirm()"
         >
           {{ req.confirmLabel }}
